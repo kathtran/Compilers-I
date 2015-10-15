@@ -1,0 +1,11 @@
+// hexadecimal integer literals
+//
+0x1
+
+0XaBCdeF
+
+0x0
+
+1ab456   // not hex, two tokens
+
+0x123g45 // two tokens

@@ -1,0 +1,29 @@
+(3, 1) "class"    class
+(3, 7) "extends"  extends
+(3,15) "static"   static
+(3,22) "public"   public
+(3,29) "main"     main
+(3,34) "void"     void
+(3,39) "boolean"  boolean
+(3,47) "int"      int
+(3,51) "double"   double
+(3,58) "String"   String
+(4, 1) "true"     true
+(4, 6) "false"    false
+(4,12) "new"      new
+(4,16) "this"     this
+(4,21) "if"       if
+(4,24) "else"     else
+(4,29) "while"    while
+(4,35) "return"   return
+(4,42) "System"   System
+(4,49) "out"      out
+(4,53) "println"  println
+(6, 1) <INTLIT>   123
+(6, 4) "class"    class
+(8, 1) "System"   System
+(8, 7) "."        .
+(8, 8) "out"      out
+(8,11) "."        .
+(8,12) "println"  println
+Total: 28 tokens

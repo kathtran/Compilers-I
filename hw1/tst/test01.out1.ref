@@ -1,0 +1,33 @@
+(3, 1) ADD        +
+(3, 3) SUB        -
+(3, 5) MUL        *
+(3, 7) DIV        /
+(3, 9) AND        &&
+(3,12) NOT        !
+(3,15) EQ         ==
+(3,18) NE         !=
+(3,21) LT         <
+(3,23) LE         <=
+(3,26) GT         >
+(3,28) GE         >=
+(3,31) ASSGN      =
+(3,33) SEMI       ;
+(3,35) COMMA      ,
+(3,37) DOT        .
+(3,39) LPAREN     (
+(3,41) RPAREN     )
+(3,43) LBRAC      [
+(3,45) RBRAC      ]
+(3,47) LCURLY     {
+(3,49) RCURLY     }
+(5, 1) ADD        +
+(5, 2) ADD        +
+(5, 4) MUL        *
+(5, 5) MUL        *
+(5, 7) EQ         ==
+(5, 9) EQ         ==
+(5,12) GE         >=
+(5,14) ASSGN      =
+(5,16) LT         <
+(5,17) LT         <
+Total: 32 tokens

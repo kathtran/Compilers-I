@@ -1,0 +1,6 @@
+(3, 1) INTLIT     123
+(4, 1) INTLIT     1234567890
+(5, 1) INTLIT     2147483647
+(7, 1) SUB        -
+(7, 2) INTLIT     3
+Total: 5 tokens

@@ -1,0 +1,8 @@
+(3, 1) <INTLIT>   0x1
+(5, 1) <INTLIT>   0XaBCdeF
+(7, 1) <INTLIT>   0x0
+(9, 1) <INTLIT>   1
+(9, 2) <ID>       ab456
+(11, 1) <INTLIT>   0x123
+(11, 6) <ID>       g45
+Total: 7 tokens

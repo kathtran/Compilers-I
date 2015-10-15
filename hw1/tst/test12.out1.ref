@@ -1,0 +1,2 @@
+(2, 1) INTLIT     2147483647
+Lexer1$LexError: at (3,1). Invalid decimal literal: 2147483648

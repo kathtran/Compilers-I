@@ -1,0 +1,7 @@
+// decimal integer literals
+//
+123
+1234567890 
+2147483647
+
+-3 // two tokens

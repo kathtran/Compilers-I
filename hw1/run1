@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Script for running miniJava compiler tests. (For CS321 - J. Li)
+#
+# Usage:
+#   ./run1 tst/test01.in  -- test a single input
+#   ./run1 tst/test*.in   -- test all inputs
+#
+# The script will compare your parser's output with a ref file (if exists),
+# and save the diffs in a .diff file.
+#
+
+for i
+do
+	d=`dirname $i`
+	f=`basename $i .in`
+	echo -n "$d/$f: "
+	java RunLexer1 $d/$f.in >& $d/$f.out1
+	if [ -r $d/$f.out1.ref ]; then
+          diff -w $d/$f.out1 $d/$f.out1.ref > $d/$f.out1.diff; 
+          if [ -s $d/$f.out1.diff ]; then 
+            echo "differs from ref (see $f.out1.diff)"; 
+          else
+	    rm $d/$f.out1.diff; 
+            echo "matches ref"; 
+          fi
+	else
+            echo "no ref to compare"; 
+        fi
+done
+exit 0

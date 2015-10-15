@@ -1,0 +1,9 @@
+// octal integer literals
+//
+0
+
+0123 
+
+0000555
+
+1234567 // not octal

@@ -1,0 +1,8 @@
+// keywords
+//
+class extends static public main void boolean int double String 
+true false new this if else while return System out println 
+
+123class // two tokens
+
+System.out.println // 5 tokens

@@ -1,0 +1,2 @@
+(2, 1) <INTLIT>   017777777777
+LexicalError: at (3,1). Invalid octal literal: 020000000000
