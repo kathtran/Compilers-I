@@ -202,24 +202,6 @@ public class Lexer1 {
             return getKeyword(lexeme, line, column);
         }
 
-        // recognize double literals
-        // case 1: leading dot
-        if (c == '.') {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append((char) c);
-            if (isSpace(nextC))
-                return new Token(TokenCode.DOT, ".", line, column);
-            while (isDigit(c)) {
-                c = nextChar();
-                if (c == '.')
-                    throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
-                            ": Double literal value cannot contain more than one dot operator.");
-                buffer.append((char) c);
-            }
-            String lexeme = buffer.toString();
-            return new Token(TokenCode.DBLLIT, lexeme, line, column);
-        }
-
         // recognize integer literals
         if (isDigit(c)) {
             StringBuilder buffer = new StringBuilder();
@@ -242,19 +224,6 @@ public class Lexer1 {
                 String lexeme = buffer.toString();
                 Integer octal = Integer.parseInt(lexeme, 8);
                 return new Token(TokenCode.INTLIT, octal.toString(), line, column);
-            }
-            // recognize double literals
-            // case 2: somewhere in the middle dot or ending dot
-            if (c == '.') {
-                while (isDigit(c) && !isDigit(nextC)) {
-                    c = nextChar();
-                    if (c == '.')
-                        throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
-                                ": Double literal value cannot contain more than one dot operator.");
-                    buffer.append((char) c);
-                }
-                String lexeme = buffer.toString();
-                return new Token(TokenCode.DBLLIT, lexeme, line, column);
             }
             // integer literal
             while (isDigit(c)) {
@@ -335,6 +304,8 @@ public class Lexer1 {
             case ',':
                 return new Token(TokenCode.COMMA, ",", line, column);
             case '.':
+		if (isDigit(nextC))
+			break;
                 return new Token(TokenCode.DOT, ".", line, column);
             case '(':
                 return new Token(TokenCode.LPAREN, "(", line, column);
@@ -348,6 +319,24 @@ public class Lexer1 {
                 return new Token(TokenCode.LCURLY, "{", line, column);
             case '}':
                 return new Token(TokenCode.RCURLY, "}", line, column);
+        }
+
+        // recognize double literals
+        // case 1: leading dot
+        if (c == '.') {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append((char) c);
+            if (isSpace(nextC))
+                return new Token(TokenCode.DOT, ".", line, column);
+            while (isDigit(c)) {
+                c = nextChar();
+                if (c == '.')
+                    throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                            ": Double literal value cannot contain more than one dot operator.");
+                buffer.append((char) c);
+            }
+            String lexeme = buffer.toString();
+            return new Token(TokenCode.DBLLIT, lexeme, line, column);
         }
 
         throw new Exception("Lexical Error on line " + line + " on column " + firstCharColumn +
