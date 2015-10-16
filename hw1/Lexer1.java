@@ -93,7 +93,7 @@ public class Lexer1 {
 
     // Returns whether or not input is a letter
     private static boolean isLetter(int c) {
-        return ('a' <= c && c <= 'z');
+        return ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z');
     }
 
     // Returns whether or not input is a digit
@@ -208,6 +208,18 @@ public class Lexer1 {
             buffer.append((char) c);
             // octal literal
             if (c == '0') {
+                // integer literal if SINGLETON
+                if (isSpace(nextC)) {
+                    String lexeme = buffer.toString();
+                    try {
+                        Integer integer = Integer.parseInt(lexeme);
+                        if (0 <= integer && integer <= 2147483647)
+                            return new Token(TokenCode.INTLIT, integer.toString(), line, column);
+                    } catch (Exception ex) {
+                        throw new Exception("Integer Literal Error on " + line + " on column " + firstCharColumn +
+                                ": Invalid integer literal value " + (char) c);
+                    }
+                }
                 // hexadecimal literal
                 if (nextC == 'x' || nextC == 'X') {
                     do {
@@ -304,8 +316,8 @@ public class Lexer1 {
             case ',':
                 return new Token(TokenCode.COMMA, ",", line, column);
             case '.':
-		if (isDigit(nextC))
-			break;
+                if (isDigit(nextC))
+                    break;
                 return new Token(TokenCode.DOT, ".", line, column);
             case '(':
                 return new Token(TokenCode.LPAREN, "(", line, column);
