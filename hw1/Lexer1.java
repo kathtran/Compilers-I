@@ -174,7 +174,6 @@ public class Lexer1 {
                             c = nextChar();
                             if (c == '/') {
                                 c = nextChar();
-                                break;
                             }
                         }
                     } while (c != -1);
@@ -185,9 +184,7 @@ public class Lexer1 {
         // reached <EOF>
         if (c == -1)
             return null;
-
-        //StringBuilder buffer = new StringBuilder();
-        //String lexeme;
+        
         int firstCharColumn = column;
 
         // recognize ID and keywords
