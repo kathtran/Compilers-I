@@ -207,7 +207,7 @@ public class Lexer1 {
         if (c == '.') {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            if (isSpace(nextC))
+            if (isSpace(nextC) || !isDigit(nextC))
                 return new Token(TokenCode.DOT, ".", line, column);
             while (isDigit(c)) {
                 c = nextChar();
