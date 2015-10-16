@@ -16,24 +16,22 @@ public class Lexer1 {
 
     // Internal token code
     //
-    enum TokenCode
-
-    {
+    enum TokenCode {
         // Tokens with multiple lexemes
         ID, INTLIT, DBLLIT, STRLIT,
 
-                // Keywords
-                //   "class", "extends", "static", "public", "main", "void", "boolean",
-                //   "int", "double", "String", "true", "false", "new", "this", "if",
-                //   "else", "while", "return", "System", "out", "println"
-                CLASS, EXTENDS, STATIC, PUBLIC, MAIN, VOID, BOOLEAN, INT, DOUBLE, STRING,
-                TRUE, FALSE, NEW, THIS, IF, ELSE, WHILE, RETURN, SYSTEM, OUT, PRINTLN,
+        // Keywords
+        //   "class", "extends", "static", "public", "main", "void", "boolean",
+        //   "int", "double", "String", "true", "false", "new", "this", "if",
+        //   "else", "while", "return", "System", "out", "println"
+        CLASS, EXTENDS, STATIC, PUBLIC, MAIN, VOID, BOOLEAN, INT, DOUBLE, STRING,
+        TRUE, FALSE, NEW, THIS, IF, ELSE, WHILE, RETURN, SYSTEM, OUT, PRINTLN,
 
-                // Operators and delimiters
-                //   +, -, *, /, &&, ||, !, ==, !=, <, <=, >, >=, =,
-                //   ;, ,, ., (, ), [, ], {, }
-                ADD, SUB, MUL, DIV, AND, OR, NOT, EQ, NE, LT, LE, GT, GE, ASSGN,
-                SEMI, COMMA, DOT, LPAREN, RPAREN, LBRAC, RBRAC, LCURLY, RCURLY;
+        // Operators and delimiters
+        //   +, -, *, /, &&, ||, !, ==, !=, <, <=, >, >=, =,
+        //   ;, ,, ., (, ), [, ], {, }
+        ADD, SUB, MUL, DIV, AND, OR, NOT, EQ, NE, LT, LE, GT, GE, ASSGN,
+        SEMI, COMMA, DOT, LPAREN, RPAREN, LBRAC, RBRAC, LCURLY, RCURLY;
     }
 
     // Token representation
@@ -204,6 +202,24 @@ public class Lexer1 {
             return getKeyword(lexeme, line, column);
         }
 
+        // recognize double literals
+        // case 1: leading dot
+        if (c == '.') {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append((char) c);
+            if (isSpace(nextC))
+                return new Token(TokenCode.DOT, ".", line, column);
+            while (isDigit(c)) {
+                c = nextChar();
+                if (c == '.')
+                    throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                            ": Double literal value cannot contain more than one dot operator.");
+                buffer.append((char) c);
+            }
+            String lexeme = buffer.toString();
+            return new Token(TokenCode.DBLLIT, lexeme, line, column);
+        }
+
         // recognize integer literals
         if (isDigit(c)) {
             StringBuilder buffer = new StringBuilder();
@@ -226,6 +242,19 @@ public class Lexer1 {
                 String lexeme = buffer.toString();
                 Integer octal = Integer.parseInt(lexeme, 8);
                 return new Token(TokenCode.INTLIT, octal.toString(), line, column);
+            }
+            // recognize double literals
+            // case 2: somewhere in the middle dot or ending dot
+            if (c == '.') {
+                while (isDigit(c) && !isDigit(nextC)) {
+                    c = nextChar();
+                    if (c == '.')
+                        throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                                ": Double literal value cannot contain more than one dot operator.");
+                    buffer.append((char) c);
+                }
+                String lexeme = buffer.toString();
+                return new Token(TokenCode.DBLLIT, lexeme, line, column);
             }
             // integer literal
             while (isDigit(c)) {
