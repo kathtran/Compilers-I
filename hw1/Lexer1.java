@@ -211,10 +211,10 @@ public class Lexer1 {
                 return new Token(TokenCode.DOT, ".", line, column);
             while (isDigit(c)) {
                 c = nextChar();
+                buffer.append((char) c);
                 if (c == '.')
                     throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
                             ": Double literal value cannot contain more than one dot operator.");
-                buffer.append((char) c);
             }
             String lexeme = buffer.toString();
             return new Token(TokenCode.DBLLIT, lexeme, line, column);
