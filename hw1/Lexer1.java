@@ -185,8 +185,6 @@ public class Lexer1 {
         if (c == -1)
             return null;
 
-        //StringBuilder buffer = new StringBuilder();
-        //String lexeme;
         int firstCharColumn = column;
 
         // recognize ID and keywords
