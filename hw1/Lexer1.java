@@ -283,29 +283,6 @@ public class Lexer1 {
 
                 do {
                     c = nextChar();
-                    // recognize double literals
-                    // case 3: random
-                    if (c == '.') {
-                        buffer.append((char) c);
-                        c = nextChar();
-                        if (isSpace(c) || !isDigit(c))
-                            return new Token(TokenCode.DOT, ".", line, column);
-                        while (isDigit(c)) {
-                            buffer.append((char) c);
-                            c = nextChar();
-                            if (c == '.')
-                                throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
-                                        ": Double literal value cannot contain more than one dot operator.");
-                        }
-                        String lexeme = buffer.toString();
-                        try {
-                            Double.parseDouble(lexeme);
-                            return new Token(TokenCode.DBLLIT, lexeme, line, column);
-                        } catch (NumberFormatException ex) {
-                            throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
-                                    ": Invalid double literal value " + lexeme);
-                        }
-                    }
                     buffer.append((char) c);
                 } while (isDigit(c) && c != -1 && c != '\n');
                 String lexeme = buffer.toString();
@@ -323,6 +300,17 @@ public class Lexer1 {
                 buffer.append((char) c);
             }
             String lexeme = buffer.toString();
+            // recognize double literals
+            // case 3
+            if (lexeme.contains(".") && lexeme.split(".").length == 2) {
+                try {
+                    Double.parseDouble(lexeme);
+                    return new Token(TokenCode.DBLLIT, lexeme, line, column);
+                } catch (NumberFormatException ex) {
+                    throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                            ": Invalid double literal value " + lexeme);
+                }
+            }
             try {
                 Integer integer = Integer.parseInt(lexeme);
                 if (0 <= integer && integer <= 2147483647)
