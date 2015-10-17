@@ -201,17 +201,14 @@ public class Lexer1 {
 
         // recognize double literals
         // case 1: leading dot
-        if (c == '.') {
+        if (c == '.' && isDigit(nextC)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            c = nextChar();
-            if (isSpace(c) || !isDigit(c))
-                return new Token(TokenCode.DOT, ".", line, column);
             while (isDigit(c)) {
                 buffer.append((char) c);
                 c = nextChar();
                 if (c == '.')
-                    throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                    throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Double literal value cannot contain more than one dot operator.");
             }
             String lexeme = buffer.toString();
@@ -219,7 +216,7 @@ public class Lexer1 {
                 Double.parseDouble(lexeme);
                 return new Token(TokenCode.DBLLIT, lexeme, line, column);
             } catch (NumberFormatException ex) {
-                throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                         ": Invalid double literal value " + lexeme);
             }
         }
@@ -238,7 +235,7 @@ public class Lexer1 {
                         if (0 <= integer && integer <= 2147483647)
                             return new Token(TokenCode.INTLIT, integer.toString(), line, column);
                     } catch (Exception ex) {
-                        throw new Exception("Integer Literal Error on " + line + " on column " + firstCharColumn +
+                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid integer literal value " + (char) c);
                     }
                 }
@@ -252,7 +249,7 @@ public class Lexer1 {
                     try {
                         return new Token(TokenCode.INTLIT, (Integer.decode(lexeme)).toString(), line, column);
                     } catch (NumberFormatException ex) {
-                        throw new Exception("Integer Literal Error on " + line + " on column " + firstCharColumn +
+                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid hexadecimal literal value " + lexeme);
                     }
                 }
@@ -267,7 +264,7 @@ public class Lexer1 {
                         buffer.append((char) c);
                         c = nextChar();
                         if (c == '.')
-                            throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                            throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                                     ": Double literal value cannot contain more than one dot operator.");
                     }
                     String lexeme = buffer.toString();
@@ -275,7 +272,7 @@ public class Lexer1 {
                         Double.parseDouble(lexeme);
                         return new Token(TokenCode.DBLLIT, lexeme, line, column);
                     } catch (NumberFormatException ex) {
-                        throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                        throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid double literal value " + lexeme);
                     }
                 }
@@ -289,7 +286,7 @@ public class Lexer1 {
                     Integer octal = Integer.parseInt(lexeme, 8);
                     return new Token(TokenCode.INTLIT, octal.toString(), line, column);
                 } catch (NumberFormatException ex) {
-                    throw new Exception("Integer Literal Error on " + line + " on column " + firstCharColumn +
+                    throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Invalid octal literal value " + (char) c);
                 }
             }
@@ -304,7 +301,7 @@ public class Lexer1 {
                 if (0 <= integer && integer <= 2147483647)
                     return new Token(TokenCode.INTLIT, integer.toString(), line, column);
             } catch (NumberFormatException ex) {
-                throw new Exception("Integer Literal Error on " + line + " on column " + firstCharColumn +
+                throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                         ": Invalid integer literal value " + (char) c);
             }
         }
