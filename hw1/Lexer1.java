@@ -204,8 +204,9 @@ public class Lexer1 {
         if (c == '.' && isDigit(nextC)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
+	    c = nextChar();
             while (isDigit(c)) {
-                buffer.append((char) c);
+		buffer.append((char) c);
                 c = nextChar();
                 if (c == '.')
                     throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
