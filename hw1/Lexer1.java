@@ -256,8 +256,56 @@ public class Lexer1 {
                                 ": Invalid hexadecimal literal value " + lexeme);
                     }
                 }
+
+                // recognize double literals
+                // case 2: leading 0
+                if (c == '.') {
+                    buffer.append((char) c);
+                    c = nextChar();
+                    if (isSpace(c) || !isDigit(c))
+                        return new Token(TokenCode.DOT, ".", line, column);
+                    while (isDigit(c)) {
+                        buffer.append((char) c);
+                        c = nextChar();
+                        if (c == '.')
+                            throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                                    ": Double literal value cannot contain more than one dot operator.");
+                    }
+                    String lexeme = buffer.toString();
+                    try {
+                        Double.parseDouble(lexeme);
+                        return new Token(TokenCode.DBLLIT, lexeme, line, column);
+                    } catch (NumberFormatException ex) {
+                        throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                                ": Invalid double literal value " + lexeme);
+                    }
+                }
+
                 do {
                     c = nextChar();
+                    // recognize double literals
+                    // case 3: random
+                    if (c == '.') {
+                        buffer.append((char) c);
+                        c = nextChar();
+                        if (isSpace(c) || !isDigit(c))
+                            return new Token(TokenCode.DOT, ".", line, column);
+                        while (isDigit(c)) {
+                            buffer.append((char) c);
+                            c = nextChar();
+                            if (c == '.')
+                                throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                                        ": Double literal value cannot contain more than one dot operator.");
+                        }
+                        String lexeme = buffer.toString();
+                        try {
+                            Double.parseDouble(lexeme);
+                            return new Token(TokenCode.DBLLIT, lexeme, line, column);
+                        } catch (NumberFormatException ex) {
+                            throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
+                                    ": Invalid double literal value " + lexeme);
+                        }
+                    }
                     buffer.append((char) c);
                 } while (isDigit(c) && c != -1 && c != '\n');
                 String lexeme = buffer.toString();
