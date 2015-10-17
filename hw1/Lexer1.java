@@ -200,13 +200,13 @@ public class Lexer1 {
         }
 
         // recognize double literals
-        // case 1: leading dot
+        // case: leading dot
         if (c == '.' && isDigit(nextC)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-	    c = nextChar();
+            c = nextChar();
             while (isDigit(c)) {
-		buffer.append((char) c);
+                buffer.append((char) c);
                 c = nextChar();
                 if (c == '.')
                     throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
@@ -214,8 +214,8 @@ public class Lexer1 {
             }
             String lexeme = buffer.toString();
             try {
-                Double.parseDouble(lexeme);
-                return new Token(TokenCode.DBLLIT, lexeme, line, column);
+                Double doubleInteger = Double.parseDouble(lexeme);
+                return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
             } catch (NumberFormatException ex) {
                 throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                         ": Invalid double literal value " + lexeme);
@@ -270,8 +270,8 @@ public class Lexer1 {
                     }
                     String lexeme = buffer.toString();
                     try {
-                        Double.parseDouble(lexeme);
-                        return new Token(TokenCode.DBLLIT, lexeme, line, column);
+                        Double doubleInteger = Double.parseDouble(lexeme);
+                        return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid double literal value " + lexeme);
@@ -292,18 +292,31 @@ public class Lexer1 {
                 }
             }
             // integer literal
-            while (isDigit(c)) {
-                c = nextChar();
+            int decimalCount = 0;
+            do {
                 buffer.append((char) c);
-            }
+                c = nextChar();
+                if (c == '.')
+                    decimalCount += 1;
+            } while (isDigit(c) || c == '.' && decimalCount <= 1);
             String lexeme = buffer.toString();
-            try {
-                Integer integer = Integer.parseInt(lexeme);
-                if (0 <= integer && integer <= 2147483647)
-                    return new Token(TokenCode.INTLIT, integer.toString(), line, column);
-            } catch (NumberFormatException ex) {
-                throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
-                        ": Invalid integer literal value " + (char) c);
+            if (decimalCount == 0) {
+                try {
+                    Integer integer = Integer.parseInt(lexeme);
+                    if (0 <= integer && integer <= 2147483647)
+                        return new Token(TokenCode.INTLIT, integer.toString(), line, column);
+                } catch (NumberFormatException ex) {
+                    throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
+                            ": Invalid integer literal value " + (char) c);
+                }
+            } else {
+                try {
+                    Double doubleInteger = Double.parseDouble(lexeme);
+                    return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
+                } catch (NumberFormatException ex) {
+                    throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
+                            ": Invalid double literal value " + lexeme);
+                }
             }
         }
 
