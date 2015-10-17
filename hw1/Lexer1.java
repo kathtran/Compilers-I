@@ -254,30 +254,6 @@ public class Lexer1 {
                                 ": Invalid hexadecimal literal value " + lexeme);
                     }
                 }
-                // recognize double literals
-                // case 2: leading 0
-                if (nextC == '.') {
-                    buffer.append((char) c);
-                    c = nextChar();
-                    if (isSpace(c) || !isDigit(c))
-                        return new Token(TokenCode.DOT, ".", line, column);
-                    while (isDigit(c)) {
-                        buffer.append((char) c);
-                        c = nextChar();
-                        if (c == '.')
-                            throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
-                                    ": Double literal value cannot contain more than one dot operator.");
-                    }
-                    String lexeme = buffer.toString();
-                    try {
-                        Double doubleInteger = Double.parseDouble(lexeme);
-                        return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
-                    } catch (NumberFormatException ex) {
-                        throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
-                                ": Invalid double literal value " + lexeme);
-                    }
-                }
-
                 do {
                     c = nextChar();
                     buffer.append((char) c);
