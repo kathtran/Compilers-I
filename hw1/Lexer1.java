@@ -204,11 +204,12 @@ public class Lexer1 {
         if (c == '.') {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            if (isSpace(nextC) || !isDigit(nextC))
+            c = nextChar();
+            if (isSpace(c) || !isDigit(c))
                 return new Token(TokenCode.DOT, ".", line, column);
             while (isDigit(c)) {
-                c = nextChar();
                 buffer.append((char) c);
+                c = nextChar();
                 if (c == '.')
                     throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
                             ": Double literal value cannot contain more than one dot operator.");
