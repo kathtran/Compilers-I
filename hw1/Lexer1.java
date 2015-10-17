@@ -256,10 +256,9 @@ public class Lexer1 {
                                 ": Invalid hexadecimal literal value " + lexeme);
                     }
                 }
-
                 // recognize double literals
                 // case 2: leading 0
-                if (c == '.') {
+                if (nextC == '.') {
                     buffer.append((char) c);
                     c = nextChar();
                     if (isSpace(c) || !isDigit(c))
@@ -300,17 +299,6 @@ public class Lexer1 {
                 buffer.append((char) c);
             }
             String lexeme = buffer.toString();
-            // recognize double literals
-            // case 3
-            if (lexeme.contains(".") && lexeme.split(".").length == 2) {
-                try {
-                    Double.parseDouble(lexeme);
-                    return new Token(TokenCode.DBLLIT, lexeme, line, column);
-                } catch (NumberFormatException ex) {
-                    throw new Exception("Double Literal Error on " + line + " on column " + firstCharColumn +
-                            ": Invalid double literal value " + lexeme);
-                }
-            }
             try {
                 Integer integer = Integer.parseInt(lexeme);
                 if (0 <= integer && integer <= 2147483647)
