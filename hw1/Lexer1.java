@@ -194,10 +194,11 @@ public class Lexer1 {
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            do {
-                c = nextChar();
+            c = nextChar();
+            while (isLetter(c)) {
                 buffer.append((char) c);
-            } while (isLetter((char) c));
+                c = nextChar();
+            }
             String lexeme = buffer.toString();
             return getKeyword(lexeme, line, column);
         }
