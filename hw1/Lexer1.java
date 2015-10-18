@@ -160,8 +160,8 @@ public class Lexer1 {
         int c = nextChar();
 
         boolean startBeforeEnd = false;
-	int commentLine = line;
-	int commentColumn = column;
+        int commentLine = line;
+        int commentColumn = column;
         do {
             // skip whitespace
             while (isSpace(c))
@@ -169,8 +169,8 @@ public class Lexer1 {
 
             // skip comments
             if (c == '/') {
-		commentLine = line;
-		commentColumn = column;
+                commentLine = line;
+                commentColumn = column;
                 if (nextC == '/') {                 // recognize single line comment
                     do {
                         c = nextChar();
@@ -180,18 +180,18 @@ public class Lexer1 {
                     do {
                         c = nextChar();
                         if (c == '*' && nextC == '/') {
-    	                	        c = nextChar();
-    	                	        c = nextChar();
-					break;
+                            c = nextChar();
+                            c = nextChar();
+                            break;
                         } else if (c == '/' && nextC == '*') {
-				c = nextChar();
-				c = nextChar();
-	                            startBeforeEnd = true;
-			}
+                            c = nextChar();
+                            c = nextChar();
+                            startBeforeEnd = true;
+                        }
                     } while (c != -1);
-            		if (startBeforeEnd && c == -1)
-		                throw new Exception("Lexer1$LexError: at (" + commentLine + "," + commentColumn +
-                	        "). Unclosed block comments");
+                    if (startBeforeEnd && c == -1)
+                        throw new Exception("Lexer1$LexError: at (" + commentLine + "," + commentColumn +
+                                "). Unclosed block comments");
                 }
             }
         } while (isSpace(c));
