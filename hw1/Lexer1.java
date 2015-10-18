@@ -337,11 +337,11 @@ public class Lexer1 {
 			break; 
 		}
                 buffer.append((char) c);
-            } while (nextC != -1 && nextC != '\n');
+            } while (nextC != -1 && nextC != '\n' && nextC != '\r');
             String lexeme = buffer.toString();
             if (!endString)
                 throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                        "). Ill-formed or unclosed string: " + lexeme);
+                        "). Ill-formed or unclosed string: \"" + lexeme);
             return new Token(TokenCode.STRLIT, lexeme, line, firstCharColumn);
         }
 

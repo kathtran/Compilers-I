@@ -1,4 +1,0 @@
-1c1
-< Lexer1$LexError: at (2,1). Ill-formed or unclosed string: 112233
----
-> Lexer1$LexError: at (2,1). Ill-formed or unclosed string: "112233
