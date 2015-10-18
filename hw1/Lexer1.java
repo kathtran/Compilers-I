@@ -324,14 +324,17 @@ public class Lexer1 {
         // recognize string literals
         if (c == '"') {
             StringBuilder buffer = new StringBuilder();
+            boolean endString = false;
             do {
                 c = nextChar();
                 if (c == '"')
-                    break;
-
+                    endString = true;
                 buffer.append((char) c);
             } while (c != -1 && c != '\n' && c != '\r');
             String lexeme = buffer.toString();
+            if (!endString)
+                throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
+                        "). Ill-formed or unclosed string: " + lexeme);
             return new Token(TokenCode.STRLIT, lexeme, line, firstCharColumn);
         }
 
