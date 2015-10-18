@@ -1,0 +1,73 @@
+//----------------------------------------------------------------------
+// This is an implementation of a lexer using JavaCC. (For CS321 HW1)
+//----------------------------------------------------------------------
+//
+// Kathleen Tran
+// Fall 2015
+//
+
+// A lexer for recognizing miniJava. (JavaCC version)
+//
+PARSER_BEGIN(Lexer2)
+public class Lexer2 {}
+PARSER_END(Lexer2)
+
+// Token Definitions
+//
+SKIP:   { " " | "\t" | "\n" | "\r" }        // whitespace chars
+
+// keywords
+TOKEN:  { <CLASS:       "class"> }
+TOKEN:  { <EXTENDS:     "extends"> }
+TOKEN:  { <STATIC:      "static"> }
+TOKEN:  { <PUBLIC:      "public"> }
+TOKEN:  { <MAIN:        "main"> }
+TOKEN:  { <VOID:        "void"> }
+TOKEN:  { <BOOLEAN:     "boolean"> }
+TOKEN:  { <INT:         "int"> }
+TOKEN:  { <DOUBLE:      "double"> }
+TOKEN:  { <STRING:      "String"> }
+TOKEN:  { <TRUE:        "true"> }
+TOKEN:  { <FALSE:       "false"> }
+TOKEN:  { <NEW:         "new"> }
+TOKEN:  { <THIS:        "this"> }
+TOKEN:  { <IF:          "if"> }
+TOKEN:  { <ELSE:        "else"> }
+TOKEN:  { <WHILE:       "while"> }
+TOKEN:  { <RETURN:      "return"> }
+TOKEN:  { <SYSTEM:      "System"> }
+TOKEN:  { <OUT:         "out"> }
+TOKEN:  { <PRINTLN:     "println"> }
+
+TOKEN:  { <ID:          "['a'-'z'|'A'-'Z']+['0'-'9'|'a'-z'|'A'-'Z']*"> }
+
+TOKEN:  { <INTLIT:      ""> }                   // integer literals
+TOKEN:  { <DBLLIT:      ""> }                   // double literals
+TOKEN:  { <STRLIT:      ""> }                   // String literals
+
+// operators
+TOKEN:  { <ADD:         "+"> }
+TOKEN:  { <SUB:         "-"> }
+TOKEN:  { <MUL:         "*"> }
+TOKEN:  { <DIV:         "/"> }
+TOKEN:  { <AND:         "&&"> }
+TOKEN:  { <OR:          "||"> }
+TOKEN:  { <NOT:         "!"> }
+TOKEN:  { <EQ:          "=="> }
+TOKEN:  { <NE:          "!="> }
+TOKEN:  { <LT:          "<"> }
+TOKEN:  { <LE:          "<="> }
+TOKEN:  { <GT:          ">"> }
+TOKEN:  { <GE:          ">="> }
+
+// delimiters
+TOKEN:  { <ASSGN:       "="> }
+TOKEN:  { <SEMI:        ";"> }
+TOKEN:  { <COMMA:       ","> }
+TOKEN:  { <DOT:         "."> }
+TOKEN:  { <LPAREN:      "("> }
+TOKEN:  { <RPAREN:      ")"> }
+TOKEN:  { <LBRAC:       "["> }
+TOKEN:  { <RBRAC:       "]"> }
+TOKEN:  { <LCURLY:      "{"> }
+TOKEN:  { <RCURLY:      "}"> }
