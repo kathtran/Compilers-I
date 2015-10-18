@@ -194,7 +194,7 @@ public class Lexer1 {
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            while (isLetter(nextC)) {
+            while (!isSpace(nextC) && nextC != '.') {
                 c = nextChar();
                 buffer.append((char) c);
             }
@@ -229,10 +229,8 @@ public class Lexer1 {
         if (isDigit(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            // octal literal
-            if (c == '0') {
-                // integer literal if SINGLETON
-                if (isSpace(nextC)) {
+		// singleton
+                if (isSpace(nextC) || !isDigit(nextC)) {
                     String lexeme = buffer.toString();
                     try {
                         Integer integer = Integer.parseInt(lexeme);
@@ -243,6 +241,9 @@ public class Lexer1 {
                                 ": Invalid integer literal value " + (char) c);
                     }
                 }
+            // octal literal
+            if (c == '0') {
+                // integer literal if SINGLETON
                 // hexadecimal literal
                 if (nextC == 'x' || nextC == 'X') {
                     do {

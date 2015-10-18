@@ -2,4 +2,5 @@
 (4, 1) INTLIT     1234567890
 (5, 1) INTLIT     2147483647
 (7, 1) SUB        -
-java.lang.Exception: Integer Literal Error on line 7 on column 2: Invalid integer literal value  
+(7, 2) INTLIT     3
+Total: 5 tokens

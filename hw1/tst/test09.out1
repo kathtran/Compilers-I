@@ -1,3 +1,2 @@
-(3, 1) ID         mark
-java.lang.Exception: Integer Literal Error on line 4 on column 5: Invalid integer literal value 
-
+(3, 1) ID         mark1
+Total: 1 tokens
