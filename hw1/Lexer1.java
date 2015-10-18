@@ -281,8 +281,10 @@ public class Lexer1 {
                 } while (isDigit(c));
                 String lexeme = buffer.toString();
                 try {
-                    Integer octal = Integer.parseInt(lexeme, 8);
-                    return new Token(TokenCode.INTLIT, lexeme, line, column);
+                    //Integer octal = Integer.parseInt(lexeme, 8);
+                    Integer integer = Integer.parseInt(lexeme);
+                    String octal = Integer.toOctalString(integer);
+                    return new Token(TokenCode.INTLIT, octal, line, column);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Invalid octal literal " + lexeme);
