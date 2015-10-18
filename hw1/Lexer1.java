@@ -230,7 +230,7 @@ public class Lexer1 {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
 		// singleton
-                if (isSpace(nextC) || !isDigit(nextC)) {
+                if (isSpace(nextC) || !isDigit()) {
                     String lexeme = buffer.toString();
                     try {
                         Integer integer = Integer.parseInt(lexeme);
@@ -249,7 +249,7 @@ public class Lexer1 {
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (isDigit(c) && c != -1 && c != '\n');
+                    } while (isDigit(nextC) && nextC != -1 && nextC != '\n');
                     String lexeme = buffer.toString();
                     try {
                         return new Token(TokenCode.INTLIT, (Integer.decode(lexeme)).toString(), line, firstCharColumn);
