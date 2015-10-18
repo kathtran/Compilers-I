@@ -218,7 +218,7 @@ public class Lexer1 {
             String lexeme = buffer.toString();
             try {
                 Double doubleInteger = Double.parseDouble(lexeme);
-                return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, firstCharColumn);
+                return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
             } catch (NumberFormatException ex) {
                 throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                         ": Invalid double literal " + lexeme);
@@ -261,12 +261,10 @@ public class Lexer1 {
                 }
                 // double literal
                 if (nextC == '.') {
-                    c = nextChar();
-                    buffer.append((char) c);
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (isDigit(c));
+                    } while (isDigit(nextC));
                     String lexeme = buffer.toString();
                     try {
                         Double doubleInteger = Double.parseDouble(lexeme);
@@ -310,7 +308,7 @@ public class Lexer1 {
             } else {
                 try {
                     Double doubleInteger = Double.parseDouble(lexeme);
-                    return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, firstCharColumn);
+                    return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Invalid double literal " + lexeme);
