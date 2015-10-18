@@ -399,8 +399,8 @@ public class Lexer1 {
                 return new Token(TokenCode.RCURLY, "}", line, column);
         }
 
-        throw new Exception("Lexical Error on line " + line + " on column " + firstCharColumn +
-                ": Illegal character " + (char) c);
+        throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
+                "). Illegal character: " + (char) c);
     }
 
 }
