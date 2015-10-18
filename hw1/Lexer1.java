@@ -194,10 +194,15 @@ public class Lexer1 {
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            while (!isSpace(nextC) && nextC != '.') {
+	    // singleton
+	    if (!isLetter(nextC) && !isDigit(nextC)) {
+		String lexeme = buffer.toString();
+		return new Token(TokenCode.ID, lexeme, line, firstCharColumn);
+	    }
+            do {
                 c = nextChar();
                 buffer.append((char) c);
-            }
+            } while (isLetter(nextC) || isDigit(nextC) && !isSpace(nextC) && nextC != '.');
             String lexeme = buffer.toString();
             return getKeyword(lexeme, line, firstCharColumn);
         }
@@ -230,7 +235,7 @@ public class Lexer1 {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
             // singleton
-            if ((isLetter(nextC) && nextC != 'x' && nextC != 'X') || isSpace(nextC) && !isDigit(nextC)) {
+            if ((isLetter(nextC) && nextC != 'x' && nextC != 'X') || isSpace(nextC) && !isDigit(nextC) || !isSpace(nextC) && !isLetter(nextC) && !isDigit(nextC) && nextC != '.') {
                 String lexeme = buffer.toString();
                 try {
                     Integer integer = Integer.parseInt(lexeme);
