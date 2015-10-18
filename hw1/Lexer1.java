@@ -328,7 +328,7 @@ public class Lexer1 {
                 buffer.append((char) c);
             } while (c != -1 && c != '\n' && c != '\r');
             String lexeme = buffer.toString();
-            return new Token(TokenCode.STRLIT, lexeme, line, column);
+            return new Token(TokenCode.STRLIT, lexeme, line, firstCharColumn);
         }
 
         // recognize operators, delimiters, and comments
