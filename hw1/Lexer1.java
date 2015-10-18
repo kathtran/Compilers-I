@@ -74,7 +74,7 @@ public class Lexer1 {
         if (c != -1) {
             switch (c) {
                 case '\n':
-                case '\r':
+ //               case '\r':
                     line += 1;
                     column = 0;
                     break;
@@ -226,7 +226,7 @@ public class Lexer1 {
                 return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
             } catch (NumberFormatException ex) {
                 throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                        "). Invalid double literal " + lexeme);
+                        "). Invalid double literal: " + lexeme);
             }
         }
 
@@ -243,7 +243,7 @@ public class Lexer1 {
                         return new Token(TokenCode.INTLIT, integer.toString(), line, column);
                 } catch (Exception ex) {
                     throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                            "). Invalid integer literal " + (char) c);
+                            "). Invalid integer literal: " + (char) c);
                 }
             }
             // octal literal
@@ -261,7 +261,7 @@ public class Lexer1 {
                         return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                                "). Invalid hexadecimal literal " + lexeme);
+                                "). Invalid hexadecimal literal: " + lexeme);
                     }
                 }
                 // double literal
@@ -276,7 +276,7 @@ public class Lexer1 {
                         return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                                "). Invalid double literal " + lexeme);
+                                "). Invalid double literal: " + lexeme);
                     }
                 }
                 do {
@@ -289,7 +289,7 @@ public class Lexer1 {
                     return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                            "). Invalid octal literal " + lexeme);
+                            "). Invalid octal literal: " + lexeme);
                 }
             }
             // integer literal
@@ -308,7 +308,7 @@ public class Lexer1 {
                         return new Token(TokenCode.INTLIT, integer.toString(), line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                            "). Invalid integer literal " + lexeme);
+                            "). Invalid decimal literal: " + lexeme);
                 }
             } else {
                 try {
@@ -316,7 +316,7 @@ public class Lexer1 {
                     return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                            "). Invalid double literal " + lexeme);
+                            "). Invalid double literal: " + lexeme);
                 }
             }
         }

@@ -1,4 +1,0 @@
-2c2
-< Integer Literal Error on line 3 on column 1: Invalid integer literal 8
----
-> Lexer1$LexError: at (3,1). Invalid decimal literal: 2147483648

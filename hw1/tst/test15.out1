@@ -1,5 +1,5 @@
-(3, 1) STRLIT     "1122"
-(3, 1) INTLIT     33
-(4, 3) STRLIT     "
+(2, 1) STRLIT     "1122"
+(2, 7) INTLIT     33
+(3, 9) STRLIT     "
 "
 Total: 3 tokens
