@@ -1,2 +1,5 @@
 "this" + "is"
-"NOT
+/* this is a comment
+/* doesnt end
+/****** /**
+*/

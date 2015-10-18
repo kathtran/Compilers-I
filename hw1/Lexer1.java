@@ -159,8 +159,9 @@ public class Lexer1 {
     static Token nextToken() throws Exception {
         int c = nextChar();
 
-        boolean endComment = false;
         boolean startBeforeEnd = false;
+	int commentLine = line;
+	int commentColumn = column;
         do {
             // skip whitespace
             while (isSpace(c))
@@ -168,27 +169,31 @@ public class Lexer1 {
 
             // skip comments
             if (c == '/') {
+		commentLine = line;
+		commentColumn = column;
                 if (nextC == '/') {                 // recognize single line comment
                     do {
                         c = nextChar();
                     } while (c != '\n' && c != -1);
                 } else if (nextC == '*') {                 // recognize block comment
-                    endComment = false;
-                    //        startBeforeEnd = false;
+                    startBeforeEnd = false;
                     do {
                         c = nextChar();
                         if (c == '*' && nextC == '/') {
-                            c = nextChar();
-                            c = nextChar();
-                            endComment = true;
-                        } else if (c == '/' && nextC == '*')
-                            startBeforeEnd = true;
-                    } while (!endComment || !startBeforeEnd);
+    	                	        c = nextChar();
+    	                	        c = nextChar();
+					break;
+                        } else if (c == '/' && nextC == '*') {
+				c = nextChar();
+				c = nextChar();
+	                            startBeforeEnd = true;
+			}
+                    } while (c != -1);
+            		if (startBeforeEnd && c == -1)
+		                throw new Exception("Lexer1$LexError: at (" + commentLine + "," + commentColumn +
+                	        "). Unclosed block comments");
                 }
             }
-            if (startBeforeEnd)
-                throw new Exception("Lexer1$LexError: at (" + line + "," + column +
-                        "). Unclosed block comment");
         } while (isSpace(c));
 
         // reached <EOF>
