@@ -249,10 +249,10 @@ public class Lexer1 {
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (!isSpace(nextC) && !isLetter(nextC) && nextC != -1);
+                    } while (!isSpace(nextC) && !('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F') && nextC != -1);
                     String lexeme = buffer.toString();
                     try {
-			Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
+                        Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
                         return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
