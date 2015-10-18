@@ -249,7 +249,7 @@ public class Lexer1 {
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (!isSpace(nextC) && !('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F') && nextC != -1);
+                    } while (!isSpace(nextC) && (isDigit(nextC) || ('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F')) && nextC != -1);
                     String lexeme = buffer.toString();
                     try {
                         Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);

@@ -1,9 +1,6 @@
-1,5c1,2
-< (3, 1) INTLIT     0
-< (3, 2) ID         X7FFFFFFF
-< (5, 1) INTLIT     0
-< (5, 2) ID         x80000000
-< Total: 4 tokens
+1,2c1,2
+< (3, 1) INTLIT     0X7FFFFFFF
+< java.lang.Exception: Integer Literal Error on line 5 on column 1: Invalid hexadecimal literal 0x80000000
 ---
 > (2, 1) INTLIT     0X7FFFFFFF
 > Lexer1$LexError: at (3,1). Invalid hexadecimal literal: 0x80000000
