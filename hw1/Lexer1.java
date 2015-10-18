@@ -74,7 +74,7 @@ public class Lexer1 {
         if (c != -1) {
             switch (c) {
                 case '\n':
- //               case '\r':
+                    //               case '\r':
                     line += 1;
                     column = 0;
                     break;
@@ -159,6 +159,8 @@ public class Lexer1 {
     static Token nextToken() throws Exception {
         int c = nextChar();
 
+        boolean endComment = false;
+        boolean startBeforeEnd = false;
         do {
             // skip whitespace
             while (isSpace(c))
@@ -171,15 +173,17 @@ public class Lexer1 {
                         c = nextChar();
                     } while (c != '\n' && c != -1);
                 } else if (nextC == '*') {                 // recognize block comment
-			boolean endComment = false;
+                    endComment = false;
+                    startBeforeEnd = false;
                     do {
                         c = nextChar();
                         if (c == '*' && nextC == '/') {
-				c = nextChar();
-				c = nextChar();
+                            c = nextChar();
+                            c = nextChar();
                             endComment = true;
-                        }
-                    } while (!endComment);
+                        } else if (c == '/' && nextC == '*')
+                            startBeforeEnd = true;
+                    } while (!endComment || !startBeforeEnd);
                 }
             }
         } while (isSpace(c));
@@ -194,11 +198,11 @@ public class Lexer1 {
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-	    // singleton
-	    if (!isLetter(nextC) && !isDigit(nextC)) {
-		String lexeme = buffer.toString();
-		return new Token(TokenCode.ID, lexeme, line, firstCharColumn);
-	    }
+            // singleton
+            if (!isLetter(nextC) && !isDigit(nextC)) {
+                String lexeme = buffer.toString();
+                return new Token(TokenCode.ID, lexeme, line, firstCharColumn);
+            }
             do {
                 c = nextChar();
                 buffer.append((char) c);
@@ -254,7 +258,8 @@ public class Lexer1 {
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (!isSpace(nextC) && (isDigit(nextC) || ('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F')) && nextC != -1);
+                    }
+                    while (!isSpace(nextC) && (isDigit(nextC) || ('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F')) && nextC != -1);
                     String lexeme = buffer.toString();
                     try {
                         Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
