@@ -254,6 +254,23 @@ public class Lexer1 {
                                 ": Invalid hexadecimal literal value " + lexeme);
                     }
                 }
+                // double literal
+                if (nextC == '.') {
+                    c = nextChar();
+                    buffer.append((char) c);
+                    do {
+                        c = nextChar();
+                        buffer.append((char) c);
+                    } while (isDigit(c));
+                    String lexeme = buffer.toString();
+                    try {
+                        Double doubleInteger = Double.parseDouble(lexeme);
+                        return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
+                    } catch (NumberFormatException ex) {
+                        throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
+                                ": Invalid double literal value " + lexeme);
+                    }
+                }
                 do {
                     c = nextChar();
                     buffer.append((char) c);
