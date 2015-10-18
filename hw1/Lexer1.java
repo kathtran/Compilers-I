@@ -157,160 +157,73 @@ public class Lexer1 {
     //   of each token
     //
     static Token nextToken() throws Exception {
-        int c = nextChar();
+        int c;
+        int firstCharColumn = 0;
 
-        do {
-            // skip whitespace
-            while (isSpace(c))
-                c = nextChar();
-
-            // skip comments
-            if (c == '/') {
-                if (nextC == '/') {                 // recognize single line comment
-                    do {
-                        c = nextChar();
-                    } while (c != '\n' && c != -1);
-                } else if (nextC == '*') {                 // recognize block comment
-			boolean endComment = false;
-                    do {
-                        c = nextChar();
-                        if (c == '*' && nextC == '/') {
-				c = nextChar();
-				c = nextChar();
-                            endComment = true;
-                        }
-                    } while (!endComment);
-                }
-            }
-        } while (isSpace(c));
-
-        // reached <EOF>
-        if (c == -1)
-            return null;
-
-        int firstCharColumn = column;
-
-        // recognize ID and keywords
-        if (isLetter(c)) {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append((char) c);
-	    // singleton
-	    if (!isLetter(nextC) && !isDigit(nextC)) {
-		String lexeme = buffer.toString();
-		return new Token(TokenCode.ID, lexeme, line, firstCharColumn);
-	    }
-            do {
-                c = nextChar();
-                buffer.append((char) c);
-            } while (isLetter(nextC) || isDigit(nextC) && !isSpace(nextC) && nextC != '.');
-            String lexeme = buffer.toString();
-            return getKeyword(lexeme, line, firstCharColumn);
-        }
-
-        // recognize double literals
-        // case: leading dot
-        if (c == '.' && isDigit(nextC)) {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append((char) c);
+        try {
             c = nextChar();
-            while (isDigit(c)) {
-                buffer.append((char) c);
-                c = nextChar();
-                if (c == '.')
-                    throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
-                            ": Double literal cannot contain more than one dot operator.");
-            }
-            String lexeme = buffer.toString();
-            try {
-                Double doubleInteger = Double.parseDouble(lexeme);
-                return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
-            } catch (NumberFormatException ex) {
-                throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
-                        ": Invalid double literal " + lexeme);
-            }
-        }
+            do {
+                // skip whitespace
+                while (isSpace(c))
+                    c = nextChar();
 
-        // recognize integer literals
-        if (isDigit(c)) {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append((char) c);
-            // singleton
-            if ((isLetter(nextC) && nextC != 'x' && nextC != 'X') || isSpace(nextC) && !isDigit(nextC) || !isSpace(nextC) && !isLetter(nextC) && !isDigit(nextC) && nextC != '.') {
-                String lexeme = buffer.toString();
-                try {
-                    Integer integer = Integer.parseInt(lexeme);
-                    if (0 <= integer && integer <= 2147483647)
-                        return new Token(TokenCode.INTLIT, integer.toString(), line, column);
-                } catch (Exception ex) {
-                    throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
-                            ": Invalid integer literal " + (char) c);
-                }
-            }
-            // octal literal
-            if (c == '0') {
-                // integer literal if SINGLETON
-                // hexadecimal literal
-                if (nextC == 'x' || nextC == 'X') {
-                    do {
-                        c = nextChar();
-                        buffer.append((char) c);
-                    } while (!isSpace(nextC) && (isDigit(nextC) || ('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F')) && nextC != -1);
-                    String lexeme = buffer.toString();
-                    try {
-                        Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
-                        return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
-                    } catch (NumberFormatException ex) {
-                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
-                                ": Invalid hexadecimal literal " + lexeme);
+                // skip comments
+                if (c == '/') {
+                    if (nextC == '/') {                 // recognize single line comment
+                        do {
+                            c = nextChar();
+                        } while (c != '\n' && c != -1);
+                    } else if (nextC == '*') {                 // recognize block comment
+                        boolean endComment = false;
+                        do {
+                            c = nextChar();
+                            if (c == '*' && nextC == '/') {
+                                c = nextChar();
+                                c = nextChar();
+                                endComment = true;
+                            }
+                        } while (!endComment);
                     }
                 }
-                // double literal
-                if (nextC == '.') {
-                    do {
-                        c = nextChar();
-                        buffer.append((char) c);
-                    } while (isDigit(nextC));
+            } while (isSpace(c));
+
+            // reached <EOF>
+            if (c == -1)
+                return null;
+
+            firstCharColumn = column;
+
+            // recognize ID and keywords
+            if (isLetter(c)) {
+                StringBuilder buffer = new StringBuilder();
+                buffer.append((char) c);
+                // singleton
+                if (!isLetter(nextC) && !isDigit(nextC)) {
                     String lexeme = buffer.toString();
-                    try {
-                        Double doubleInteger = Double.parseDouble(lexeme);
-                        return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
-                    } catch (NumberFormatException ex) {
-                        throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
-                                ": Invalid double literal " + lexeme);
-                    }
+                    return new Token(TokenCode.ID, lexeme, line, firstCharColumn);
                 }
                 do {
                     c = nextChar();
                     buffer.append((char) c);
-                } while (isDigit(nextC));
+                } while (isLetter(nextC) || isDigit(nextC) && !isSpace(nextC) && nextC != '.');
                 String lexeme = buffer.toString();
-                try {
-                    Integer octal = Integer.parseInt(lexeme, 8);
-                    return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
-                } catch (NumberFormatException ex) {
-                    throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
-                            ": Invalid octal literal " + lexeme);
-                }
+                return getKeyword(lexeme, line, firstCharColumn);
             }
-            // integer literal
-            int decimalCount = 0;
-            do {
-                c = nextChar();
+
+            // recognize double literals
+            // case: leading dot
+            if (c == '.' && isDigit(nextC)) {
+                StringBuilder buffer = new StringBuilder();
                 buffer.append((char) c);
-                if (c == '.')
-                    decimalCount += 1;
-            } while (isDigit(nextC) || nextC == '.' && decimalCount <= 1);
-            String lexeme = buffer.toString();
-            if (decimalCount == 0) {
-                try {
-                    Integer integer = Integer.parseInt(lexeme);
-                    if (0 <= integer && integer <= 2147483647)
-                        return new Token(TokenCode.INTLIT, integer.toString(), line, firstCharColumn);
-                } catch (NumberFormatException ex) {
-                    throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
-                            ": Invalid integer literal " + (char) c);
+                c = nextChar();
+                while (isDigit(c)) {
+                    buffer.append((char) c);
+                    c = nextChar();
+                    if (c == '.')
+                        throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
+                                ": Double literal cannot contain more than one dot operator.");
                 }
-            } else {
+                String lexeme = buffer.toString();
                 try {
                     Double doubleInteger = Double.parseDouble(lexeme);
                     return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
@@ -319,88 +232,179 @@ public class Lexer1 {
                             ": Invalid double literal " + lexeme);
                 }
             }
-        }
 
-        // recognize string literals
-        if (c == '"') {
-            StringBuilder buffer = new StringBuilder();
-            do {
-                c = nextChar();
-                if (c == '"')
-                    break;
-
+            // recognize integer literals
+            if (isDigit(c)) {
+                StringBuilder buffer = new StringBuilder();
                 buffer.append((char) c);
-            } while (c != -1 && c != '\n' && c != '\r');
-            String lexeme = buffer.toString();
-            return new Token(TokenCode.STRLIT, lexeme, line, firstCharColumn);
-        }
+                // singleton
+                if ((isLetter(nextC) && nextC != 'x' && nextC != 'X') || isSpace(nextC) && !isDigit(nextC) || !isSpace(nextC) && !isLetter(nextC) && !isDigit(nextC) && nextC != '.') {
+                    String lexeme = buffer.toString();
+                    try {
+                        Integer integer = Integer.parseInt(lexeme);
+                        if (0 <= integer && integer <= 2147483647)
+                            return new Token(TokenCode.INTLIT, integer.toString(), line, column);
+                    } catch (Exception ex) {
+                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
+                                ": Invalid integer literal " + (char) c);
+                    }
+                }
+                // octal literal
+                if (c == '0') {
+                    // integer literal if SINGLETON
+                    // hexadecimal literal
+                    if (nextC == 'x' || nextC == 'X') {
+                        do {
+                            c = nextChar();
+                            buffer.append((char) c);
+                        }
+                        while (!isSpace(nextC) && (isDigit(nextC) || ('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F')) && nextC != -1);
+                        String lexeme = buffer.toString();
+                        try {
+                            Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
+                            return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
+                        } catch (NumberFormatException ex) {
+                            throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
+                                    ": Invalid hexadecimal literal " + lexeme);
+                        }
+                    }
+                    // double literal
+                    if (nextC == '.') {
+                        do {
+                            c = nextChar();
+                            buffer.append((char) c);
+                        } while (isDigit(nextC));
+                        String lexeme = buffer.toString();
+                        try {
+                            Double doubleInteger = Double.parseDouble(lexeme);
+                            return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
+                        } catch (NumberFormatException ex) {
+                            throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
+                                    ": Invalid double literal " + lexeme);
+                        }
+                    }
+                    do {
+                        c = nextChar();
+                        buffer.append((char) c);
+                    } while (isDigit(nextC));
+                    String lexeme = buffer.toString();
+                    try {
+                        Integer octal = Integer.parseInt(lexeme, 8);
+                        return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
+                    } catch (NumberFormatException ex) {
+                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
+                                ": Invalid octal literal " + lexeme);
+                    }
+                }
+                // integer literal
+                int decimalCount = 0;
+                do {
+                    c = nextChar();
+                    buffer.append((char) c);
+                    if (c == '.')
+                        decimalCount += 1;
+                } while (isDigit(nextC) || nextC == '.' && decimalCount <= 1);
+                String lexeme = buffer.toString();
+                if (decimalCount == 0) {
+                    try {
+                        Integer integer = Integer.parseInt(lexeme);
+                        if (0 <= integer && integer <= 2147483647)
+                            return new Token(TokenCode.INTLIT, integer.toString(), line, firstCharColumn);
+                    } catch (NumberFormatException ex) {
+                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
+                                ": Invalid integer literal " + (char) c);
+                    }
+                } else {
+                    try {
+                        Double doubleInteger = Double.parseDouble(lexeme);
+                        return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
+                    } catch (NumberFormatException ex) {
+                        throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
+                                ": Invalid double literal " + lexeme);
+                    }
+                }
+            }
 
-        // recognize operators, delimiters, and comments
-        switch (c) {
-            case '+':
-                return new Token(TokenCode.ADD, "+", line, column);
-            case '-':
-                return new Token(TokenCode.SUB, "-", line, column);
-            case '*':
-                return new Token(TokenCode.MUL, "*", line, column);
-            case '/':
-                return new Token(TokenCode.DIV, "/", line, column);
-            case '&':
-                if (nextC == '&') {
+            // recognize string literals
+            if (c == '"') {
+                StringBuilder buffer = new StringBuilder();
+                do {
                     c = nextChar();
-                    return new Token(TokenCode.AND, "&&", line, column - 1);
-                }
-            case '|':
-                if (nextC == '|') {
-                    c = nextChar();
-                    return new Token(TokenCode.OR, "||", line, column - 1);
-                }
-            case '!':
-                if (nextC == '=') {
-                    c = nextChar();
-                    return new Token(TokenCode.NE, "!=", line, column - 1);
-                }
-                return new Token(TokenCode.NOT, "!", line, column);
-            case '=':
-                if (nextC == '=') {
-                    c = nextChar();
-                    return new Token(TokenCode.EQ, "==", line, column - 1);
-                }
-                return new Token(TokenCode.ASSGN, "=", line, column);
-            case '<':
-                if (nextC == '=') {
-                    c = nextChar();
-                    return new Token(TokenCode.LE, "<=", line, column - 1);
-                }
-                return new Token(TokenCode.LT, "<", line, column);
-            case '>':
-                if (nextC == '=') {
-                    c = nextChar();
-                    return new Token(TokenCode.GE, ">=", line, column - 1);
-                }
-                return new Token(TokenCode.GT, ">", line, column);
-            case ';':
-                return new Token(TokenCode.SEMI, ";", line, column);
-            case ',':
-                return new Token(TokenCode.COMMA, ",", line, column);
-            case '.':
-                return new Token(TokenCode.DOT, ".", line, column);
-            case '(':
-                return new Token(TokenCode.LPAREN, "(", line, column);
-            case ')':
-                return new Token(TokenCode.RPAREN, ")", line, column);
-            case '[':
-                return new Token(TokenCode.LBRAC, "[", line, column);
-            case ']':
-                return new Token(TokenCode.RBRAC, "]", line, column);
-            case '{':
-                return new Token(TokenCode.LCURLY, "{", line, column);
-            case '}':
-                return new Token(TokenCode.RCURLY, "}", line, column);
-        }
+                    if (c == '"')
+                        break;
 
-        throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
-                "). Illegal character: " + (char) c);
+                    buffer.append((char) c);
+                } while (c != -1 && c != '\n' && c != '\r');
+                String lexeme = buffer.toString();
+                return new Token(TokenCode.STRLIT, lexeme, line, firstCharColumn);
+            }
+
+            // recognize operators, delimiters, and comments
+            switch (c) {
+                case '+':
+                    return new Token(TokenCode.ADD, "+", line, column);
+                case '-':
+                    return new Token(TokenCode.SUB, "-", line, column);
+                case '*':
+                    return new Token(TokenCode.MUL, "*", line, column);
+                case '/':
+                    return new Token(TokenCode.DIV, "/", line, column);
+                case '&':
+                    if (nextC == '&') {
+                        c = nextChar();
+                        return new Token(TokenCode.AND, "&&", line, column - 1);
+                    }
+                case '|':
+                    if (nextC == '|') {
+                        c = nextChar();
+                        return new Token(TokenCode.OR, "||", line, column - 1);
+                    }
+                case '!':
+                    if (nextC == '=') {
+                        c = nextChar();
+                        return new Token(TokenCode.NE, "!=", line, column - 1);
+                    }
+                    return new Token(TokenCode.NOT, "!", line, column);
+                case '=':
+                    if (nextC == '=') {
+                        c = nextChar();
+                        return new Token(TokenCode.EQ, "==", line, column - 1);
+                    }
+                    return new Token(TokenCode.ASSGN, "=", line, column);
+                case '<':
+                    if (nextC == '=') {
+                        c = nextChar();
+                        return new Token(TokenCode.LE, "<=", line, column - 1);
+                    }
+                    return new Token(TokenCode.LT, "<", line, column);
+                case '>':
+                    if (nextC == '=') {
+                        c = nextChar();
+                        return new Token(TokenCode.GE, ">=", line, column - 1);
+                    }
+                    return new Token(TokenCode.GT, ">", line, column);
+                case ';':
+                    return new Token(TokenCode.SEMI, ";", line, column);
+                case ',':
+                    return new Token(TokenCode.COMMA, ",", line, column);
+                case '.':
+                    return new Token(TokenCode.DOT, ".", line, column);
+                case '(':
+                    return new Token(TokenCode.LPAREN, "(", line, column);
+                case ')':
+                    return new Token(TokenCode.RPAREN, ")", line, column);
+                case '[':
+                    return new Token(TokenCode.LBRAC, "[", line, column);
+                case ']':
+                    return new Token(TokenCode.RBRAC, "]", line, column);
+                case '{':
+                    return new Token(TokenCode.LCURLY, "{", line, column);
+                case '}':
+                    return new Token(TokenCode.RCURLY, "}", line, column);
+            }
+        } catch (Exception ex) {
+            throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
+                    "). Illegal character: " + (char) c);
+        }
     }
-
 }
