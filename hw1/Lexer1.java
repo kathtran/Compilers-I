@@ -171,15 +171,15 @@ public class Lexer1 {
                         c = nextChar();
                     } while (c != '\n' && c != -1);
                 } else if (nextC == '*') {                 // recognize block comment
+			boolean endComment = false;
                     do {
                         c = nextChar();
-                        if (c == '*') {
-                            c = nextChar();
-                            if (c == '/') {
-                                c = nextChar();
-                            }
+                        if (c == '*' && nextC == '/') {
+				c = nextChar();
+				c = nextChar();
+                            endComment = true;
                         }
-                    } while (c != -1);
+                    } while (!endComment);
                 }
             }
         } while (isSpace(c));
