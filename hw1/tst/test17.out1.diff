@@ -1,0 +1,4 @@
+1c1
+< Total: 0 tokens
+---
+> Lexer1$LexError: at (1,3). Unclosed block comments

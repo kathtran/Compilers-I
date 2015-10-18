@@ -4,3 +4,5 @@
 ..
 .01
 .
+class foo
+System.out.println();

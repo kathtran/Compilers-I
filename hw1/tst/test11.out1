@@ -1,0 +1,2 @@
+(2, 1) INTLIT     12
+java.lang.Exception: Lexical Error on line 2 on column 3: Illegal character #

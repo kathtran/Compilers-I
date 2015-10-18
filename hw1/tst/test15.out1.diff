@@ -1,0 +1,8 @@
+1,5c1
+< (3, 0) STRLIT     "1122"
+< (3, 1) INTLIT     33
+< (4, 0) STRLIT     "
+< "
+< Total: 3 tokens
+---
+> Lexer1$LexError: at (2,1). Ill-formed or unclosed string: "1122

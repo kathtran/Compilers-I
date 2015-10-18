@@ -1,0 +1,5 @@
+5c5,6
+< java.lang.Exception: Integer Literal Error on line 7 on column 2: Invalid integer literal value  
+---
+> (7, 2) INTLIT     3
+> Total: 5 tokens

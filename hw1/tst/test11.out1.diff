@@ -1,0 +1,4 @@
+2c2
+< java.lang.Exception: Lexical Error on line 2 on column 3: Illegal character #
+---
+> Lexer1$LexError: at (2,3). Illegal character: #

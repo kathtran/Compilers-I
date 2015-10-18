@@ -1,0 +1,7 @@
+2c2,5
+< java.lang.Exception: Integer Literal Error on line 5 on column 1: Invalid octal literal value  
+---
+> (5, 1) INTLIT     0123
+> (7, 1) INTLIT     0000555
+> (9, 1) INTLIT     1234567
+> Total: 4 tokens

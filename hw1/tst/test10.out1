@@ -1,0 +1,31 @@
+(9, 1) ID         import
+(9, 8) ID         java
+(9,12) DOT        .
+(9,13) ID         io
+(9,15) DOT        .
+(9,16) MUL        *
+(9,17) SEMI       ;
+(11, 1) PUBLIC     public
+(11, 8) CLASS      class
+(11,14) ID         Echo
+(11,19) LCURLY     {
+(12, 3) PUBLIC     public
+(12,10) STATIC     static
+(12,17) VOID       void
+(12,22) MAIN       main
+(12,26) LPAREN     (
+(12,27) STRING     String
+(12,34) LBRAC      [
+(12,35) RBRAC      ]
+(12,37) ID         args
+(12,41) RPAREN     )
+(12,43) ID         throws
+(12,50) ID         Exception
+(12,60) LCURLY     {
+(13, 5) IF         if
+(13, 8) LPAREN     (
+(13, 9) ID         args
+(13,13) DOT        .
+(13,14) ID         length
+(13,21) EQ         ==
+java.lang.Exception: Integer Literal Error on line 13 on column 24: Invalid integer literal value )

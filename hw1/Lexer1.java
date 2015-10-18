@@ -194,13 +194,12 @@ public class Lexer1 {
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            c = nextChar();
-            while (isLetter(c)) {
-                buffer.append((char) c);
+            while (isLetter(nextC)) {
                 c = nextChar();
+                buffer.append((char) c);
             }
             String lexeme = buffer.toString();
-            return getKeyword(lexeme, line, column);
+            return getKeyword(lexeme, line, firstCharColumn);
         }
 
         // recognize double literals
@@ -291,17 +290,17 @@ public class Lexer1 {
             // integer literal
             int decimalCount = 0;
             do {
-                buffer.append((char) c);
                 c = nextChar();
+                buffer.append((char) c);
                 if (c == '.')
                     decimalCount += 1;
-            } while (isDigit(c) || c == '.' && decimalCount <= 1);
+            } while (isDigit(nextC) || nextC == '.' && decimalCount <= 1);
             String lexeme = buffer.toString();
             if (decimalCount == 0) {
                 try {
                     Integer integer = Integer.parseInt(lexeme);
                     if (0 <= integer && integer <= 2147483647)
-                        return new Token(TokenCode.INTLIT, integer.toString(), line, column);
+                        return new Token(TokenCode.INTLIT, integer.toString(), line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Invalid integer literal value " + (char) c);
@@ -309,7 +308,7 @@ public class Lexer1 {
             } else {
                 try {
                     Double doubleInteger = Double.parseDouble(lexeme);
-                    return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
+                    return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Invalid double literal value " + lexeme);
