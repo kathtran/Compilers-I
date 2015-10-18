@@ -1,2 +1,2 @@
 (2, 1) INTLIT     2147483647
-java.lang.Exception: Integer Literal Error on line 3 on column 1: Invalid integer literal 8
+Integer Literal Error on line 3 on column 1: Invalid integer literal 8

@@ -1,4 +1,0 @@
-2c2
-< java.lang.Exception: Lexer1$LexError: at (2,3). Illegal character: #
----
-> Lexer1$LexError: at (2,3). Illegal character: #

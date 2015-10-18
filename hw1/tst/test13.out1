@@ -1,2 +1,2 @@
 (3, 1) INTLIT     017777777777
-java.lang.Exception: Integer Literal Error on line 5 on column 1: Invalid octal literal 020000000000
+Integer Literal Error on line 5 on column 1: Invalid octal literal 020000000000
