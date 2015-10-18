@@ -1,13 +1,9 @@
 1,4c1,3
 < (3, 1) DBLLIT     0.123
 < (3, 6) DBLLIT     456.0
-< (5, 1) INTLIT     0
-< (5, 2) DOT        .
+< (6, 1) DBLLIT     0.
+< 
 ---
 > (3, 1) DBLLIT     .123
 > (3, 6) DBLLIT     456.
 > (5, 1) DBLLIT     0.
-6c5
-< Total: 5 tokens
----
-> Total: 4 tokens

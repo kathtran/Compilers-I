@@ -230,7 +230,7 @@ public class Lexer1 {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
             // singleton
-            if (isSpace(nextC) && !isDigit(nextC)) {
+            if ((isLetter(nextC) && nextC != 'x' && nextC != 'X') || isSpace(nextC) && !isDigit(nextC)) {
                 String lexeme = buffer.toString();
                 try {
                     Integer integer = Integer.parseInt(lexeme);
@@ -249,10 +249,11 @@ public class Lexer1 {
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (isDigit(nextC) && nextC != -1 && nextC != '\n');
+                    } while (!isSpace(nextC) && !isLetter(nextC) && nextC != -1);
                     String lexeme = buffer.toString();
                     try {
-                        return new Token(TokenCode.INTLIT, (Integer.decode(lexeme)).toString(), line, firstCharColumn);
+			Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
+                        return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid hexadecimal literal " + lexeme);

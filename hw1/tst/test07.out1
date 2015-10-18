@@ -1,9 +1,2 @@
-(3, 1) INTLIT     1
-(5, 1) INTLIT     0
-(5, 2) ID         XaBCdeF
-(7, 1) INTLIT     0
-(9, 1) INTLIT     1
-(9, 2) ID         ab456
-(11, 1) INTLIT     291
-(11, 6) ID         g45
-Total: 8 tokens
+(3, 1) INTLIT     0x1
+java.lang.Exception: Integer Literal Error on line 5 on column 1: Invalid hexadecimal literal 0X
