@@ -57,7 +57,7 @@
 > (20,20) SEMI       ;
 69,71c96,104
 < (21,18) ID         println("Total:
-< (21,48) STRLIT     " + charCnt + "
+< (21,34) STRLIT     " + charCnt + "
 < (21,50) ID         characters");
 ---
 > (21,18) PRINTLN    println
@@ -78,7 +78,7 @@
 < (23,47) ID         command-line
 < (23,60) ID         argument
 < (23,68) DOT        .
-< (24, 0) STRLIT     ");
+< (24,69) STRLIT     ");
 < "
 ---
 > (23,18) PRINTLN    println

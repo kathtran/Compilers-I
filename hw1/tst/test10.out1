@@ -67,7 +67,7 @@
 (21,14) OUT        out
 (21,17) DOT        .
 (21,18) ID         println("Total:
-(21,48) STRLIT     " + charCnt + "
+(21,34) STRLIT     " + charCnt + "
 (21,50) ID         characters");
 (22, 5) RCURLY     }
 (22, 7) ELSE       else
@@ -84,7 +84,7 @@
 (23,47) ID         command-line
 (23,60) ID         argument
 (23,68) DOT        .
-(24, 0) STRLIT     ");
+(24,69) STRLIT     ");
 "
 (24, 5) RCURLY     }
 (25, 3) RCURLY     }
