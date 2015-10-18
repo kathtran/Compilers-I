@@ -174,16 +174,16 @@ public class Lexer1 {
                     } while (c != '\n' && c != -1);
                 } else if (nextC == '*') {                 // recognize block comment
                     endComment = false;
-                    startBeforeEnd = false;
+            //        startBeforeEnd = false;
                     do {
                         c = nextChar();
                         if (c == '*' && nextC == '/') {
                             c = nextChar();
                             c = nextChar();
                             endComment = true;
-                        } else if (c == '/' && nextC == '*')
-                            startBeforeEnd = true;
-                    } while (!endComment || !startBeforeEnd);
+                        } //else if (c == '/' && nextC == '*')
+                            //startBeforeEnd = true;
+                    } while (!endComment); //|| !startBeforeEnd);
                 }
             }
         } while (isSpace(c));
@@ -332,10 +332,12 @@ public class Lexer1 {
             boolean endString = false;
             do {
                 c = nextChar();
-                if (c == '"')
-                    endString = true;
+                if (c == '"') {
+			endString = true;
+			break; 
+		}
                 buffer.append((char) c);
-            } while (c != -1 && c != '\n' && c != '\r');
+            } while (nextC != -1 && nextC != '\n');
             String lexeme = buffer.toString();
             if (!endString)
                 throw new Exception("Lexer1$LexError: at (" + line + "," + firstCharColumn +
