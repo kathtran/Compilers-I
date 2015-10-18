@@ -103,49 +103,52 @@ public class Lexer1 {
 
     // Returns token for keyword or ID
     private static Token getKeyword(String lexeme, int line, int column) {
-        if (lexeme.equals("class"))
-            return new Token(TokenCode.CLASS, lexeme, line, column);
-        if (lexeme.equals("extends"))
-            return new Token(TokenCode.EXTENDS, lexeme, line, column);
-        if (lexeme.equals("static"))
-            return new Token(TokenCode.STATIC, lexeme, line, column);
-        if (lexeme.equals("public"))
-            return new Token(TokenCode.PUBLIC, lexeme, line, column);
-        if (lexeme.equals("main"))
-            return new Token(TokenCode.MAIN, lexeme, line, column);
-        if (lexeme.equals("void"))
-            return new Token(TokenCode.VOID, lexeme, line, column);
-        if (lexeme.equals("boolean"))
-            return new Token(TokenCode.BOOLEAN, lexeme, line, column);
-        if (lexeme.equals("int"))
-            return new Token(TokenCode.INT, lexeme, line, column);
-        if (lexeme.equals("double"))
-            return new Token(TokenCode.DOUBLE, lexeme, line, column);
-        if (lexeme.equals("String"))
-            return new Token(TokenCode.STRING, lexeme, line, column);
-        if (lexeme.equals("true"))
-            return new Token(TokenCode.TRUE, lexeme, line, column);
-        if (lexeme.equals("false"))
-            return new Token(TokenCode.FALSE, lexeme, line, column);
-        if (lexeme.equals("new"))
-            return new Token(TokenCode.NEW, lexeme, line, column);
-        if (lexeme.equals("this"))
-            return new Token(TokenCode.THIS, lexeme, line, column);
-        if (lexeme.equals("if"))
-            return new Token(TokenCode.IF, lexeme, line, column);
-        if (lexeme.equals("else"))
-            return new Token(TokenCode.ELSE, lexeme, line, column);
-        if (lexeme.equals("while"))
-            return new Token(TokenCode.WHILE, lexeme, line, column);
-        if (lexeme.equals("return"))
-            return new Token(TokenCode.RETURN, lexeme, line, column);
-        if (lexeme.equals("System"))
-            return new Token(TokenCode.SYSTEM, lexeme, line, column);
-        if (lexeme.equals("out"))
-            return new Token(TokenCode.OUT, lexeme, line, column);
-        if (lexeme.equals("println"))
-            return new Token(TokenCode.PRINTLN, lexeme, line, column);
-        return new Token(TokenCode.ID, lexeme, line, column);
+        switch (lexeme) {
+            case "class":
+                return new Token(TokenCode.CLASS, lexeme, line, column);
+            case "extends":
+                return new Token(TokenCode.EXTENDS, lexeme, line, column);
+            case "static":
+                return new Token(TokenCode.STATIC, lexeme, line, column);
+            case "public":
+                return new Token(TokenCode.PUBLIC, lexeme, line, column);
+            case "main":
+                return new Token(TokenCode.MAIN, lexeme, line, column);
+            case "void":
+                return new Token(TokenCode.VOID, lexeme, line, column);
+            case "boolean":
+                return new Token(TokenCode.BOOLEAN, lexeme, line, column);
+            case "int":
+                return new Token(TokenCode.INT, lexeme, line, column);
+            case "double":
+                return new Token(TokenCode.DOUBLE, lexeme, line, column);
+            case "String":
+                return new Token(TokenCode.STRING, lexeme, line, column);
+            case "true":
+                return new Token(TokenCode.TRUE, lexeme, line, column);
+            case "false":
+                return new Token(TokenCode.FALSE, lexeme, line, column);
+            case "new":
+                return new Token(TokenCode.NEW, lexeme, line, column);
+            case "this":
+                return new Token(TokenCode.THIS, lexeme, line, column);
+            case "if":
+                return new Token(TokenCode.IF, lexeme, line, column);
+            case "else":
+                return new Token(TokenCode.ELSE, lexeme, line, column);
+            case "while":
+                return new Token(TokenCode.WHILE, lexeme, line, column);
+            case "return":
+                return new Token(TokenCode.RETURN, lexeme, line, column);
+            case "System":
+                return new Token(TokenCode.SYSTEM, lexeme, line, column);
+            case "out":
+                return new Token(TokenCode.OUT, lexeme, line, column);
+            case "println":
+                return new Token(TokenCode.PRINTLN, lexeme, line, column);
+            default:
+                return new Token(TokenCode.ID, lexeme, line, column);
+        }
     }
 
     // Return next token (the main lexer routine)
@@ -191,10 +194,10 @@ public class Lexer1 {
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            while (isLetter((char) c)) {
+            do {
                 c = nextChar();
                 buffer.append((char) c);
-            }
+            } while (isLetter((char) c));
             String lexeme = buffer.toString();
             return getKeyword(lexeme, line, column);
         }
