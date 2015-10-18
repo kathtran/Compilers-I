@@ -218,7 +218,7 @@ public class Lexer1 {
             String lexeme = buffer.toString();
             try {
                 Double doubleInteger = Double.parseDouble(lexeme);
-                return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
+                return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, firstCharColumn);
             } catch (NumberFormatException ex) {
                 throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                         ": Invalid double literal " + lexeme);
@@ -252,7 +252,7 @@ public class Lexer1 {
                     } while (isDigit(c) && c != -1 && c != '\n');
                     String lexeme = buffer.toString();
                     try {
-                        return new Token(TokenCode.INTLIT, (Integer.decode(lexeme)).toString(), line, column);
+                        return new Token(TokenCode.INTLIT, (Integer.decode(lexeme)).toString(), line, firstCharColumn);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid hexadecimal literal " + lexeme);
@@ -269,7 +269,7 @@ public class Lexer1 {
                     String lexeme = buffer.toString();
                     try {
                         Double doubleInteger = Double.parseDouble(lexeme);
-                        return new Token(TokenCode.DBLLIT, doubleInteger.toString(), line, column);
+                        return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
                     } catch (NumberFormatException ex) {
                         throw new Exception("Double Literal Error on line " + line + " on column " + firstCharColumn +
                                 ": Invalid double literal " + lexeme);
@@ -278,13 +278,11 @@ public class Lexer1 {
                 do {
                     c = nextChar();
                     buffer.append((char) c);
-                } while (isDigit(c));
+                } while (isDigit(nextC));
                 String lexeme = buffer.toString();
                 try {
-                    //Integer octal = Integer.parseInt(lexeme, 8);
-                    Integer integer = Integer.parseInt(lexeme);
-                    String octal = Integer.toOctalString(integer);
-                    return new Token(TokenCode.INTLIT, octal, line, column);
+                    Integer octal = Integer.parseInt(lexeme, 8);
+                    return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
                 } catch (NumberFormatException ex) {
                     throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
                             ": Invalid octal literal " + lexeme);

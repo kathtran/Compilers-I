@@ -1,5 +1,6 @@
-1c1,2
-< java.lang.Exception: Integer Literal Error on line 3 on column 1: Invalid octal literal value 	
+1,2c1,2
+< (3, 1) INTLIT     017777777777
+< java.lang.Exception: Integer Literal Error on line 5 on column 1: Invalid octal literal 020000000000
 ---
 > (2, 1) INTLIT     017777777777
 > Lexer1$LexError: at (3,1). Invalid octal literal: 020000000000
