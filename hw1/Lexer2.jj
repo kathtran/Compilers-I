@@ -44,8 +44,8 @@ TOKEN:  {
 TOKEN:  { <ID:          "['a'-'z'|'A'-'Z']+['0'-'9'|'a'-z'|'A'-'Z']*"> }
 
 TOKEN:  { <INTLIT:      "'0'|['1'-'9']\\d*"> }                   // integer literals
-TOKEN:  { <DBLLIT:      ""> }                   // double literals
-TOKEN:  { <STRLIT:      ""> }                   // String literals
+TOKEN:  { <DBLLIT:      "\\d*.\\d*"> }                   // double literals
+TOKEN:  { <STRLIT:      "\"['a'-'z'|'A'-'Z']*[\\d|'a'-'z'|'A'-'Z']*\""> }                   // String literals
 
 // operators
 TOKEN:  {
