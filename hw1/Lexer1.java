@@ -174,18 +174,21 @@ public class Lexer1 {
                     } while (c != '\n' && c != -1);
                 } else if (nextC == '*') {                 // recognize block comment
                     endComment = false;
-            //        startBeforeEnd = false;
+                    //        startBeforeEnd = false;
                     do {
                         c = nextChar();
                         if (c == '*' && nextC == '/') {
                             c = nextChar();
                             c = nextChar();
                             endComment = true;
-                        } //else if (c == '/' && nextC == '*')
-                            //startBeforeEnd = true;
-                    } while (!endComment); //|| !startBeforeEnd);
+                        } else if (c == '/' && nextC == '*')
+                            startBeforeEnd = true;
+                    } while (!endComment || !startBeforeEnd);
                 }
             }
+            if (startBeforeEnd)
+                throw new Exception("Lexer1$LexError: at (" + line + "," + column +
+                        "). Unclosed block comment");
         } while (isSpace(c));
 
         // reached <EOF>
@@ -333,9 +336,9 @@ public class Lexer1 {
             do {
                 c = nextChar();
                 if (c == '"') {
-			endString = true;
-			break; 
-		}
+                    endString = true;
+                    break;
+                }
                 buffer.append((char) c);
             } while (nextC != -1 && nextC != '\n' && nextC != '\r');
             String lexeme = buffer.toString();
