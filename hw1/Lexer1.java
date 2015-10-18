@@ -229,18 +229,18 @@ public class Lexer1 {
         if (isDigit(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-		// singleton
-                if (isSpace(nextC) || !isDigit()) {
-                    String lexeme = buffer.toString();
-                    try {
-                        Integer integer = Integer.parseInt(lexeme);
-                        if (0 <= integer && integer <= 2147483647)
-                            return new Token(TokenCode.INTLIT, integer.toString(), line, column);
-                    } catch (Exception ex) {
-                        throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
-                                ": Invalid integer literal " + (char) c);
-                    }
+            // singleton
+            if (isSpace(nextC) && !isDigit(nextC)) {
+                String lexeme = buffer.toString();
+                try {
+                    Integer integer = Integer.parseInt(lexeme);
+                    if (0 <= integer && integer <= 2147483647)
+                        return new Token(TokenCode.INTLIT, integer.toString(), line, column);
+                } catch (Exception ex) {
+                    throw new Exception("Integer Literal Error on line " + line + " on column " + firstCharColumn +
+                            ": Invalid integer literal " + (char) c);
                 }
+            }
             // octal literal
             if (c == '0') {
                 // integer literal if SINGLETON
