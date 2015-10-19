@@ -1,0 +1,11 @@
+22c22,29
+< TokenMgrError: Lexical error at line 6, column 1.  Encountered: "1" (49), after : ""
+---
+> (6, 1) <INTLIT>   123
+> (6, 4) "class"    class
+> (8, 1) "System"   System
+> (8, 7) "."        .
+> (8, 8) "out"      out
+> (8,11) "."        .
+> (8,12) "println"  println
+> Total: 28 tokens

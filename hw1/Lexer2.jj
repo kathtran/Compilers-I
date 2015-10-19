@@ -15,8 +15,13 @@ PARSER_END(Lexer2)
 // Token Definitions
 //
 SKIP:   { <SPACE:  " " | "\t" | "\n" | "\r" > }        // whitespace chars
-SKIP:   { <SLCMT:  "//(~['\n'|<EOF>])*"> }             // single line comment
-SKIP:   { <BLKCMT: ""> }       // block comment
+//SKIP:   { <SLCMT:  "//(~['\n'|<EOF>])*"> }             // single line comment
+//SKIP:   { <BLKCMT: ""> }       // block comment
+
+SPECIAL_TOKEN: { <SL_COMMENT: "//" (~["\n"])*> }
+MORE:	{ "/*": COMMENT }
+<COMMENT> MORE: { <~[]> }
+<COMMENT> SPECIAL_TOKEN: { <BLK_COMMENT: "*/">: DEFAULT }
 
 // keywords
 TOKEN:  {
@@ -43,9 +48,15 @@ TOKEN:  {
 | <PRINTLN:     "println">
 }
 
-TOKEN:  { <ID:          "['a'-'z'|'A'-'Z']+['0'-'9'|'a'-z'|'A'-'Z']*"> }
+TOKEN:  {
+<#DIGIT:	["0"-"9"]>
+| <#LETTER:	["a"-"z"]|["A"-"Z"]>
+}
 
-TOKEN:  { <INTLIT:      "'0'|['1'-'9']\\d*"> }                              // integer literals
+TOKEN:  { <ID:          (<LETTER>)+((<DIGIT>)|(<LETTER>))*> }
+
+TOKEN:  { <INTLIT:      (<DIGIT>)+> }
+
 TOKEN:  { <DBLLIT:      "\\d*.\\d*"> }                                      // double literals
 TOKEN:  { <STRLIT:      "\"['a'-'z'|'A'-'Z']*[\\d|'a'-'z'|'A'-'Z']*\""> }   // String literals
 

@@ -9,112 +9,125 @@ public interface Lexer2Constants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int CLASS = 5;
+  int SPACE = 1;
   /** RegularExpression Id. */
-  int EXTENDS = 6;
+  int SL_COMMENT = 2;
   /** RegularExpression Id. */
-  int STATIC = 7;
+  int BLK_COMMENT = 5;
   /** RegularExpression Id. */
-  int PUBLIC = 8;
+  int CLASS = 6;
   /** RegularExpression Id. */
-  int MAIN = 9;
+  int EXTENDS = 7;
   /** RegularExpression Id. */
-  int VOID = 10;
+  int STATIC = 8;
   /** RegularExpression Id. */
-  int BOOLEAN = 11;
+  int PUBLIC = 9;
   /** RegularExpression Id. */
-  int INT = 12;
+  int MAIN = 10;
   /** RegularExpression Id. */
-  int DOUBLE = 13;
+  int VOID = 11;
   /** RegularExpression Id. */
-  int STRING = 14;
+  int BOOLEAN = 12;
   /** RegularExpression Id. */
-  int TRUE = 15;
+  int INT = 13;
   /** RegularExpression Id. */
-  int FALSE = 16;
+  int DOUBLE = 14;
   /** RegularExpression Id. */
-  int NEW = 17;
+  int STRING = 15;
   /** RegularExpression Id. */
-  int THIS = 18;
+  int TRUE = 16;
   /** RegularExpression Id. */
-  int IF = 19;
+  int FALSE = 17;
   /** RegularExpression Id. */
-  int ELSE = 20;
+  int NEW = 18;
   /** RegularExpression Id. */
-  int WHILE = 21;
+  int THIS = 19;
   /** RegularExpression Id. */
-  int RETURN = 22;
+  int IF = 20;
   /** RegularExpression Id. */
-  int SYSTEM = 23;
+  int ELSE = 21;
   /** RegularExpression Id. */
-  int OUT = 24;
+  int WHILE = 22;
   /** RegularExpression Id. */
-  int PRINTLN = 25;
+  int RETURN = 23;
   /** RegularExpression Id. */
-  int ID = 26;
+  int SYSTEM = 24;
   /** RegularExpression Id. */
-  int INTLIT = 27;
+  int OUT = 25;
   /** RegularExpression Id. */
-  int DBLLIT = 28;
+  int PRINTLN = 26;
   /** RegularExpression Id. */
-  int STRLIT = 29;
+  int DIGIT = 27;
   /** RegularExpression Id. */
-  int ADD = 30;
+  int LETTER = 28;
   /** RegularExpression Id. */
-  int SUB = 31;
+  int ID = 29;
   /** RegularExpression Id. */
-  int MUL = 32;
+  int INTLIT = 30;
   /** RegularExpression Id. */
-  int DIV = 33;
+  int DBLLIT = 31;
   /** RegularExpression Id. */
-  int AND = 34;
+  int STRLIT = 32;
   /** RegularExpression Id. */
-  int OR = 35;
+  int ADD = 33;
   /** RegularExpression Id. */
-  int NOT = 36;
+  int SUB = 34;
   /** RegularExpression Id. */
-  int EQ = 37;
+  int MUL = 35;
   /** RegularExpression Id. */
-  int NE = 38;
+  int DIV = 36;
   /** RegularExpression Id. */
-  int LT = 39;
+  int AND = 37;
   /** RegularExpression Id. */
-  int LE = 40;
+  int OR = 38;
   /** RegularExpression Id. */
-  int GT = 41;
+  int NOT = 39;
   /** RegularExpression Id. */
-  int GE = 42;
+  int EQ = 40;
   /** RegularExpression Id. */
-  int ASSGN = 43;
+  int NE = 41;
   /** RegularExpression Id. */
-  int SEMI = 44;
+  int LT = 42;
   /** RegularExpression Id. */
-  int COMMA = 45;
+  int LE = 43;
   /** RegularExpression Id. */
-  int DOT = 46;
+  int GT = 44;
   /** RegularExpression Id. */
-  int LPAREN = 47;
+  int GE = 45;
   /** RegularExpression Id. */
-  int RPAREN = 48;
+  int ASSGN = 46;
   /** RegularExpression Id. */
-  int LBRAC = 49;
+  int SEMI = 47;
   /** RegularExpression Id. */
-  int RBRAC = 50;
+  int COMMA = 48;
   /** RegularExpression Id. */
-  int LCURLY = 51;
+  int DOT = 49;
   /** RegularExpression Id. */
-  int RCURLY = 52;
+  int LPAREN = 50;
+  /** RegularExpression Id. */
+  int RPAREN = 51;
+  /** RegularExpression Id. */
+  int LBRAC = 52;
+  /** RegularExpression Id. */
+  int RBRAC = 53;
+  /** RegularExpression Id. */
+  int LCURLY = 54;
+  /** RegularExpression Id. */
+  int RCURLY = 55;
 
   /** Lexical state. */
   int DEFAULT = 0;
+  /** Lexical state. */
+  int COMMENT = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
-    "\" \"",
-    "\"\\t\"",
-    "\"\\n\"",
-    "\"\\r\"",
+    "<SPACE>",
+    "<SL_COMMENT>",
+    "\"/*\"",
+    "<token of kind 4>",
+    "\"*/\"",
     "\"class\"",
     "\"extends\"",
     "\"static\"",
@@ -136,8 +149,10 @@ public interface Lexer2Constants {
     "\"System\"",
     "\"out\"",
     "\"println\"",
-    "\"[\\\'a\\\'-\\\'z\\\'|\\\'A\\\'-\\\'Z\\\']+[\\\'0\\\'-\\\'9\\\'|\\\'a\\\'-z\\\'|\\\'A\\\'-\\\'Z\\\']*\"",
-    "\"\\\'0\\\'|[\\\'1\\\'-\\\'9\\\']\\\\d*\"",
+    "<DIGIT>",
+    "<LETTER>",
+    "<ID>",
+    "<INTLIT>",
     "\"\\\\d*.\\\\d*\"",
     "\"\\\"[\\\'a\\\'-\\\'z\\\'|\\\'A\\\'-\\\'Z\\\']*[\\\\d|\\\'a\\\'-\\\'z\\\'|\\\'A\\\'-\\\'Z\\\']*\\\"\"",
     "\"+\"",
