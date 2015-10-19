@@ -14,7 +14,9 @@ PARSER_END(Lexer2)
 
 // Token Definitions
 //
-SKIP:   { " " | "\t" | "\n" | "\r" }        // whitespace chars
+SKIP:   { <SPACE:  " " | "\t" | "\n" | "\r" > }        // whitespace chars
+SKIP:   { <SLCMT:  "//(~['\n'|<EOF>])*"> }             // single line comment
+SKIP:   { <BLKCMT: ""> }       // block comment
 
 // keywords
 TOKEN:  {
@@ -43,9 +45,9 @@ TOKEN:  {
 
 TOKEN:  { <ID:          "['a'-'z'|'A'-'Z']+['0'-'9'|'a'-z'|'A'-'Z']*"> }
 
-TOKEN:  { <INTLIT:      "'0'|['1'-'9']\\d*"> }                   // integer literals
-TOKEN:  { <DBLLIT:      "\\d*.\\d*"> }                   // double literals
-TOKEN:  { <STRLIT:      "\"['a'-'z'|'A'-'Z']*[\\d|'a'-'z'|'A'-'Z']*\""> }                   // String literals
+TOKEN:  { <INTLIT:      "'0'|['1'-'9']\\d*"> }                              // integer literals
+TOKEN:  { <DBLLIT:      "\\d*.\\d*"> }                                      // double literals
+TOKEN:  { <STRLIT:      "\"['a'-'z'|'A'-'Z']*[\\d|'a'-'z'|'A'-'Z']*\""> }   // String literals
 
 // operators
 TOKEN:  {
