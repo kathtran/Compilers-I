@@ -1,1 +1,1 @@
-TokenMgrError: Lexical error at line 4, column 0.  Encountered: <EOF> after : ""
+Lexical error at line 4, column 0.  Encountered: <EOF> after : ""

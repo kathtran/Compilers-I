@@ -35,9 +35,9 @@ public class RunLexer2 {
       input.close();
       System.out.print("Total: " + tknCnt + " tokens\n");
     } catch (TokenMgrError e) {
-      System.err.println(e);
+      System.err.println(e.getMessage());
     } catch (Exception e) {
-      System.err.println(e);
+      System.err.println(e.getMessage());
     }
   } 
 }

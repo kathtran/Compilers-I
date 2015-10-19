@@ -1,2 +1,2 @@
 (2, 1) <INTLIT>   12
-TokenMgrError: Illegal character at column 3: #
+LexicalError: at (2,3). Illegal character: #

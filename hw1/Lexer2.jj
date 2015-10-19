@@ -117,7 +117,7 @@ TOKEN:  {
 }
 
 SPECIAL_TOKEN: {
-    <~[]> { if (true) throw new TokenMgrError("Illegal character at column " +
-                        matchedToken.beginColumn + ": " +
+    <~[]> { if (true) throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine +
+			"," + matchedToken.beginColumn + "). Illegal character: " +
                         matchedToken.image, 0); }
 }

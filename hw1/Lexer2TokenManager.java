@@ -948,8 +948,8 @@ static void SkipLexicalActions(Token matchedToken)
    {
       case 59 :
          image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-            if (true) throw new TokenMgrError("Illegal character at column " +
-                        matchedToken.beginColumn + ": " +
+            if (true) throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine +
+                        "," + matchedToken.beginColumn + "). Illegal character: " +
                         matchedToken.image, 0);
          break;
       default :

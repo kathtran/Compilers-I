@@ -1,4 +1,0 @@
-2c2
-< TokenMgrError: Illegal character at column 3: #
----
-> LexicalError: at (2,3). Illegal character: #
