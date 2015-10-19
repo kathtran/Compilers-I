@@ -61,59 +61,65 @@ public interface Lexer2Constants {
   /** RegularExpression Id. */
   int LETTER = 28;
   /** RegularExpression Id. */
-  int ID = 29;
+  int INTEGER = 29;
   /** RegularExpression Id. */
-  int INTLIT = 30;
+  int OCTAL = 30;
   /** RegularExpression Id. */
-  int DBLLIT = 31;
+  int HEXADECIMAL = 31;
   /** RegularExpression Id. */
-  int STRLIT = 32;
+  int ID = 32;
   /** RegularExpression Id. */
-  int ADD = 33;
+  int INTLIT = 33;
   /** RegularExpression Id. */
-  int SUB = 34;
+  int DBLLIT = 34;
   /** RegularExpression Id. */
-  int MUL = 35;
+  int STRLIT = 35;
   /** RegularExpression Id. */
-  int DIV = 36;
+  int ADD = 36;
   /** RegularExpression Id. */
-  int AND = 37;
+  int SUB = 37;
   /** RegularExpression Id. */
-  int OR = 38;
+  int MUL = 38;
   /** RegularExpression Id. */
-  int NOT = 39;
+  int DIV = 39;
   /** RegularExpression Id. */
-  int EQ = 40;
+  int AND = 40;
   /** RegularExpression Id. */
-  int NE = 41;
+  int OR = 41;
   /** RegularExpression Id. */
-  int LT = 42;
+  int NOT = 42;
   /** RegularExpression Id. */
-  int LE = 43;
+  int EQ = 43;
   /** RegularExpression Id. */
-  int GT = 44;
+  int NE = 44;
   /** RegularExpression Id. */
-  int GE = 45;
+  int LT = 45;
   /** RegularExpression Id. */
-  int ASSGN = 46;
+  int LE = 46;
   /** RegularExpression Id. */
-  int SEMI = 47;
+  int GT = 47;
   /** RegularExpression Id. */
-  int COMMA = 48;
+  int GE = 48;
   /** RegularExpression Id. */
-  int DOT = 49;
+  int ASSGN = 49;
   /** RegularExpression Id. */
-  int LPAREN = 50;
+  int SEMI = 50;
   /** RegularExpression Id. */
-  int RPAREN = 51;
+  int COMMA = 51;
   /** RegularExpression Id. */
-  int LBRAC = 52;
+  int DOT = 52;
   /** RegularExpression Id. */
-  int RBRAC = 53;
+  int LPAREN = 53;
   /** RegularExpression Id. */
-  int LCURLY = 54;
+  int RPAREN = 54;
   /** RegularExpression Id. */
-  int RCURLY = 55;
+  int LBRAC = 55;
+  /** RegularExpression Id. */
+  int RBRAC = 56;
+  /** RegularExpression Id. */
+  int LCURLY = 57;
+  /** RegularExpression Id. */
+  int RCURLY = 58;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -151,6 +157,9 @@ public interface Lexer2Constants {
     "\"println\"",
     "<DIGIT>",
     "<LETTER>",
+    "<INTEGER>",
+    "<OCTAL>",
+    "<HEXADECIMAL>",
     "<ID>",
     "<INTLIT>",
     "<DBLLIT>",
@@ -178,7 +187,7 @@ public interface Lexer2Constants {
     "\"]\"",
     "\"{\"",
     "\"}\"",
-    "<token of kind 56>",
+    "<token of kind 59>",
   };
 
 }
