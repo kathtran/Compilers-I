@@ -153,8 +153,8 @@ public interface Lexer2Constants {
     "<LETTER>",
     "<ID>",
     "<INTLIT>",
-    "\"\\\\d*.\\\\d*\"",
-    "\"\\\"[\\\'a\\\'-\\\'z\\\'|\\\'A\\\'-\\\'Z\\\']*[\\\\d|\\\'a\\\'-\\\'z\\\'|\\\'A\\\'-\\\'Z\\\']*\\\"\"",
+    "<DBLLIT>",
+    "<STRLIT>",
     "\"+\"",
     "\"-\"",
     "\"*\"",
@@ -178,6 +178,7 @@ public interface Lexer2Constants {
     "\"]\"",
     "\"{\"",
     "\"}\"",
+    "<token of kind 56>",
   };
 
 }

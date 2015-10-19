@@ -1,0 +1,5 @@
+1c1,2
+< TokenMgrError: Lexical Error at column 1: Invalid integer literal 017777777777
+---
+> (2, 1) <INTLIT>   017777777777
+> LexicalError: at (3,1). Invalid octal literal: 020000000000

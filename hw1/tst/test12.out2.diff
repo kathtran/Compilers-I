@@ -1,0 +1,4 @@
+2c2
+< TokenMgrError: Lexical Error at column 1: Invalid integer literal 2147483648
+---
+> LexicalError: at (3,1). Invalid decimal literal: 2147483648

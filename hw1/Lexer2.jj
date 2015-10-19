@@ -63,7 +63,7 @@ TOKEN:  { <INTLIT:      (<DIGIT>)+> { try { Integer.parseInt(matchedToken.image)
                                     }
 }
 TOKEN:  { <DBLLIT:      ((<DIGIT>)*"."(<DIGIT>)+)|((<DIGIT>)+"."(<DIGIT>)*)> }
-TOKEN:  { <STRLIT:      "\""(~["\n","\r"])*"\""> }
+TOKEN:  { <STRLIT:      "\""(~["\n","\r","\""])*"\""> }
 
 // operators
 TOKEN:  {

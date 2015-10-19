@@ -1,0 +1,11 @@
+(3, 1) <INTLIT>   0
+(3, 2) <ID>       x1
+(5, 1) <INTLIT>   0
+(5, 2) <ID>       XaBCdeF
+(7, 1) <INTLIT>   0
+(7, 2) <ID>       x0
+(9, 1) <INTLIT>   1
+(9, 2) <ID>       ab456
+(11, 1) <INTLIT>   0
+(11, 2) <ID>       x123g45
+Total: 10 tokens

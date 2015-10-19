@@ -1,0 +1,5 @@
+1c1,2
+< TokenMgrError: Illegal character at column 1: "
+---
+> LexicalError: at (2,1). Ill-formed or unclosed string: "112233
+> 
