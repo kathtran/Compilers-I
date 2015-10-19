@@ -89,7 +89,15 @@ TOKEN:  { <INTLIT:      ((<INTEGER>)|(<OCTAL>)|(<HEXADECIMAL>))>
 	}
 }
 TOKEN:  { <DBLLIT:      ((<DIGIT>)*"."(<DIGIT>)+)|((<DIGIT>)+"."(<DIGIT>)*)> }
-TOKEN:  { <STRLIT:      "\""(~["\n","\r","\""])*"\""> }
+TOKEN:  { <STRLIT:      "\""(~["\n","\r","\""])*(["\"","\n","\r"])> 
+	{ lexeme = image.toString();
+	  if (lexeme.startsWith("\"") && !lexeme.endsWith("\"") || !lexeme.startsWith("\"") && lexeme.endsWith("\""))
+              throw new TokenMgrError("LexicalError: at (" +
+              matchedToken.beginLine + "," + matchedToken.beginColumn +
+	      "). Ill-formed or unclosed string: " +
+              matchedToken.image, 0);
+	}
+}
 
 // operators
 TOKEN:  {

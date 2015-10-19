@@ -520,7 +520,7 @@ static private int jjMoveNfa_0(int startState, int curPos)
                      jjCheckNAddTwoStates(9, 10);
                   break;
                case 10:
-                  if (curChar == 34 && kind > 35)
+                  if ((0x400002400L & l) != 0L && kind > 35)
                      kind = 35;
                   break;
                case 11:
@@ -989,6 +989,15 @@ static void TokenLexicalActions(Token matchedToken)
               matchedToken.image, 0);
          }
         }
+         break;
+      case 35 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+          lexeme = image.toString();
+          if (lexeme.startsWith("\u005c"") && !lexeme.endsWith("\u005c"") || !lexeme.startsWith("\u005c"") && lexeme.endsWith("\u005c""))
+              throw new TokenMgrError("LexicalError: at (" +
+              matchedToken.beginLine + "," + matchedToken.beginColumn +
+              "). Ill-formed or unclosed string: " +
+              matchedToken.image, 0);
          break;
       default :
          break;
