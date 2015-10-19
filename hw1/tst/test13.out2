@@ -1,3 +1,2 @@
 (2, 1) <INTLIT>   017777777777
-(3, 1) <INTLIT>   020000000000
-Total: 2 tokens
+LexicalError: at (3,1). Invalid octal literal: 020000000000

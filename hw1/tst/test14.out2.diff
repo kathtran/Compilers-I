@@ -1,5 +1,0 @@
-2,3c2
-< (3, 1) <INTLIT>   0x80000000
-< Total: 2 tokens
----
-> LexicalError: at (3,1). Invalid hexadecimal literal: 0x80000000

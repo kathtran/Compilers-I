@@ -1,3 +1,2 @@
 (2, 1) <INTLIT>   2147483647
-(3, 1) <INTLIT>   2147483648
-Total: 2 tokens
+LexicalError: at (3,1). Invalid decimal literal: 2147483648

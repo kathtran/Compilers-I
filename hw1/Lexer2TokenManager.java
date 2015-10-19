@@ -883,6 +883,7 @@ public static Token getNextToken()
         {
            matchedToken = jjFillToken();
            matchedToken.specialToken = specialToken;
+           TokenLexicalActions(matchedToken);
        if (jjnewLexState[jjmatchedKind] != -1)
          curLexState = jjnewLexState[jjmatchedKind];
            return matchedToken;
@@ -951,6 +952,43 @@ static void SkipLexicalActions(Token matchedToken)
             if (true) throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine +
                         "," + matchedToken.beginColumn + "). Illegal character: " +
                         matchedToken.image, 0);
+         break;
+      default :
+         break;
+   }
+}
+static void TokenLexicalActions(Token matchedToken)
+{
+   switch(jjmatchedKind)
+   {
+      case 33 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+          String lexeme = image.toString();
+          if (!lexeme.startsWith("0") && !lexeme.contains("0x") && !lexeme.contains("0X")) {
+          try { Integer.parseInt(matchedToken.image); }
+          catch (Exception e) {
+              throw new TokenMgrError("LexicalError: at (" +
+              matchedToken.beginLine + "," + matchedToken.beginColumn +
+              "). Invalid decimal literal: " +
+              matchedToken.image, 0);
+          }
+         } else if (lexeme.startsWith("0") && !lexeme.contains("0x") && !lexeme.contains("0X")) {
+          try { Integer.parseInt(matchedToken.image, 8); }
+          catch (Exception e) {
+              throw new TokenMgrError("LexicalError: at (" +
+              matchedToken.beginLine + "," + matchedToken.beginColumn +
+              "). Invalid octal literal: " +
+              matchedToken.image, 0);
+         }
+        } else if (lexeme.startsWith("0x") || lexeme.startsWith("0X")) {
+          try { Integer.parseInt(lexeme.substring(2), 16); }
+          catch (Exception e) {
+              throw new TokenMgrError("LexicalError: at (" +
+              matchedToken.beginLine + "," + matchedToken.beginColumn +
+              "). Invalid hexadecimal literal: " +
+              matchedToken.image, 0);
+         }
+        }
          break;
       default :
          break;
