@@ -15,8 +15,6 @@ PARSER_END(Lexer2)
 // Token Definitions
 //
 SKIP:   { <SPACE:  " " | "\t" | "\n" | "\r" > }        // whitespace chars
-//SKIP:   { <SLCMT:  "//(~['\n'|<EOF>])*"> }             // single line comment
-//SKIP:   { <BLKCMT: ""> }       // block comment
 
 SPECIAL_TOKEN: { <SL_COMMENT: "//" (~["\n"])*> }
 MORE:	{ "/*": COMMENT }
@@ -49,16 +47,23 @@ TOKEN:  {
 }
 
 TOKEN:  {
-<#DIGIT:	["0"-"9"]>
-| <#LETTER:	["a"-"z"]|["A"-"Z"]>
+<#DIGIT:	    ["0"-"9"]>
+| <#LETTER:	    ["a"-"z"]|["A"-"Z"]>
 }
 
 TOKEN:  { <ID:          (<LETTER>)+((<DIGIT>)|(<LETTER>))*> }
 
-TOKEN:  { <INTLIT:      (<DIGIT>)+> }
-
-TOKEN:  { <DBLLIT:      "\\d*.\\d*"> }                                      // double literals
-TOKEN:  { <STRLIT:      "\"['a'-'z'|'A'-'Z']*[\\d|'a'-'z'|'A'-'Z']*\""> }   // String literals
+// literals
+TOKEN:  { <INTLIT:      (<DIGIT>)+> { try { Integer.parseInt(matchedToken.image); }
+                                      catch (Exception e) {
+                                        throw new TokenMgrError("Lexical Error at column " +
+                                        matchedToken.beginColumn + ": Invalid integer literal " +
+                                        matchedToken.image, 0);
+                                      }
+                                    }
+}
+TOKEN:  { <DBLLIT:      ((<DIGIT>)*"."(<DIGIT>)+)|((<DIGIT>)+"."(<DIGIT>)*)> }
+TOKEN:  { <STRLIT:      "\""(~["\n","\r"])*"\""> }
 
 // operators
 TOKEN:  {
@@ -89,4 +94,10 @@ TOKEN:  {
 | <RBRAC:       "]">
 | <LCURLY:      "{">
 | <RCURLY:      "}">
+}
+
+SPECIAL_TOKEN: {
+    <~[]> { if (true) throw new TokenMgrError("Illegal character at column " +
+                        matchedToken.beginColumn + ": " +
+                        matchedToken.image, 0); }
 }
