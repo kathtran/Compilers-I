@@ -51,33 +51,23 @@ TOKEN:  {
 | <#LETTER:	    ["a"-"z"]|["A"-"Z"]>
 }
 TOKEN:  {
-<#INTEGER:      (<DIGIT>)+> { try { Integer.parseInt(matchedToken.image); }
-                              catch (Exception e) {
-                                throw new TokenMgrError("Lexical Error at column " +
-                                matchedToken.beginColumn + ": Invalid integer literal " +
-                                matchedToken.image, 0);
-                              }
-                            }
-| <#OCTAL:       "0"(["0"-"7"])+> { try { Integer.parseInt(matchedToken.image, 8); }
-                                  catch (Exception e) {
-                                    throw new TokenMgrError("Lexical Error at column " +
-                                    matchedToken.beginColumn + ": Invalid octal literal " +
-                                    matchedToken.image, 0);
-                                 }
-                               }
-| <#HEXADECIMAL: "0"["x","X"](["0"-"9", "a"-"f", "A"-"F"])+> { try { Integer.parseInt(matchedToken.image, 16); }
-                                                               catch (Exception e) {
-                                                                 throw new TokenMgrError("Lexical Error at column " +
-                                                                 matchedToken.beginColumn + ": Invalid hexadecimal literal " +
-                                                                 matchedToken.image, 0);
-                                                               }
-                                                             }
+<#INTEGER:      (<DIGIT>)+>
+| <#OCTAL:       "0"(["0"-"7"])+>
+| <#HEXADECIMAL: "0"["x","X"](["0"-"9", "a"-"f", "A"-"F"])+>
 }
 
 TOKEN:  { <ID:          (<LETTER>)+((<DIGIT>)|(<LETTER>))*> }
 
 // literals
-TOKEN:  { <INTLIT:      ((<INTEGER>)|(<OCTAL>)|(<HEXADECIMAL>))> }
+TOKEN:  { <INTLIT:      ((<INTEGER>)|(<OCTAL>)|(<HEXADECIMAL>))>
+        { try { Integer.parseInt(matchedToken.image); }
+          catch (Exception e) {
+              throw new TokenMgrError("Lexical Error at column " +
+              matchedToken.beginColumn + ": Invalid integer literal " +
+              matchedToken.image, 0);
+          }
+        } 
+}
 TOKEN:  { <DBLLIT:      ((<DIGIT>)*"."(<DIGIT>)+)|((<DIGIT>)+"."(<DIGIT>)*)> }
 TOKEN:  { <STRLIT:      "\""(~["\n","\r","\""])*"\""> }
 
