@@ -949,7 +949,7 @@ static void SkipLexicalActions(Token matchedToken)
    {
       case 59 :
          image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-            if (true) throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine + "," +
+            if (true) throw new LexicalError("at (" + matchedToken.beginLine + "," +
                 matchedToken.beginColumn + "). Illegal character: " + matchedToken.image, 0);
          break;
       default :
@@ -966,19 +966,19 @@ static void TokenLexicalActions(Token matchedToken)
               if (!lexeme.startsWith("0") && !lexeme.contains("0x") && !lexeme.contains("0X")) {
                 try { Integer.parseInt(matchedToken.image); }
             catch (Exception e) {
-              throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine + "," +
+              throw new LexicalError("at (" + matchedToken.beginLine + "," +
               matchedToken.beginColumn + "). Invalid decimal literal: " + matchedToken.image, 0);
             }
               } else if (lexeme.startsWith("0") && !lexeme.contains("0x") && !lexeme.contains("0X")) {
                 try { Integer.parseInt(matchedToken.image, 8); }
             catch (Exception e) {
-              throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine + "," +
+              throw new LexicalError("at (" + matchedToken.beginLine + "," +
               matchedToken.beginColumn + "). Invalid octal literal: " + matchedToken.image, 0);
                 }
               } else if (lexeme.startsWith("0x") || lexeme.startsWith("0X")) {
                 try { Integer.parseInt(lexeme.substring(2), 16); }
             catch (Exception e) {
-              throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine + "," +
+              throw new LexicalError("at (" + matchedToken.beginLine + "," +
               matchedToken.beginColumn + "). Invalid hexadecimal literal: " + matchedToken.image, 0);
                 }
               }
@@ -987,7 +987,7 @@ static void TokenLexicalActions(Token matchedToken)
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
               lexeme = image.toString();
               if (lexeme.startsWith("\u005c"") && !lexeme.endsWith("\u005c"") || !lexeme.startsWith("\u005c"") && lexeme.endsWith("\u005c""))
-            throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine + "," +
+            throw new LexicalError("at (" + matchedToken.beginLine + "," +
             matchedToken.beginColumn + "). Ill-formed or unclosed string: " + matchedToken.image, 0);
          break;
       default :

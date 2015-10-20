@@ -200,3 +200,9 @@ public class Lexer2 implements Lexer2Constants {
   }
 
                      }
+class LexicalError extends TokenMgrError {
+        public LexicalError() {}
+        public LexicalError(String message, int reason) {
+                super(message, reason);
+        }
+}
