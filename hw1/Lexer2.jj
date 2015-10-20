@@ -19,7 +19,14 @@ SKIP:   { <SPACE:  " " | "\t" | "\n" | "\r" > }        // whitespace chars
 SPECIAL_TOKEN: { <SL_COMMENT: "//" (~["\n"])*> }
 MORE:	{ "/*": COMMENT }
 <COMMENT> MORE: { <~[]> }
-<COMMENT> SPECIAL_TOKEN: { <BLK_COMMENT: "*/">: DEFAULT }
+<COMMENT> SPECIAL_TOKEN: { <BLK_COMMENT: "*/">: DEFAULT}
+//<COMMENT> SPECIAL_TOKEN: { <BLKCMT_NOEND: "/*">
+//{	String comment = image.toString();
+//	if (!comment.contains("*/")
+//              throw new TokenMgrError("LexicalError: at (" + matchedToken.beginLine + "," +
+//              matchedToken.beginColumn + "). Unclosed comments: " + matchedToken.image, 0);
+//}
+//: DEFAULT }
 
 // keywords
 TOKEN:  {
