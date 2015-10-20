@@ -1,0 +1,5 @@
+(3, 1) DBLLIT     .123
+(3, 6) DBLLIT     456.
+(5, 1) DBLLIT     0.
+(7, 1) DBLLIT     123.456
+Total: 4 tokens

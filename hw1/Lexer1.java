@@ -16,24 +16,22 @@ public class Lexer1 {
 
     // Internal token code
     //
-    enum TokenCode
-
-    {
+    enum TokenCode {
         // Tokens with multiple lexemes
         ID, INTLIT, DBLLIT, STRLIT,
 
-                // Keywords
-                //   "class", "extends", "static", "public", "main", "void", "boolean",
-                //   "int", "double", "String", "true", "false", "new", "this", "if",
-                //   "else", "while", "return", "System", "out", "println"
-                CLASS, EXTENDS, STATIC, PUBLIC, MAIN, VOID, BOOLEAN, INT, DOUBLE, STRING,
-                TRUE, FALSE, NEW, THIS, IF, ELSE, WHILE, RETURN, SYSTEM, OUT, PRINTLN,
+        // Keywords
+        //   "class", "extends", "static", "public", "main", "void", "boolean",
+        //   "int", "double", "String", "true", "false", "new", "this", "if",
+        //   "else", "while", "return", "System", "out", "println"
+        CLASS, EXTENDS, STATIC, PUBLIC, MAIN, VOID, BOOLEAN, INT, DOUBLE, STRING,
+        TRUE, FALSE, NEW, THIS, IF, ELSE, WHILE, RETURN, SYSTEM, OUT, PRINTLN,
 
-                // Operators and delimiters
-                //   +, -, *, /, &&, ||, !, ==, !=, <, <=, >, >=, =,
-                //   ;, ,, ., (, ), [, ], {, }
-                ADD, SUB, MUL, DIV, AND, OR, NOT, EQ, NE, LT, LE, GT, GE, ASSGN,
-                SEMI, COMMA, DOT, LPAREN, RPAREN, LBRAC, RBRAC, LCURLY, RCURLY;
+        // Operators and delimiters
+        //   +, -, *, /, &&, ||, !, ==, !=, <, <=, >, >=, =,
+        //   ;, ,, ., (, ), [, ], {, }
+        ADD, SUB, MUL, DIV, AND, OR, NOT, EQ, NE, LT, LE, GT, GE, ASSGN,
+        SEMI, COMMA, DOT, LPAREN, RPAREN, LBRAC, RBRAC, LCURLY, RCURLY;
     }
 
     // Token representation
@@ -76,7 +74,7 @@ public class Lexer1 {
         if (c != -1) {
             switch (c) {
                 case '\n':
-                case '\r':
+                    //               case '\r':
                     line += 1;
                     column = 0;
                     break;
@@ -95,7 +93,7 @@ public class Lexer1 {
 
     // Returns whether or not input is a letter
     private static boolean isLetter(int c) {
-        return ('a' <= c && c <= 'z');
+        return ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z');
     }
 
     // Returns whether or not input is a digit
@@ -105,49 +103,52 @@ public class Lexer1 {
 
     // Returns token for keyword or ID
     private static Token getKeyword(String lexeme, int line, int column) {
-        if (lexeme.equals("class"))
-            return new Token(TokenCode.CLASS, lexeme, line, column);
-        if (lexeme.equals("extends"))
-            return new Token(TokenCode.EXTENDS, lexeme, line, column);
-        if (lexeme.equals("static"))
-            return new Token(TokenCode.STATIC, lexeme, line, column);
-        if (lexeme.equals("public"))
-            return new Token(TokenCode.PUBLIC, lexeme, line, column);
-        if (lexeme.equals("main"))
-            return new Token(TokenCode.MAIN, lexeme, line, column);
-        if (lexeme.equals("void"))
-            return new Token(TokenCode.VOID, lexeme, line, column);
-        if (lexeme.equals("boolean"))
-            return new Token(TokenCode.BOOLEAN, lexeme, line, column);
-        if (lexeme.equals("int"))
-            return new Token(TokenCode.INT, lexeme, line, column);
-        if (lexeme.equals("double"))
-            return new Token(TokenCode.DOUBLE, lexeme, line, column);
-        if (lexeme.equals("String"))
-            return new Token(TokenCode.STRING, lexeme, line, column);
-        if (lexeme.equals("true"))
-            return new Token(TokenCode.TRUE, lexeme, line, column);
-        if (lexeme.equals("false"))
-            return new Token(TokenCode.FALSE, lexeme, line, column);
-        if (lexeme.equals("new"))
-            return new Token(TokenCode.NEW, lexeme, line, column);
-        if (lexeme.equals("this"))
-            return new Token(TokenCode.THIS, lexeme, line, column);
-        if (lexeme.equals("if"))
-            return new Token(TokenCode.IF, lexeme, line, column);
-        if (lexeme.equals("else"))
-            return new Token(TokenCode.ELSE, lexeme, line, column);
-        if (lexeme.equals("while"))
-            return new Token(TokenCode.WHILE, lexeme, line, column);
-        if (lexeme.equals("return"))
-            return new Token(TokenCode.RETURN, lexeme, line, column);
-        if (lexeme.equals("System"))
-            return new Token(TokenCode.SYSTEM, lexeme, line, column);
-        if (lexeme.equals("out"))
-            return new Token(TokenCode.OUT, lexeme, line, column);
-        if (lexeme.equals("println"))
-            return new Token(TokenCode.PRINTLN, lexeme, line, column);
-        return new Token(TokenCode.ID, lexeme, line, column);
+        switch (lexeme) {
+            case "class":
+                return new Token(TokenCode.CLASS, lexeme, line, column);
+            case "extends":
+                return new Token(TokenCode.EXTENDS, lexeme, line, column);
+            case "static":
+                return new Token(TokenCode.STATIC, lexeme, line, column);
+            case "public":
+                return new Token(TokenCode.PUBLIC, lexeme, line, column);
+            case "main":
+                return new Token(TokenCode.MAIN, lexeme, line, column);
+            case "void":
+                return new Token(TokenCode.VOID, lexeme, line, column);
+            case "boolean":
+                return new Token(TokenCode.BOOLEAN, lexeme, line, column);
+            case "int":
+                return new Token(TokenCode.INT, lexeme, line, column);
+            case "double":
+                return new Token(TokenCode.DOUBLE, lexeme, line, column);
+            case "String":
+                return new Token(TokenCode.STRING, lexeme, line, column);
+            case "true":
+                return new Token(TokenCode.TRUE, lexeme, line, column);
+            case "false":
+                return new Token(TokenCode.FALSE, lexeme, line, column);
+            case "new":
+                return new Token(TokenCode.NEW, lexeme, line, column);
+            case "this":
+                return new Token(TokenCode.THIS, lexeme, line, column);
+            case "if":
+                return new Token(TokenCode.IF, lexeme, line, column);
+            case "else":
+                return new Token(TokenCode.ELSE, lexeme, line, column);
+            case "while":
+                return new Token(TokenCode.WHILE, lexeme, line, column);
+            case "return":
+                return new Token(TokenCode.RETURN, lexeme, line, column);
+            case "System":
+                return new Token(TokenCode.SYSTEM, lexeme, line, column);
+            case "out":
+                return new Token(TokenCode.OUT, lexeme, line, column);
+            case "println":
+                return new Token(TokenCode.PRINTLN, lexeme, line, column);
+            default:
+                return new Token(TokenCode.ID, lexeme, line, column);
+        }
     }
 
     // Return next token (the main lexer routine)
@@ -158,6 +159,9 @@ public class Lexer1 {
     static Token nextToken() throws Exception {
         int c = nextChar();
 
+        boolean startBeforeEnd = false;
+        int commentLine = line;
+        int commentColumn = column;
         do {
             // skip whitespace
             while (isSpace(c))
@@ -165,21 +169,29 @@ public class Lexer1 {
 
             // skip comments
             if (c == '/') {
+                commentLine = line;
+                commentColumn = column;
                 if (nextC == '/') {                 // recognize single line comment
                     do {
                         c = nextChar();
                     } while (c != '\n' && c != -1);
                 } else if (nextC == '*') {                 // recognize block comment
+                    startBeforeEnd = false;
                     do {
                         c = nextChar();
-                        if (c == '*') {
+                        if (c == '*' && nextC == '/') {
                             c = nextChar();
-                            if (c == '/') {
-                                c = nextChar();
-                                break;
-                            }
+                            c = nextChar();
+                            break;
+                        } else if (c == '/' && nextC == '*') {
+                            c = nextChar();
+                            c = nextChar();
+                            startBeforeEnd = true;
                         }
                     } while (c != -1);
+                    if (startBeforeEnd && c == -1)
+                        throw new LexError("at (" + commentLine + "," + commentColumn +
+                                "). Unclosed block comments");
                 }
             }
         } while (isSpace(c));
@@ -188,73 +200,157 @@ public class Lexer1 {
         if (c == -1)
             return null;
 
-        //StringBuilder buffer = new StringBuilder();
-        //String lexeme;
         int firstCharColumn = column;
 
         // recognize ID and keywords
         if (isLetter(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
-            while (isLetter((char) c)) {
+            // singleton
+            if (!isLetter(nextC) && !isDigit(nextC)) {
+                String lexeme = buffer.toString();
+                return new Token(TokenCode.ID, lexeme, line, firstCharColumn);
+            }
+            do {
                 c = nextChar();
                 buffer.append((char) c);
+            } while (isLetter(nextC) || isDigit(nextC) && !isSpace(nextC) && nextC != '.');
+            String lexeme = buffer.toString();
+            return getKeyword(lexeme, line, firstCharColumn);
+        }
+
+        // recognize double literals
+        // case: leading dot
+        if (c == '.' && isDigit(nextC)) {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append((char) c);
+            c = nextChar();
+            while (isDigit(c)) {
+                buffer.append((char) c);
+                c = nextChar();
+                if (c == '.')
+                    throw new LexError("at (" + line + "," + firstCharColumn +
+                            "). Double literal cannot contain more than one dot operator");
             }
             String lexeme = buffer.toString();
-            return getKeyword(lexeme, line, column);
+            try {
+                Double doubleInteger = Double.parseDouble(lexeme);
+                return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
+            } catch (NumberFormatException ex) {
+                throw new LexError("at (" + line + "," + firstCharColumn +
+                        "). Invalid double literal: " + lexeme);
+            }
         }
 
         // recognize integer literals
         if (isDigit(c)) {
             StringBuilder buffer = new StringBuilder();
             buffer.append((char) c);
+            // singleton
+            if ((isLetter(nextC) && nextC != 'x' && nextC != 'X') || isSpace(nextC) && !isDigit(nextC) || !isSpace(nextC) && !isLetter(nextC) && !isDigit(nextC) && nextC != '.') {
+                String lexeme = buffer.toString();
+                try {
+                    Integer integer = Integer.parseInt(lexeme);
+                    if (0 <= integer && integer <= 2147483647)
+                        return new Token(TokenCode.INTLIT, integer.toString(), line, column);
+                } catch (Exception ex) {
+                    throw new LexError("at (" + line + "," + firstCharColumn +
+                            "). Invalid integer literal: " + (char) c);
+                }
+            }
             // octal literal
             if (c == '0') {
+                // integer literal if SINGLETON
                 // hexadecimal literal
                 if (nextC == 'x' || nextC == 'X') {
                     do {
                         c = nextChar();
                         buffer.append((char) c);
-                    } while (isDigit(c) && c != -1 && c != '\n');
+                    }
+                    while (!isSpace(nextC) && (isDigit(nextC) || ('a' <= nextC && nextC <= 'f' || 'A' <= nextC && nextC <= 'F')) && nextC != -1);
                     String lexeme = buffer.toString();
-                    return new Token(TokenCode.INTLIT, (Integer.decode(lexeme)).toString(), line, column);
+                    try {
+                        Integer hexadecimal = Integer.parseInt(lexeme.substring(2), 16);
+                        return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
+                    } catch (NumberFormatException ex) {
+                        throw new LexError("at (" + line + "," + firstCharColumn +
+                                "). Invalid hexadecimal literal: " + lexeme);
+                    }
+                }
+                // double literal
+                if (nextC == '.') {
+                    do {
+                        c = nextChar();
+                        buffer.append((char) c);
+                    } while (isDigit(nextC));
+                    String lexeme = buffer.toString();
+                    try {
+                        Double doubleInteger = Double.parseDouble(lexeme);
+                        return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
+                    } catch (NumberFormatException ex) {
+                        throw new LexError("at (" + line + "," + firstCharColumn +
+                                "). Invalid double literal: " + lexeme);
+                    }
                 }
                 do {
                     c = nextChar();
                     buffer.append((char) c);
-                } while (isDigit(c) && c != -1 && c != '\n');
+                } while (isDigit(nextC));
                 String lexeme = buffer.toString();
-                Integer octal = Integer.parseInt(lexeme, 8);
-                return new Token(TokenCode.INTLIT, octal.toString(), line, column);
+                try {
+                    Integer octal = Integer.parseInt(lexeme, 8);
+                    return new Token(TokenCode.INTLIT, lexeme, line, firstCharColumn);
+                } catch (NumberFormatException ex) {
+                    throw new LexError("at (" + line + "," + firstCharColumn +
+                            "). Invalid octal literal: " + lexeme);
+                }
             }
             // integer literal
-            while (isDigit(c)) {
+            int decimalCount = 0;
+            do {
                 c = nextChar();
                 buffer.append((char) c);
-            }
+                if (c == '.')
+                    decimalCount += 1;
+            } while (isDigit(nextC) || nextC == '.' && decimalCount <= 1);
             String lexeme = buffer.toString();
-            try {
-                Integer integer = Integer.parseInt(lexeme);
-                if (0 <= integer && integer <= 2147483647)
-                    return new Token(TokenCode.INTLIT, integer.toString(), line, column);
-            } catch (Exception ex) {
-                throw new Exception("Integer Literal Error on " + line + " on column " + firstCharColumn +
-                        ": Invalid integer literal value " + (char) c);
+            if (decimalCount == 0) {
+                try {
+                    Integer integer = Integer.parseInt(lexeme);
+                    if (0 <= integer && integer <= 2147483647)
+                        return new Token(TokenCode.INTLIT, integer.toString(), line, firstCharColumn);
+                } catch (NumberFormatException ex) {
+                    throw new LexError("at (" + line + "," + firstCharColumn +
+                            "). Invalid decimal literal: " + lexeme);
+                }
+            } else {
+                try {
+                    Double doubleInteger = Double.parseDouble(lexeme);
+                    return new Token(TokenCode.DBLLIT, lexeme, line, firstCharColumn);
+                } catch (NumberFormatException ex) {
+                    throw new LexError("at (" + line + "," + firstCharColumn +
+                            "). Invalid double literal: " + lexeme);
+                }
             }
         }
 
         // recognize string literals
         if (c == '"') {
             StringBuilder buffer = new StringBuilder();
+            boolean endString = false;
             do {
                 c = nextChar();
-                if (c == '"')
+                if (c == '"') {
+                    endString = true;
                     break;
-
+                }
                 buffer.append((char) c);
-            } while (c != -1 && c != '\n' && c != '\r');
+            } while (nextC != -1 && nextC != '\n' && nextC != '\r');
             String lexeme = buffer.toString();
-            return new Token(TokenCode.STRLIT, lexeme, line, column);
+            if (!endString)
+                throw new LexError("at (" + line + "," + firstCharColumn +
+                        "). Ill-formed or unclosed string: \"" + lexeme);
+            return new Token(TokenCode.STRLIT, lexeme, line, firstCharColumn);
         }
 
         // recognize operators, delimiters, and comments
@@ -319,10 +415,18 @@ public class Lexer1 {
                 return new Token(TokenCode.LCURLY, "{", line, column);
             case '}':
                 return new Token(TokenCode.RCURLY, "}", line, column);
+            default:
+                throw new LexError("at (" + line + "," + firstCharColumn +
+                        "). Illegal character: " + (char) c);
         }
-
-        throw new Exception("Lexical Error on line " + line + " on column " + firstCharColumn +
-                ": Illegal character " + (char) c);
     }
 
+    public static class LexError extends Exception {
+        public LexError(String message) {
+            super(message);
+        }
+	public LexError(String message, Throwable throwable) {
+	    super(message, throwable);
+	}
+    }
 }

@@ -1,0 +1,141 @@
+//----------------------------------------------------------------------
+// This is an implementation of a lexer using JavaCC. (For CS321 HW1)
+//----------------------------------------------------------------------
+//
+// Kathleen Tran
+// Fall 2015
+//
+
+// A lexer for recognizing miniJava. (JavaCC version)
+//
+PARSER_BEGIN(Lexer2)
+public class Lexer2 {}
+class LexicalError extends TokenMgrError {
+	public LexicalError() {}
+	public LexicalError(String message, int reason) {
+		super(message, reason);
+	}
+}
+PARSER_END(Lexer2)
+
+// Token Definitions
+//
+SKIP:   { <SPACE:  " " | "\t" | "\n" | "\r" > }        // whitespace chars
+
+SPECIAL_TOKEN: { <SL_COMMENT: "//" (~["\n"])*> }
+MORE:	{ "/*": COMMENT }
+<COMMENT> MORE: { <~[]> }
+<COMMENT> SPECIAL_TOKEN: { <BLK_COMMENT: "*/">: DEFAULT}
+//<COMMENT> SPECIAL_TOKEN: { <BLKCMT_NOEND: "/*">
+//{	String comment = image.toString();
+//	if (!comment.contains("*/")
+//              throw new LexicalError("at (" + matchedToken.beginLine + "," +
+//              matchedToken.beginColumn + "). Unclosed comments: " + matchedToken.image, 0);
+//}
+//: DEFAULT }
+
+// keywords
+TOKEN:  {
+<CLASS:         "class">
+| <EXTENDS:     "extends">
+| <STATIC:      "static">
+| <PUBLIC:      "public">
+| <MAIN:        "main">
+| <VOID:        "void">
+| <BOOLEAN:     "boolean">
+| <INT:         "int">
+| <DOUBLE:      "double">
+| <STRING:      "String">
+| <TRUE:        "true">
+| <FALSE:       "false">
+| <NEW:         "new">
+| <THIS:        "this">
+| <IF:          "if">
+| <ELSE:        "else">
+| <WHILE:       "while">
+| <RETURN:      "return">
+| <SYSTEM:      "System">
+| <OUT:         "out">
+| <PRINTLN:     "println">
+}
+
+TOKEN:  {
+<#DIGIT:	    ["0"-"9"]>
+| <#LETTER:	    ["a"-"z"]|["A"-"Z"]>
+}
+TOKEN:  {
+<#INTEGER:      (<DIGIT>)+>
+| <#OCTAL:       "0"(["0"-"7"])+>
+| <#HEXADECIMAL: "0"["x","X"](["0"-"9", "a"-"f", "A"-"F"])+>
+}
+
+TOKEN:  { <ID:          (<LETTER>)+((<DIGIT>)|(<LETTER>))*> }
+
+// literals
+TOKEN:  { <INTLIT:      ((<INTEGER>)|(<OCTAL>)|(<HEXADECIMAL>))>
+        { String lexeme = image.toString();
+	      if (!lexeme.startsWith("0") && !lexeme.contains("0x") && !lexeme.contains("0X")) {
+	        try { Integer.parseInt(matchedToken.image); }
+            catch (Exception e) {
+              throw new LexicalError("at (" + matchedToken.beginLine + "," +
+              matchedToken.beginColumn + "). Invalid decimal literal: " + matchedToken.image, 0);
+            }
+	      } else if (lexeme.startsWith("0") && !lexeme.contains("0x") && !lexeme.contains("0X")) {
+	        try { Integer.parseInt(matchedToken.image, 8); }
+            catch (Exception e) {
+              throw new LexicalError("at (" + matchedToken.beginLine + "," +
+              matchedToken.beginColumn + "). Invalid octal literal: " + matchedToken.image, 0);
+	        }
+	      } else if (lexeme.startsWith("0x") || lexeme.startsWith("0X")) {
+	        try { Integer.parseInt(lexeme.substring(2), 16); }
+            catch (Exception e) {
+              throw new LexicalError("at (" + matchedToken.beginLine + "," +
+              matchedToken.beginColumn + "). Invalid hexadecimal literal: " + matchedToken.image, 0);
+        	}
+	      }
+	    }
+}
+TOKEN:  { <DBLLIT:      ((<DIGIT>)*"."(<DIGIT>)+)|((<DIGIT>)+"."(<DIGIT>)*)> }
+TOKEN:  { <STRLIT:      "\""(~["\n","\r","\""])*(["\"","\n","\r"])> 
+	    { lexeme = image.toString();
+	      if (lexeme.startsWith("\"") && !lexeme.endsWith("\"") || !lexeme.startsWith("\"") && lexeme.endsWith("\""))
+            throw new LexicalError("at (" + matchedToken.beginLine + "," +
+            matchedToken.beginColumn + "). Ill-formed or unclosed string: " + matchedToken.image, 0);
+	    }
+}
+
+// operators
+TOKEN:  {
+<ADD:           "+">
+| <SUB:         "-">
+| <MUL:         "*">
+| <DIV:         "/">
+| <AND:         "&&">
+| <OR:          "||">
+| <NOT:         "!">
+| <EQ:          "==">
+| <NE:          "!=">
+| <LT:          "<">
+| <LE:          "<=">
+| <GT:          ">">
+| <GE:          ">=">
+}
+
+// delimiters
+TOKEN:  {
+<ASSGN:         "=">
+| <SEMI:        ";">
+| <COMMA:       ",">
+| <DOT:         ".">
+| <LPAREN:      "(">
+| <RPAREN:      ")">
+| <LBRAC:       "[">
+| <RBRAC:       "]">
+| <LCURLY:      "{">
+| <RCURLY:      "}">
+}
+
+SPECIAL_TOKEN: {
+    <~[]> { if (true) throw new LexicalError("at (" + matchedToken.beginLine + "," +
+                matchedToken.beginColumn + "). Illegal character: " + matchedToken.image, 0); }
+}
