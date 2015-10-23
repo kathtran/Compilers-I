@@ -13,127 +13,126 @@ public interface Lexer2Constants {
   /** RegularExpression Id. */
   int SL_COMMENT = 2;
   /** RegularExpression Id. */
-  int BLK_COMMENT = 5;
+  int BLK_COMMENT = 3;
   /** RegularExpression Id. */
-  int CLASS = 6;
+  int BLKCMT_NOEND = 4;
   /** RegularExpression Id. */
-  int EXTENDS = 7;
+  int CLASS = 5;
   /** RegularExpression Id. */
-  int STATIC = 8;
+  int EXTENDS = 6;
   /** RegularExpression Id. */
-  int PUBLIC = 9;
+  int STATIC = 7;
   /** RegularExpression Id. */
-  int MAIN = 10;
+  int PUBLIC = 8;
   /** RegularExpression Id. */
-  int VOID = 11;
+  int MAIN = 9;
   /** RegularExpression Id. */
-  int BOOLEAN = 12;
+  int VOID = 10;
   /** RegularExpression Id. */
-  int INT = 13;
+  int BOOLEAN = 11;
   /** RegularExpression Id. */
-  int DOUBLE = 14;
+  int INT = 12;
   /** RegularExpression Id. */
-  int STRING = 15;
+  int DOUBLE = 13;
   /** RegularExpression Id. */
-  int TRUE = 16;
+  int STRING = 14;
   /** RegularExpression Id. */
-  int FALSE = 17;
+  int TRUE = 15;
   /** RegularExpression Id. */
-  int NEW = 18;
+  int FALSE = 16;
   /** RegularExpression Id. */
-  int THIS = 19;
+  int NEW = 17;
   /** RegularExpression Id. */
-  int IF = 20;
+  int THIS = 18;
   /** RegularExpression Id. */
-  int ELSE = 21;
+  int IF = 19;
   /** RegularExpression Id. */
-  int WHILE = 22;
+  int ELSE = 20;
   /** RegularExpression Id. */
-  int RETURN = 23;
+  int WHILE = 21;
   /** RegularExpression Id. */
-  int SYSTEM = 24;
+  int RETURN = 22;
   /** RegularExpression Id. */
-  int OUT = 25;
+  int SYSTEM = 23;
   /** RegularExpression Id. */
-  int PRINTLN = 26;
+  int OUT = 24;
   /** RegularExpression Id. */
-  int DIGIT = 27;
+  int PRINTLN = 25;
   /** RegularExpression Id. */
-  int LETTER = 28;
+  int DIGIT = 26;
   /** RegularExpression Id. */
-  int INTEGER = 29;
+  int LETTER = 27;
   /** RegularExpression Id. */
-  int OCTAL = 30;
+  int INTEGER = 28;
   /** RegularExpression Id. */
-  int HEXADECIMAL = 31;
+  int OCTAL = 29;
   /** RegularExpression Id. */
-  int ID = 32;
+  int HEXADECIMAL = 30;
   /** RegularExpression Id. */
-  int INTLIT = 33;
+  int ID = 31;
   /** RegularExpression Id. */
-  int DBLLIT = 34;
+  int INTLIT = 32;
   /** RegularExpression Id. */
-  int STRLIT = 35;
+  int DBLLIT = 33;
   /** RegularExpression Id. */
-  int ADD = 36;
+  int STRLIT = 34;
   /** RegularExpression Id. */
-  int SUB = 37;
+  int ADD = 35;
   /** RegularExpression Id. */
-  int MUL = 38;
+  int SUB = 36;
   /** RegularExpression Id. */
-  int DIV = 39;
+  int MUL = 37;
   /** RegularExpression Id. */
-  int AND = 40;
+  int DIV = 38;
   /** RegularExpression Id. */
-  int OR = 41;
+  int AND = 39;
   /** RegularExpression Id. */
-  int NOT = 42;
+  int OR = 40;
   /** RegularExpression Id. */
-  int EQ = 43;
+  int NOT = 41;
   /** RegularExpression Id. */
-  int NE = 44;
+  int EQ = 42;
   /** RegularExpression Id. */
-  int LT = 45;
+  int NE = 43;
   /** RegularExpression Id. */
-  int LE = 46;
+  int LT = 44;
   /** RegularExpression Id. */
-  int GT = 47;
+  int LE = 45;
   /** RegularExpression Id. */
-  int GE = 48;
+  int GT = 46;
   /** RegularExpression Id. */
-  int ASSGN = 49;
+  int GE = 47;
   /** RegularExpression Id. */
-  int SEMI = 50;
+  int ASSGN = 48;
   /** RegularExpression Id. */
-  int COMMA = 51;
+  int SEMI = 49;
   /** RegularExpression Id. */
-  int DOT = 52;
+  int COMMA = 50;
   /** RegularExpression Id. */
-  int LPAREN = 53;
+  int DOT = 51;
   /** RegularExpression Id. */
-  int RPAREN = 54;
+  int LPAREN = 52;
   /** RegularExpression Id. */
-  int LBRAC = 55;
+  int RPAREN = 53;
   /** RegularExpression Id. */
-  int RBRAC = 56;
+  int LBRAC = 54;
   /** RegularExpression Id. */
-  int LCURLY = 57;
+  int RBRAC = 55;
   /** RegularExpression Id. */
-  int RCURLY = 58;
+  int LCURLY = 56;
+  /** RegularExpression Id. */
+  int RCURLY = 57;
 
   /** Lexical state. */
   int DEFAULT = 0;
-  /** Lexical state. */
-  int COMMENT = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
     "<SPACE>",
     "<SL_COMMENT>",
-    "\"/*\"",
-    "<token of kind 4>",
-    "\"*/\"",
+    "<BLK_COMMENT>",
+    "<BLKCMT_NOEND>",
     "\"class\"",
     "\"extends\"",
     "\"static\"",
@@ -187,7 +186,7 @@ public interface Lexer2Constants {
     "\"]\"",
     "\"{\"",
     "\"}\"",
-    "<token of kind 59>",
+    "<token of kind 58>",
   };
 
 }
