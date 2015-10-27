@@ -1,0 +1,128 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+// Kathleen Tran
+//
+
+// A LL grammar for the miniJava language.
+//
+
+Program    -> {ClassDecl}
+
+ClassDecl  -> "class" <ID> ["extends" <ID>] "{" {VarDecl} {MethodDecl} "}"
+
+MethodDecl -> "public" ExtType <ID> "(" [Param {"," Param}] ")"
+                "{" {VarDecl} {Stmt} "}"
+           |  "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")"
+                "{" {VarDecl} {Stmt} "}"
+
+Param      -> Type <ID>
+
+VarDecl    -> Type <ID> ["=" InitExpr] ";"
+
+ExtType    -> Type | "void"
+
+Type       -> BasicType
+           |  BasicType "[" "]"             // array type
+           |  <ID>                          // object type
+
+BasicType  -> "int" | "double" | "boolean"
+
+Stmt  ->   "{" {Stmt} "}"                         // stmt block
+           |  ExtId "(" [Args] ")" ";"            // call stmt
+           |  Lvalue "=" InitExpr ";"             // assignment
+           |  "if" "(" Expr ")" Stmt ["else" Stmt]
+           |  "while" "(" Expr ")" Stmt
+           |  "System" "." "out" "." "println"
+                "(" [PrArg] ")" ";"
+           |  "return" [Expr] ";"
+
+Args       -> Expr {"," Expr}
+
+PrArg      -> Expr | <STRLIT>
+
+InitExpr   -> "new" BasicType "[" <INTLIT> "]"    // new array
+           |  "new" <ID> "(" ")"                  // new object
+           |  Expr
+
+Expr0      -> Expr$
+
+Expr       -> Op0 Expr'
+
+Expr'      -> Lvalue
+           |  Literal
+
+// Expr       -> Expr BinOp Expr
+//            |  UnOp Expr
+//            |  "(" Expr ")"
+//            |  ExtId "(" [Args] ")"          // method call
+//            |  Lvalue
+//            |  Literal
+
+Lvalue     -> ExtId "[" Expr "]"            // array element
+           |  ExtId
+
+ExtId      -> ["this" "."] <ID> {"." <ID>}  // object field or just ID
+
+Literal    -> <INTLIT> | <DBLLIT> | "true" | "false"
+
+Op0        -> InitExpr
+           |  "(" Expr ")"
+           |  Op1
+
+Op1        -> "[" Expr "]"
+           |  Expr "." Expr
+           |  ExtId "(" [Args] ")"          // method call
+           |  Op2
+
+Op2        -> Expr "-" Expr
+           |  "!" Expr
+           |  Op3
+
+Op3        -> Expr "*" Expr
+           |  Expr "/" Expr
+           |  Op4
+
+Op4        -> Expr "+" Expr
+           |  Expr "-" Expr
+           |  Op5
+
+Op5        -> Expr "==" Expr
+           |  Expr "!=" Expr
+           |  Expr "<" Expr
+           |  Expr "<=" Expr
+           |  Expr ">" Expr
+           |  Expr ">=" Expr
+           |  Op6
+
+Op6        -> Expr "&&" Expr
+           |  Op7
+
+Op7        -> Expr "||" Expr
+           |  Epsilon
+
+// BinOp      -> "+"  | "-"  | "*" | "/"  | "&&" | "||"
+//            |  "==" | "!=" | "<" | "<=" | ">"  | ">="
+//
+//UnOp       -> "-" | "!"
+
+
+// Operator associativity and precedence.
+//
+
+1. The arithmetic and logical binary operators are all left-associative.
+
+2. The operators' precedence is defined by the following table:
+
+     ------------------------
+     new, ()                    // highest
+     [], ., method call
+     -, !
+     *, /
+     +, -
+     ==, !=,  <, <=,  >, >=
+     &&
+     ||                         // lowest
+     ------------------------
