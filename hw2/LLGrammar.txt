@@ -47,7 +47,7 @@ InitExpr   -> "new" BasicType "[" <INTLIT> "]"    // new array
            |  "new" <ID> "(" ")"                  // new object
            |  Expr
 
-Expr0      -> Expr$
+Expr0      -> Expr
 
 Expr       -> Op0 Expr'
 
@@ -61,7 +61,7 @@ ExtId      -> ["this" "."] <ID> {"." <ID>}  // object field or just ID
 
 Literal    -> <INTLIT> | <DBLLIT> | "true" | "false"
 
-Op0        -> InitExpr
+Op0        -> InitExpr                      // new
            |  "(" Expr ")"
            |  Op1
 
@@ -70,7 +70,7 @@ Op1        -> "[" Expr "]"
            |  ExtId "(" [Args] ")"          // method call
            |  Op2
 
-Op2        -> Expr "-" Expr
+Op2        -> Expr "-" Expr                 // unary operators
            |  "!" Expr
            |  Op3
 
@@ -82,7 +82,7 @@ Op4        -> Expr "+" Expr
            |  Expr "-" Expr
            |  Op5
 
-Op5        -> Expr "==" Expr
+Op5        -> Expr "==" Expr                // comparisons
            |  Expr "!=" Expr
            |  Expr "<" Expr
            |  Expr "<=" Expr
