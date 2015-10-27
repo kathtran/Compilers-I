@@ -185,6 +185,22 @@ void InitExpr(): {}
 | Expr()
 }
 
+void Expr0(): {}
+{
+  Expr()
+}
+
+void Expr(): {}
+{
+  Op0() Expr1()
+}
+
+void Expr1(): {}
+{
+  Lvalue()
+  Literal()
+}
+
 // Expr -> Expr BinOp Expr
 //      |  UnOp Expr
 //      |  "(" Expr ")"
@@ -192,15 +208,15 @@ void InitExpr(): {}
 //      |  Lvalue
 //      |  Literal
 //
-void Expr(): {}
-{
-  Expr() BinOp() Expr()
-| UnOp() Expr()
-| "(" Expr() ")"
-| ExtId() "(" [Args()] ")"
-| Lvalue()
-| Literal()
-}
+//void Expr(): {}
+//{
+//  Expr() BinOp() Expr()
+//| UnOp() Expr()
+//| "(" Expr() ")"
+//| ExtId() "(" [Args()] ")"
+//| Lvalue()
+//| Literal()
+//}
 
 // Lvalue -> ExtId "[" Expr "]"
 //        |  ExtId
@@ -224,18 +240,76 @@ void Literal(): {}
   <INTLIT> | <DBLLIT> | "true" | "false"
 }
 
+void Op0(): {}
+{
+  InitExpr()                    // new
+| "(" Expr() ")"
+| Op1()
+}
+
+void Op1(): {}
+{
+  "[" Expr() "]"
+| Expr() "." Expr()
+| ExtId() "(" [Args()] ")"      // method call
+| Op2()
+}
+
+void Op2(): {}                  // unary operators
+{
+  "-" Expr()
+| "!" Expr()
+| Op3()
+}
+
+void Op3(): {}
+{
+  Expr() "*" Expr()
+| Expr() "/" Expr()
+| Op4()
+}
+
+void Op4(): {}
+{
+  Expr() "+" Expr()
+| Expr() "-" Expr()
+| Op5()
+}
+
+void Op5(): {}                  // comparisons
+{
+  Expr() "==" Expr()
+| Expr() "!=" Expr()
+| Expr() "<" Expr()
+| Expr() "<=" Expr()
+| Expr() ">" Expr()
+| Expr() ">=" Expr()
+| Op6()
+}
+
+void Op6(): {}
+{
+  Expr() "&&" Expr()
+| Op7()
+}
+
+void Op7(): {}
+{
+  Expr() "||" Expr()
+}
+
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
 //       |  "==" | "!=" | "<" | "<=" | ">" | ">="
 //
-void BinOp(): {}
-{
-  "+"  | "-"  | "*" | "/"  | "&&" | "||"
-| "==" | "!=" | "<" | "<=" | ">"  | ">="
-}
+//void BinOp(): {}
+//{
+//  "+"  | "-"  | "*" | "/"  | "&&" | "||"
+//| "==" | "!=" | "<" | "<=" | ">"  | ">="
+//}
 
 // UnOp -> "-" | "!"
 //
-void UnOp(): {}
-{
-  "-" | "!"
-}
+//void UnOp(): {}
+//{
+//  "-" | "!"
+//}
