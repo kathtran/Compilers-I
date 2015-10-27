@@ -54,13 +54,6 @@ Expr       -> Op0 Expr'
 Expr'      -> Lvalue
            |  Literal
 
-// Expr       -> Expr BinOp Expr
-//            |  UnOp Expr
-//            |  "(" Expr ")"
-//            |  ExtId "(" [Args] ")"          // method call
-//            |  Lvalue
-//            |  Literal
-
 Lvalue     -> ExtId "[" Expr "]"            // array element
            |  ExtId
 
@@ -102,12 +95,6 @@ Op6        -> Expr "&&" Expr
 
 Op7        -> Expr "||" Expr
            |  Epsilon
-
-// BinOp      -> "+"  | "-"  | "*" | "/"  | "&&" | "||"
-//            |  "==" | "!=" | "<" | "<=" | ">"  | ">="
-//
-//UnOp       -> "-" | "!"
-
 
 // Operator associativity and precedence.
 //
