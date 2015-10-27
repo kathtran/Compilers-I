@@ -49,9 +49,9 @@ InitExpr   -> "new" BasicType "[" <INTLIT> "]"    // new array
 
 Expr0      -> Expr
 
-Expr       -> Op0 Expr'
+Expr       -> Op0 Expr1
 
-Expr'      -> Lvalue
+Expr1      -> Lvalue
            |  Literal
 
 Lvalue     -> ExtId "[" Expr "]"            // array element
