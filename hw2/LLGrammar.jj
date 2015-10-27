@@ -182,7 +182,7 @@ void InitExpr(): {}
 {
   "new" BasicType() "[" <INTLIT> "]"
 | "new" <ID> "(" ")"
-| Expr()
+| Expr()  // TODO
 }
 
 void Expr0(): {}
@@ -192,6 +192,7 @@ void Expr0(): {}
 
 void Expr(): {}
 {
+  // TODO
   Op0() Expr1()
 }
 
@@ -240,6 +241,7 @@ void Literal(): {}
   <INTLIT> | <DBLLIT> | "true" | "false"
 }
 
+// TODO
 void Op0(): {}
 {
   InitExpr()                    // new

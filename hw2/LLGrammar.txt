@@ -70,7 +70,7 @@ Op1        -> "[" Expr "]"
            |  ExtId "(" [Args] ")"          // method call
            |  Op2
 
-Op2        -> Expr "-" Expr                 // unary operators
+Op2        -> "-" Expr                      // unary operators
            |  "!" Expr
            |  Op3
 
