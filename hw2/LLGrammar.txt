@@ -47,11 +47,11 @@ InitExpr   -> "new" BasicType "[" <INTLIT> "]"    // new array
            |  "new" <ID> "(" ")"                  // new object
            |  Expr
 
-Expr0      -> Expr
-
-Expr       -> Op0 Expr1
-
-Expr1      -> Lvalue
+Expr       -> BinOp
+           |  UnOp
+           |  "(" Expr ")"
+           |  ExtId "(" [Args] ")"
+           |  Lvalue
            |  Literal
 
 Lvalue     -> ExtId "[" Expr "]"            // array element
@@ -61,40 +61,22 @@ ExtId      -> ["this" "."] <ID> {"." <ID>}  // object field or just ID
 
 Literal    -> <INTLIT> | <DBLLIT> | "true" | "false"
 
-Op0        -> InitExpr                      // new
-           |  "(" Expr ")"
-           |  Op1
+BinOp      -> "*" Expr
+           |  "/" Expr
+           |  "+" Expr
+           |  "-" Expr
+           |  "==" Expr
+           |  "!=" Expr
+           |  "<" LG
+           |  ">" LG
+           |  "&&" Expr
+           |  "||" Expr
 
-Op1        -> "[" Expr "]"
-           |  Expr "." Expr
-           |  ExtId "(" [Args] ")"          // method call
-           |  Op2
+LG         -> "=" Expr
+           |  Expr
 
-Op2        -> "-" Expr                      // unary operators
+UnOp       -> "-" Expr
            |  "!" Expr
-           |  Op3
-
-Op3        -> Expr "*" Expr
-           |  Expr "/" Expr
-           |  Op4
-
-Op4        -> Expr "+" Expr
-           |  Expr "-" Expr
-           |  Op5
-
-Op5        -> Expr "==" Expr                // comparisons
-           |  Expr "!=" Expr
-           |  Expr "<" Expr
-           |  Expr "<=" Expr
-           |  Expr ">" Expr
-           |  Expr ">=" Expr
-           |  Op6
-
-Op6        -> Expr "&&" Expr
-           |  Op7
-
-Op7        -> Expr "||" Expr
-           |  Epsilon
 
 // Operator associativity and precedence.
 //
