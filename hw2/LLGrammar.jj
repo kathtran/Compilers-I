@@ -182,24 +182,17 @@ void InitExpr(): {}
 {
   "new" BasicType() "[" <INTLIT> "]"
 | "new" <ID> "(" ")"
-| Expr()  // TODO
-}
-
-void Expr0(): {}
-{
-  Expr()
+| Expr()
 }
 
 void Expr(): {}
 {
-  // TODO
-  Op0() Expr1()
-}
-
-void Expr1(): {}
-{
-  Lvalue()
-  Literal()
+  BinOp()
+| UnOp()
+| "(" Expr() ")"
+| ExtId() "(" [Args()] ")"
+| Lvalue()
+| Literal()
 }
 
 // Expr -> Expr BinOp Expr
@@ -241,63 +234,24 @@ void Literal(): {}
   <INTLIT> | <DBLLIT> | "true" | "false"
 }
 
-// TODO
-void Op0(): {}
+void BinOp(): {}
 {
-  InitExpr()                    // new
-| "(" Expr() ")"
-| Op1()
+  "*" Expr()
+| "/" Expr()
+| "+" Expr()
+| "-" Expr()
+| "==" Expr()
+| "!=" Expr()
+| "<" LG()
+| ">" LG()
+| "&&" Expr()
+| "||" Expr()
 }
 
-void Op1(): {}
+void LG(): {}
 {
-  "[" Expr() "]"
-| Expr() "." Expr()
-| ExtId() "(" [Args()] ")"      // method call
-| Op2()
-}
-
-void Op2(): {}                  // unary operators
-{
-  "-" Expr()
-| "!" Expr()
-| Op3()
-}
-
-void Op3(): {}
-{
-  Expr() "*" Expr()
-| Expr() "/" Expr()
-| Op4()
-}
-
-void Op4(): {}
-{
-  Expr() "+" Expr()
-| Expr() "-" Expr()
-| Op5()
-}
-
-void Op5(): {}                  // comparisons
-{
-  Expr() "==" Expr()
-| Expr() "!=" Expr()
-| Expr() "<" Expr()
-| Expr() "<=" Expr()
-| Expr() ">" Expr()
-| Expr() ">=" Expr()
-| Op6()
-}
-
-void Op6(): {}
-{
-  Expr() "&&" Expr()
-| Op7()
-}
-
-void Op7(): {}
-{
-  Expr() "||" Expr()
+  "=" Expr()
+  | Expr()
 }
 
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
@@ -308,6 +262,12 @@ void Op7(): {}
 //  "+"  | "-"  | "*" | "/"  | "&&" | "||"
 //| "==" | "!=" | "<" | "<=" | ">"  | ">="
 //}
+
+void UnOp(): {}
+{
+  "-" Expr()
+| "!" Expr()
+}
 
 // UnOp -> "-" | "!"
 //
