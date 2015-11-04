@@ -182,7 +182,7 @@ void PrArg(): {}
 //
 void InitExpr(): {}
 {
-	LOOKAHEAD(2)
+  LOOKAHEAD(2)
   "new" BasicType() "[" <INTLIT> "]"
 | "new" <ID> "(" ")"
 | Expr()
@@ -215,7 +215,7 @@ void Primary(): {}
 //        |  ExtId
 void Lvalue(): {}
 {
-	LOOKAHEAD(2)
+  LOOKAHEAD(2)
   ExtId() "[" Expr() "]"
 | ExtId()
 }
@@ -236,20 +236,23 @@ void Literal(): {}
 
 void BinOp(): {}
 {
-  ("||" BinOp1())?
+  LOOKAHEAD(2)
+  ("||" BinOp1())*
 }
 
 void BinOp1(): {}
 {
-  ("&&" BinOp2())?
+  LOOKAHEAD(2)
+  ("&&" BinOp2())*
 }
 
 void BinOp2(): {}
 {
-  ("==" BinOp3())?
-| ("!=" BinOp3())?
-| ("<" B3())?
-| (">" B3())?
+  LOOKAHEAD(2)
+  ("==" BinOp3())*
+| ("!=" BinOp3())*
+| ("<" B3())*
+| (">" B3())*
 }
 
 void B3(): {}
@@ -259,14 +262,16 @@ void B3(): {}
 
 void BinOp3(): {}
 {
-  ("+" BinOp4())?
-| ("-" BinOp4())?
+  LOOKAHEAD(2)
+  ("+" BinOp4())*
+| ("-" BinOp4())*
 }
 
 void BinOp4(): {}
 {
-  ("*" Expr())?
-| ("/" Expr())?
+  LOOKAHEAD(2)
+  ("*" Expr())*
+| ("/" Expr())*
 }
 
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
