@@ -236,23 +236,20 @@ void Literal(): {}
 
 void BinOp(): {}
 {
-  LOOKAHEAD(2)
-  ("||" BinOp1())*
+  (LOOKAHEAD(2) "||" BinOp1())*
 }
 
 void BinOp1(): {}
 {
-  LOOKAHEAD(2)
-  ("&&" BinOp2())*
+  (LOOKAHEAD(2) "&&" BinOp2())*
 }
 
 void BinOp2(): {}
 {
-  LOOKAHEAD(2)
-  ("==" BinOp3())*
-| ("!=" BinOp3())*
-| ("<" B3())*
-| (">" B3())*
+  (LOOKAHEAD(2) "==" BinOp3())*
+| (LOOKAHEAD(2) "!=" BinOp3())*
+| (LOOKAHEAD(2) "<" B3())*
+| (LOOKAHEAD(2) ">" B3())*
 }
 
 void B3(): {}
@@ -262,16 +259,14 @@ void B3(): {}
 
 void BinOp3(): {}
 {
-  LOOKAHEAD(2)
-  ("+" BinOp4())*
-| ("-" BinOp4())*
+  (LOOKAHEAD(2) "+" BinOp4())*
+| (LOOKAHEAD(2) "-" BinOp4())*
 }
 
 void BinOp4(): {}
 {
-  LOOKAHEAD(2)
-  ("*" Expr())*
-| ("/" Expr())*
+  (LOOKAHEAD(2) "*" Expr())*
+| (LOOKAHEAD(2) "/" Expr())*
 }
 
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
