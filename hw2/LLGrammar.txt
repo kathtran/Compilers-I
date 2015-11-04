@@ -47,12 +47,14 @@ InitExpr   -> "new" BasicType "[" <INTLIT> "]"    // new array
            |  "new" <ID> "(" ")"                  // new object
            |  Expr
 
-Expr       -> BinOp
-           |  UnOp
+Expr       -> Primary BinOp
+           |  UnOp Expr
            |  "(" Expr ")"
-           |  ExtId "(" [Args] ")"
+           |  ExtId "(" [Args] ")"          // method call
            |  Lvalue
            |  Literal
+
+Primary    -> "(" Expr ")"
 
 Lvalue     -> ExtId "[" Expr "]"            // array element
            |  ExtId
@@ -61,22 +63,33 @@ ExtId      -> ["this" "."] <ID> {"." <ID>}  // object field or just ID
 
 Literal    -> <INTLIT> | <DBLLIT> | "true" | "false"
 
-BinOp      -> "*" Expr
-           |  "/" Expr
-           |  "+" Expr
-           |  "-" Expr
-           |  "==" Expr
-           |  "!=" Expr
-           |  "<" LG
-           |  ">" LG
-           |  "&&" Expr
-           |  "||" Expr
 
-LG         -> "=" Expr
-           |  Expr
+BinOp      -> {"||" BinOp1}
 
-UnOp       -> "-" Expr
-           |  "!" Expr
+BinOp1     -> {"&&" BinOp2}
+
+BinOp2     -> {"==" BinOp3}
+           |  {"!=" BinOp3}
+           |  {"<" LG}
+           |  {">" LG}
+
+LG         -> {"="} BinOp3
+
+BinOp3     -> {"+" BinOp4}
+           |  {"-" BinOp4}
+
+BinOp4     -> {"*" Expr}
+           |  {"/" Expr}
+
+UnOp       -> "-" | "!"
+
+Secondary  -> ExtId "(" [Args] ")"      // method call
+           |  Lvalue
+
+NewOp      -> "new" NewOp1
+
+NewOp1     -> BasicType "[" <INTLIT> "]"
+           |  <ID> "(" ")"
 
 // Operator associativity and precedence.
 //

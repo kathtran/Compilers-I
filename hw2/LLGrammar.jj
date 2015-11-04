@@ -202,15 +202,20 @@ void Expr(): {}
 //      |  Lvalue
 //      |  Literal
 //
-//void Expr(): {}
-//{
-//  Expr() BinOp() Expr()
-//| UnOp() Expr()
-//| "(" Expr() ")"
-//| ExtId() "(" [Args()] ")"
-//| Lvalue()
-//| Literal()
-//}
+void Expr(): {}
+{
+  Primary() BinOp()
+| UnOp() Expr()
+| "(" Expr() ")"
+| ExtId() "(" [Args()] ")"
+| Lvalue()
+| Literal()
+}
+
+void Primary(): {}
+{
+  "(" Expr() ")"
+}
 
 // Lvalue -> ExtId "[" Expr "]"
 //        |  ExtId
@@ -236,22 +241,37 @@ void Literal(): {}
 
 void BinOp(): {}
 {
-  "*" Expr()
-| "/" Expr()
-| "+" Expr()
-| "-" Expr()
-| "==" Expr()
-| "!=" Expr()
-| "<" LG()
-| ">" LG()
-| "&&" Expr()
-| "||" Expr()
+  ("||" BinOp1())?
 }
 
-void LG(): {}
+void BinOp1(): {}
 {
-  "=" Expr()
-  | Expr()
+  ("&&" BinOp2())?
+}
+
+void BinOp2(): {}
+{
+  ("==" BinOp3())?
+| ("!=" BinOp3())?
+| ("<" B3())?
+| (">" B3())?
+}
+
+void B3(): {}
+{
+  ("=")? BinOp3()
+}
+
+void BinOp3(): {}
+{
+  ("+" BinOp4())?
+| ("-" BinOp4())?
+}
+
+void BinOp4(): {}
+{
+  ("*" Expr())?
+| ("/" Expr())?
 }
 
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
@@ -263,15 +283,9 @@ void LG(): {}
 //| "==" | "!=" | "<" | "<=" | ">"  | ">="
 //}
 
-void UnOp(): {}
-{
-  "-" Expr()
-| "!" Expr()
-}
-
 // UnOp -> "-" | "!"
 //
-//void UnOp(): {}
-//{
-//  "-" | "!"
-//}
+void UnOp(): {}
+{
+  "-" | "!"
+}
