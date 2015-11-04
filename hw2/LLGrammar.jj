@@ -130,10 +130,13 @@ void ExtType(): {}
 //
 void Type(): {}
 {
-  LOOKAHEAD(2)
-  BasicType()
-| BasicType() "[" "]"
+  BasicType() Type1()
 | <ID>
+}
+
+void Type1(): {}
+{
+	("[" "]")?
 }
 
 // BasicType -> "int" | "double" | "boolean"
@@ -182,10 +185,14 @@ void PrArg(): {}
 //
 void InitExpr(): {}
 {
-  LOOKAHEAD(2)
-  "new" BasicType() "[" <INTLIT> "]"
-| "new" <ID> "(" ")"
+  "new" InitExpr1()
 | Expr()
+}
+
+void InitExpr1(): {}
+{
+	BasicType() "[" <INTLIT> "]"
+| <ID> "(" ")"
 }
 
 // Expr -> Expr BinOp Expr
@@ -202,7 +209,7 @@ void Expr(): {}
 | UnOp() Expr()
 | "(" Expr() ")"
 | LOOKAHEAD(3) ExtId() "(" [Args()] ")"
-| LOOKAHEAD(3) Lvalue()
+| Lvalue()
 | Literal()
 }
 
@@ -215,9 +222,12 @@ void Primary(): {}
 //        |  ExtId
 void Lvalue(): {}
 {
-  LOOKAHEAD(2)
-  ExtId() "[" Expr() "]"
-| ExtId()
+  ExtId() Lvalue1()
+}
+
+void Lvalue1(): {}
+{
+	("[" Expr() "]")?
 }
 
 // ExtId -> ["this" "."] <ID> {"." <ID>}
