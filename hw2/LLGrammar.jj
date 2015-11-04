@@ -11,10 +11,10 @@
 
 // options { DEBUG_PARSER=true; }  /* Show debugging info */
 
-PARSER_BEGIN(RawGrammar)
+PARSER_BEGIN(LLGrammar)
 import java.io.*;
 
-public class RawGrammar {
+public class LLGrammar {
   public static void main(String [] args) {
     if (args.length < 1) {
       System.out.println("Need a file name as command-line argument.");
@@ -22,7 +22,7 @@ public class RawGrammar {
     }
     try {
       FileReader input = new FileReader(args[0]);
-      new RawGrammar(input).Program();
+      new LLGrammar(input).Program();
       input.close();
     } catch (TokenMgrError e) {
       System.err.println(e);
@@ -31,7 +31,7 @@ public class RawGrammar {
     }
   }
 }
-PARSER_END(RawGrammar)
+PARSER_END(LLGrammar)
 
 //
 // LEXER SECTION ---------------------------------------------------------------
