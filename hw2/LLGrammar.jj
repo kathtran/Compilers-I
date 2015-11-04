@@ -136,7 +136,7 @@ void Type(): {}
 
 void Type1(): {}
 {
-	("[" "]")?
+	["[" "]"]
 }
 
 // BasicType -> "int" | "double" | "boolean"
@@ -204,8 +204,7 @@ void InitExpr1(): {}
 //
 void Expr(): {}
 {
-  LOOKAHEAD(2)
-  Primary() BinOp()
+  BinOp()
 | UnOp() Expr()
 | "(" Expr() ")"
 | LOOKAHEAD(3) ExtId() "(" [Args()] ")"
@@ -227,7 +226,7 @@ void Lvalue(): {}
 
 void Lvalue1(): {}
 {
-	("[" Expr() "]")?
+	["[" Expr() "]"]
 }
 
 // ExtId -> ["this" "."] <ID> {"." <ID>}
@@ -246,37 +245,42 @@ void Literal(): {}
 
 void BinOp(): {}
 {
-  (LOOKAHEAD(2) "||" BinOp1())*
+  BinOp1() ["||" BinOp1()]
 }
 
 void BinOp1(): {}
 {
-  (LOOKAHEAD(2) "&&" BinOp2())*
+  BinOp2() ["&&" BinOp2()]
 }
 
 void BinOp2(): {}
 {
-  (LOOKAHEAD(2) "==" BinOp3())*
-| (LOOKAHEAD(2) "!=" BinOp3())*
-| (LOOKAHEAD(2) "<" B3())*
-| (LOOKAHEAD(2) ">" B3())*
+  BinOp3() ["==" BinOp3()]
+| BinOp3() ["!=" BinOp3()]
+| BinOp3() ["<" B3()]
+| BinOp3() [">" B3()]
 }
 
 void B3(): {}
 {
-  ("=")? BinOp3()
+  ["="] BinOp3()
 }
 
 void BinOp3(): {}
 {
-  (LOOKAHEAD(2) "+" BinOp4())*
-| (LOOKAHEAD(2) "-" BinOp4())*
+  BinOp4() ["+" BinOp4()]
+| BinOp4() ["-" BinOp4()]
 }
 
 void BinOp4(): {}
 {
-  (LOOKAHEAD(2) "*" Expr())*
-| (LOOKAHEAD(2) "/" Expr())*
+  BinOp5() ["*" BinOp5()]
+| BinOp5() ["/" BinOp5()]
+}
+
+void BinOp5(): {}
+{
+  Literal()
 }
 
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
