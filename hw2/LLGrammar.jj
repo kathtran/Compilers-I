@@ -96,10 +96,11 @@ void ClassDecl(): {}
 //
 void MethodDecl(): {}
 {
+  LOOKAHEAD(2)
   "public" ExtType() <ID> "(" [Param() ("," Param())*] ")"
-          "{" (VarDecl())* (Stmt())* "}"
+          "{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
 | "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")"
-          "{" (VarDecl())* (Stmt())* "}"
+          "{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
 }
 
 // Param -> Type <ID>
@@ -129,6 +130,7 @@ void ExtType(): {}
 //
 void Type(): {}
 {
+  LOOKAHEAD(2)
   BasicType()
 | BasicType() "[" "]"
 | <ID>
@@ -152,9 +154,9 @@ void BasicType(): {}
 void Stmt(): {}
 {
   "{" (Stmt())* "}"
-| ExtId() "(" [Args()] ")" ";"
+| LOOKAHEAD(3) ExtId() "(" [Args()] ")" ";"
 | Lvalue() "=" InitExpr() ";"
-| "if" "(" Expr() ")" Stmt() ["else" Stmt()]
+| "if" "(" Expr() ")" Stmt() [LOOKAHEAD(2) "else" Stmt()]
 | "while" "(" Expr() ")" Stmt()
 | "System" "." "out" "." "println" "(" [ PrArg() ] ")" ";"
 | "return" [Expr()] ";"
@@ -180,19 +182,10 @@ void PrArg(): {}
 //
 void InitExpr(): {}
 {
+	LOOKAHEAD(2)
   "new" BasicType() "[" <INTLIT> "]"
 | "new" <ID> "(" ")"
 | Expr()
-}
-
-void Expr(): {}
-{
-  BinOp()
-| UnOp()
-| "(" Expr() ")"
-| ExtId() "(" [Args()] ")"
-| Lvalue()
-| Literal()
 }
 
 // Expr -> Expr BinOp Expr
@@ -204,11 +197,12 @@ void Expr(): {}
 //
 void Expr(): {}
 {
+  LOOKAHEAD(2)
   Primary() BinOp()
 | UnOp() Expr()
 | "(" Expr() ")"
-| ExtId() "(" [Args()] ")"
-| Lvalue()
+| LOOKAHEAD(3) ExtId() "(" [Args()] ")"
+| LOOKAHEAD(3) Lvalue()
 | Literal()
 }
 
@@ -221,6 +215,7 @@ void Primary(): {}
 //        |  ExtId
 void Lvalue(): {}
 {
+	LOOKAHEAD(2)
   ExtId() "[" Expr() "]"
 | ExtId()
 }
