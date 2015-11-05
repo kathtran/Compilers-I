@@ -309,10 +309,11 @@ public class LLGrammar implements LLGrammarConstants {
       }
       jj_consume_token(55);
       break;
-    default:
-      jj_la1[17] = jj_gen;
-      if (jj_2_3(2)) {
-        ExtId();
+    case 19:
+    case ID:
+      ExtId();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 50:
         jj_consume_token(50);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 16:
@@ -332,88 +333,100 @@ public class LLGrammar implements LLGrammarConstants {
         }
         jj_consume_token(51);
         jj_consume_token(47);
-      } else {
+        break;
+      case 46:
+      case 52:
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 19:
-        case ID:
-          Lvalue();
-          jj_consume_token(46);
-          InitExpr();
-          jj_consume_token(47);
-          break;
-        case 20:
-          jj_consume_token(20);
-          jj_consume_token(50);
+        case 52:
+          jj_consume_token(52);
           Expr();
-          jj_consume_token(51);
-          Stmt();
-          if (jj_2_2(2)) {
-            jj_consume_token(21);
-            Stmt();
-          } else {
-            ;
-          }
-          break;
-        case 22:
-          jj_consume_token(22);
-          jj_consume_token(50);
-          Expr();
-          jj_consume_token(51);
-          Stmt();
-          break;
-        case 24:
-          jj_consume_token(24);
-          jj_consume_token(49);
-          jj_consume_token(25);
-          jj_consume_token(49);
-          jj_consume_token(26);
-          jj_consume_token(50);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 16:
-          case 17:
-          case 19:
-          case INTLIT:
-          case DBLLIT:
-          case STRLIT:
-          case ID:
-          case 34:
-          case 39:
-          case 50:
-            PrArg();
-            break;
-          default:
-            jj_la1[15] = jj_gen;
-            ;
-          }
-          jj_consume_token(51);
-          jj_consume_token(47);
-          break;
-        case 23:
-          jj_consume_token(23);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 16:
-          case 17:
-          case 19:
-          case INTLIT:
-          case DBLLIT:
-          case ID:
-          case 34:
-          case 39:
-          case 50:
-            Expr();
-            break;
-          default:
-            jj_la1[16] = jj_gen;
-            ;
-          }
-          jj_consume_token(47);
+          jj_consume_token(53);
           break;
         default:
-          jj_la1[18] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+          jj_la1[15] = jj_gen;
+          ;
         }
+        jj_consume_token(46);
+        InitExpr();
+        jj_consume_token(47);
+        break;
+      default:
+        jj_la1[16] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
+      break;
+    case 20:
+      jj_consume_token(20);
+      jj_consume_token(50);
+      Expr();
+      jj_consume_token(51);
+      Stmt();
+      if (jj_2_2(2)) {
+        jj_consume_token(21);
+        Stmt();
+      } else {
+        ;
+      }
+      break;
+    case 22:
+      jj_consume_token(22);
+      jj_consume_token(50);
+      Expr();
+      jj_consume_token(51);
+      Stmt();
+      break;
+    case 24:
+      jj_consume_token(24);
+      jj_consume_token(49);
+      jj_consume_token(25);
+      jj_consume_token(49);
+      jj_consume_token(26);
+      jj_consume_token(50);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 16:
+      case 17:
+      case 19:
+      case INTLIT:
+      case DBLLIT:
+      case STRLIT:
+      case ID:
+      case 34:
+      case 39:
+      case 50:
+        PrArg();
+        break;
+      default:
+        jj_la1[17] = jj_gen;
+        ;
+      }
+      jj_consume_token(51);
+      jj_consume_token(47);
+      break;
+    case 23:
+      jj_consume_token(23);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 16:
+      case 17:
+      case 19:
+      case INTLIT:
+      case DBLLIT:
+      case ID:
+      case 34:
+      case 39:
+      case 50:
+        Expr();
+        break;
+      default:
+        jj_la1[18] = jj_gen;
+        ;
+      }
+      jj_consume_token(47);
+      break;
+    default:
+      jj_la1[19] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
@@ -428,7 +441,7 @@ public class LLGrammar implements LLGrammarConstants {
         ;
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[20] = jj_gen;
         break label_8;
       }
       jj_consume_token(48);
@@ -455,7 +468,7 @@ public class LLGrammar implements LLGrammarConstants {
       jj_consume_token(STRLIT);
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -469,7 +482,7 @@ public class LLGrammar implements LLGrammarConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 18:
       jj_consume_token(18);
-      InitExpr1();
+      I1();
       break;
     case 16:
     case 17:
@@ -483,13 +496,13 @@ public class LLGrammar implements LLGrammarConstants {
       Expr();
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[22] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
   }
 
-  static final public void InitExpr1() throws ParseException {
+  static final public void I1() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 12:
     case 13:
@@ -505,7 +518,7 @@ public class LLGrammar implements LLGrammarConstants {
       jj_consume_token(51);
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -524,19 +537,11 @@ public class LLGrammar implements LLGrammarConstants {
 
 // Lvalue -> ExtId "[" Expr "]"
 //        |  ExtId
-  static final public void Lvalue() throws ParseException {
-    ExtId();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 52:
-      jj_consume_token(52);
-      Expr();
-      jj_consume_token(53);
-      break;
-    default:
-      jj_la1[23] = jj_gen;
-      ;
-    }
-  }
+//void Lvalue(): {}
+//{
+//  ExtId() ("[" Expr() "]")
+//| ExtId()
+//}
 
 // ExtId -> ["this" "."] <ID> {"." <ID>}
 //
@@ -862,114 +867,25 @@ public class LLGrammar implements LLGrammarConstants {
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_2_3(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_3(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(2, xla); }
+  static private boolean jj_3R_29() {
+    if (jj_scan_token(19)) return true;
+    return false;
   }
 
   static private boolean jj_3R_26() {
-    if (jj_scan_token(19)) return true;
-    if (jj_scan_token(49)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_26()) jj_scanpos = xsp;
-    if (jj_scan_token(ID)) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_27()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_16() {
-    if (jj_3R_19()) return true;
+    if (jj_3R_29()) jj_scanpos = xsp;
     if (jj_scan_token(ID)) return true;
     return false;
   }
 
-  static private boolean jj_3R_29() {
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_25() {
-    if (jj_scan_token(23)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_24() {
-    if (jj_scan_token(24)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_23() {
-    if (jj_scan_token(22)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_22() {
-    if (jj_scan_token(20)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_21() {
-    if (jj_3R_29()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_3() {
-    if (jj_3R_18()) return true;
-    if (jj_scan_token(50)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_20() {
-    if (jj_scan_token(54)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_20()) {
-    jj_scanpos = xsp;
-    if (jj_3_3()) {
-    jj_scanpos = xsp;
-    if (jj_3R_21()) {
-    jj_scanpos = xsp;
-    if (jj_3R_22()) {
-    jj_scanpos = xsp;
-    if (jj_3R_23()) {
-    jj_scanpos = xsp;
-    if (jj_3R_24()) {
-    jj_scanpos = xsp;
-    if (jj_3R_25()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_31() {
+  static private boolean jj_3R_28() {
     if (jj_scan_token(52)) return true;
     return false;
   }
 
-  static private boolean jj_3R_30() {
+  static private boolean jj_3R_27() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(13)) {
@@ -982,8 +898,9 @@ public class LLGrammar implements LLGrammarConstants {
     return false;
   }
 
-  static private boolean jj_3R_27() {
-    if (jj_scan_token(49)) return true;
+  static private boolean jj_3R_16() {
+    if (jj_3R_18()) return true;
+    if (jj_scan_token(ID)) return true;
     return false;
   }
 
@@ -993,21 +910,78 @@ public class LLGrammar implements LLGrammarConstants {
     return false;
   }
 
-  static private boolean jj_3R_19() {
+  static private boolean jj_3_1() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_24() {
+    if (jj_scan_token(23)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_23() {
+    if (jj_scan_token(24)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_22() {
+    if (jj_scan_token(22)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_25() {
+    if (jj_3R_27()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_28()) {
+    if (jj_3R_28()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_18() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_25()) {
     jj_scanpos = xsp;
     if (jj_scan_token(32)) return true;
     }
     return false;
   }
 
-  static private boolean jj_3R_28() {
-    if (jj_3R_30()) return true;
+  static private boolean jj_3R_21() {
+    if (jj_scan_token(20)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_20() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_17() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_31()) jj_scanpos = xsp;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) {
+    jj_scanpos = xsp;
+    if (jj_3R_21()) {
+    jj_scanpos = xsp;
+    if (jj_3R_22()) {
+    jj_scanpos = xsp;
+    if (jj_3R_23()) {
+    jj_scanpos = xsp;
+    if (jj_3R_24()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_19() {
+    if (jj_scan_token(54)) return true;
     return false;
   }
 
@@ -1031,12 +1005,12 @@ public class LLGrammar implements LLGrammarConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40,0x80,0x7000,0x200,0x0,0x7000,0x7900,0x1d80000,0x0,0x7800,0x0,0x7000,0x7000,0x1d80000,0x600b0000,0xe00b0000,0x600b0000,0x0,0x1d80000,0x0,0xe00b0000,0x600f0000,0x7000,0x0,0x80000,0x0,0x60030000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600b0000,0x0,0x0,0x600b0000,0x60030000,0x0,};
+      jj_la1_0 = new int[] {0x40,0x80,0x7000,0x200,0x0,0x7000,0x7900,0x1d80000,0x0,0x7800,0x0,0x7000,0x7000,0x1d80000,0x600b0000,0x0,0x0,0xe00b0000,0x600b0000,0x1d80000,0x0,0xe00b0000,0x600f0000,0x7000,0x80000,0x0,0x60030000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600b0000,0x0,0x0,0x600b0000,0x60030000,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x1,0x0,0x10000,0x1,0x1,0x400001,0x4000,0x1,0x100000,0x1,0x0,0x400001,0x40085,0x40085,0x40085,0x400000,0x1,0x10000,0x40085,0x40085,0x1,0x100000,0x0,0x20000,0x0,0x40,0x20,0x3f00,0x3f00,0x6,0x6,0x18,0x18,0x84,0x40085,0x140000,0x140000,0x40001,0x40000,0x84,};
+      jj_la1_1 = new int[] {0x0,0x0,0x1,0x0,0x10000,0x1,0x1,0x400001,0x4000,0x1,0x100000,0x1,0x0,0x400001,0x40085,0x100000,0x144000,0x40085,0x40085,0x400001,0x10000,0x40085,0x40085,0x1,0x0,0x20000,0x0,0x40,0x20,0x3f00,0x3f00,0x6,0x6,0x18,0x18,0x84,0x40085,0x140000,0x140000,0x40001,0x40000,0x84,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[3];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -1288,7 +1262,7 @@ public class LLGrammar implements LLGrammarConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1297,7 +1271,6 @@ public class LLGrammar implements LLGrammarConstants {
           switch (i) {
             case 0: jj_3_1(); break;
             case 1: jj_3_2(); break;
-            case 2: jj_3_3(); break;
           }
         }
         p = p.next;

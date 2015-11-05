@@ -159,8 +159,7 @@ void BasicType(): {}
 void Stmt(): {}
 {
   "{" (Stmt())* "}"
-| LOOKAHEAD(2) ExtId() "(" [Args()] ")" ";"
-| Lvalue() "=" InitExpr() ";"
+| ExtId() (("(" [Args()] ")" ";")|("[" Expr() "]")?("=" InitExpr() ";"))
 | "if" "(" Expr() ")" Stmt() [LOOKAHEAD(2)"else" Stmt()]
 | "while" "(" Expr() ")" Stmt()
 | "System" "." "out" "." "println" "(" [ PrArg() ] ")" ";"
@@ -187,11 +186,11 @@ void PrArg(): {}
 //
 void InitExpr(): {}
 {
-  "new" InitExpr1()
+  "new" I1()
 | Expr()
 }
 
-void InitExpr1(): {}
+void I1(): {}
 {
 	BasicType() "[" <INTLIT> "]"
 | <ID> "(" ")"
@@ -211,10 +210,11 @@ void Expr(): {}
 
 // Lvalue -> ExtId "[" Expr "]"
 //        |  ExtId
-void Lvalue(): {}
-{
-  ExtId() ("[" Expr() "]")?
-}
+//void Lvalue(): {}
+//{
+//  ExtId() ("[" Expr() "]")
+//| ExtId()
+//}
 
 // ExtId -> ["this" "."] <ID> {"." <ID>}
 //
