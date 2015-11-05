@@ -93,6 +93,7 @@ public class LLGrammar implements LLGrammarConstants {
   static final public void MethodDecl() throws ParseException {
     jj_consume_token(9);
     M1();
+    M2();
   }
 
   static final public void M1() throws ParseException {
@@ -130,7 +131,6 @@ public class LLGrammar implements LLGrammarConstants {
         ;
       }
       jj_consume_token(51);
-      M2();
       break;
     case 8:
       jj_consume_token(8);
@@ -142,7 +142,6 @@ public class LLGrammar implements LLGrammarConstants {
       jj_consume_token(53);
       jj_consume_token(ID);
       jj_consume_token(51);
-      M2();
       break;
     default:
       jj_la1[6] = jj_gen;

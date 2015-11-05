@@ -96,13 +96,13 @@ void ClassDecl(): {}
 //
 void MethodDecl(): {}
 {
-	"public" M1()
+	"public" M1() M2()
 }
 
 void M1(): {}
 {
-  ExtType() <ID> "(" [Param() ("," Param())*] ")" M2()
-| "static" "void" "main" "(" "String" "[" "]" <ID> ")" M2()
+  ExtType() <ID> "(" [Param() ("," Param())*] ")"
+| "static" "void" "main" "(" "String" "[" "]" <ID> ")"
 }
 
 void M2(): {}
