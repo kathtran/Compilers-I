@@ -13,10 +13,12 @@ Program    -> {ClassDecl}
 
 ClassDecl  -> "class" <ID> ["extends" <ID>] "{" {VarDecl} {MethodDecl} "}"
 
-MethodDecl -> "public" ExtType <ID> "(" [Param {"," Param}] ")"
-                "{" {VarDecl} {Stmt} "}"
+MethodDecl -> "public" M1 M2
+
+M1         -> "public" ExtType <ID> "(" [Param {"," Param}] ")"
            |  "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")"
-                "{" {VarDecl} {Stmt} "}"
+
+M2         ->  "{" {VarDecl} {Stmt} "}"
 
 Param      -> Type <ID>
 
@@ -30,9 +32,9 @@ Type       -> BasicType
 
 BasicType  -> "int" | "double" | "boolean"
 
-Stmt  ->   "{" {Stmt} "}"                         // stmt block
-           |  ExtId "(" [Args] ")" ";"            // call stmt
-           |  Lvalue "=" InitExpr ";"             // assignment
+Stmt  ->   "{" {Stmt} "}"                                                           // stmt block
+           |  ExtId (("(" [Args] ")" ";")|(["[" Expr "]"]("=" InitExpr ";"))        // call stmt & assignment
+//           |  Lvalue "=" InitExpr ";"             // assignment
            |  "if" "(" Expr ")" Stmt ["else" Stmt]
            |  "while" "(" Expr ")" Stmt
            |  "System" "." "out" "." "println"
@@ -43,53 +45,40 @@ Args       -> Expr {"," Expr}
 
 PrArg      -> Expr | <STRLIT>
 
-InitExpr   -> "new" BasicType "[" <INTLIT> "]"    // new array
-           |  "new" <ID> "(" ")"                  // new object
+InitExpr   -> "new" I1
            |  Expr
 
-Expr       -> Primary BinOp
-           |  UnOp Expr
-           |  "(" Expr ")"
-           |  ExtId "(" [Args] ")"          // method call
-           |  Lvalue
-           |  Literal
+I1         -> BasicType "[" <INTLIT> "]"        // new array
+           |  <ID> "(" ")"                      // new object
 
-Primary    -> "(" Expr ")"
+Expr       -> BinOp
 
-Lvalue     -> ExtId "[" Expr "]"            // array element
-           |  ExtId
+// Lvalue     -> ExtId "[" Expr "]"             // array element
+//            |  ExtId
 
 ExtId      -> ["this" "."] <ID> {"." <ID>}  // object field or just ID
 
 Literal    -> <INTLIT> | <DBLLIT> | "true" | "false"
 
+BinOp      -> BinOp1 {"||" BinOp1}
 
-BinOp      -> {"||" BinOp1}
+BinOp1     -> BinOp2 {"&&" BinOp2}
 
-BinOp1     -> {"&&" BinOp2}
+BinOp2     -> BinOp3 {("=="|"!="|"<"|"<="|">"|">=") BinOp3}
 
-BinOp2     -> {"==" BinOp3}
-           |  {"!=" BinOp3}
-           |  {"<" LG}
-           |  {">" LG}
+BinOp3     -> BinOp4 {("+"|"-") BinOp4}
 
-LG         -> {"="} BinOp3
+BinOp4     -> UnOp1 {("*"|"/") UnOp1}
 
-BinOp3     -> {"+" BinOp4}
-           |  {"-" BinOp4}
+UnOp1      -> {UnOp} Expr1
 
-BinOp4     -> {"*" Expr}
-           |  {"/" Expr}
+Expr1      -> ExtId [("[" Expr "]")|("(" [Args] ")")]
+           |  Expr2
+
+Expr2      -> "(" Expr ")"
+           |  Literal
 
 UnOp       -> "-" | "!"
-
-Secondary  -> ExtId "(" [Args] ")"      // method call
-           |  Lvalue
-
-NewOp      -> "new" NewOp1
-
-NewOp1     -> BasicType "[" <INTLIT> "]"
-           |  <ID> "(" ")"
 
 // Operator associativity and precedence.
 //

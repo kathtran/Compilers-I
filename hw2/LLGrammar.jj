@@ -96,7 +96,7 @@ void ClassDecl(): {}
 //
 void MethodDecl(): {}
 {
-	"public" M1() M2()
+  "public" M1() M2()
 }
 
 void M1(): {}
@@ -107,7 +107,7 @@ void M1(): {}
 
 void M2(): {}
 {
-	"{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
+  "{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
 }
 
 // Param -> Type <ID>
@@ -192,7 +192,7 @@ void InitExpr(): {}
 
 void I1(): {}
 {
-	BasicType() "[" <INTLIT> "]"
+  BasicType() "[" <INTLIT> "]"
 | <ID> "(" ")"
 }
 
@@ -252,17 +252,17 @@ void BinOp3(): {}
 
 void BinOp4(): {}
 {
-  BinOp5() (("*"|"/") BinOp5())*
+  UnOp1() (("*"|"/") UnOp1())*
 }
 
-void BinOp5(): {}
+void UnOp1(): {}
 {
-	(UnOp())* Expr1()
+  (UnOp())* Expr1()
 }
 
 void Expr1(): {}
 {
-  ExtId() ["[" Expr() "]" | "(" [Args()] ")"]
+  ExtId() [("[" Expr() "]")|("(" [Args()] ")")]
 | Expr2()
 }
 
