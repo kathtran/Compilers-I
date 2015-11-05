@@ -96,11 +96,18 @@ void ClassDecl(): {}
 //
 void MethodDecl(): {}
 {
-  LOOKAHEAD(2)
-  "public" ExtType() <ID> "(" [Param() ("," Param())*] ")"
-          "{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
-| "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")"
-          "{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
+	"public" M1()
+}
+
+void M1(): {}
+{
+  ExtType() <ID> "(" [Param() ("," Param())*] ")" M2()
+| "static" "void" "main" "(" "String" "[" "]" <ID> ")" M2()
+}
+
+void M2(): {}
+{
+	"{" (LOOKAHEAD(2) VarDecl())* (Stmt())* "}"
 }
 
 // Param -> Type <ID>
@@ -130,13 +137,8 @@ void ExtType(): {}
 //
 void Type(): {}
 {
-  BasicType() Type1()
+  BasicType() ("[" "]")?
 | <ID>
-}
-
-void Type1(): {}
-{
-	["[" "]"]
 }
 
 // BasicType -> "int" | "double" | "boolean"
@@ -157,9 +159,9 @@ void BasicType(): {}
 void Stmt(): {}
 {
   "{" (Stmt())* "}"
-| LOOKAHEAD(3) ExtId() "(" [Args()] ")" ";"
+| LOOKAHEAD(2) ExtId() "(" [Args()] ")" ";"
 | Lvalue() "=" InitExpr() ";"
-| "if" "(" Expr() ")" Stmt() [LOOKAHEAD(2) "else" Stmt()]
+| "if" "(" Expr() ")" Stmt() [LOOKAHEAD(2)"else" Stmt()]
 | "while" "(" Expr() ")" Stmt()
 | "System" "." "out" "." "println" "(" [ PrArg() ] ")" ";"
 | "return" [Expr()] ";"
@@ -205,28 +207,13 @@ void InitExpr1(): {}
 void Expr(): {}
 {
   BinOp()
-| UnOp() Expr()
-| "(" Expr() ")"
-| LOOKAHEAD(3) ExtId() "(" [Args()] ")"
-| Lvalue()
-| Literal()
-}
-
-void Primary(): {}
-{
-  "(" Expr() ")"
 }
 
 // Lvalue -> ExtId "[" Expr "]"
 //        |  ExtId
 void Lvalue(): {}
 {
-  ExtId() Lvalue1()
-}
-
-void Lvalue1(): {}
-{
-	["[" Expr() "]"]
+  ExtId() ("[" Expr() "]")?
 }
 
 // ExtId -> ["this" "."] <ID> {"." <ID>}
@@ -245,42 +232,44 @@ void Literal(): {}
 
 void BinOp(): {}
 {
-  BinOp1() ["||" BinOp1()]
+  BinOp1() ("||" BinOp1())*
 }
 
 void BinOp1(): {}
 {
-  BinOp2() ["&&" BinOp2()]
+  BinOp2() ("&&" BinOp2())*
 }
 
 void BinOp2(): {}
 {
-  BinOp3() ["==" BinOp3()]
-| BinOp3() ["!=" BinOp3()]
-| BinOp3() ["<" B3()]
-| BinOp3() [">" B3()]
-}
-
-void B3(): {}
-{
-  ["="] BinOp3()
+  BinOp3() (("=="|"!="|"<"|"<="|">"|">=") BinOp3())*
 }
 
 void BinOp3(): {}
 {
-  BinOp4() ["+" BinOp4()]
-| BinOp4() ["-" BinOp4()]
+  BinOp4() (("+"|"-") BinOp4())*
 }
 
 void BinOp4(): {}
 {
-  BinOp5() ["*" BinOp5()]
-| BinOp5() ["/" BinOp5()]
+  BinOp5() (("*"|"/") BinOp5())*
 }
 
 void BinOp5(): {}
 {
-  Literal()
+	(UnOp())* Expr1()
+}
+
+void Expr1(): {}
+{
+  ExtId() ["[" Expr() "]" | "(" [Args()] ")"]
+| Expr2()
+}
+
+void Expr2(): {}
+{
+  "(" Expr() ")"
+| Literal()
 }
 
 // BinOp -> "+" | "-" | "*" | "/" | "&&" | "||"
