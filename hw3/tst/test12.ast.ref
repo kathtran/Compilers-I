@@ -1,0 +1,9 @@
+# AST Program
+ClassDecl Test 
+  VarDecl IntType foo ()
+  MethodDecl IntType foo ((Param IntType i) )
+   Return i
+  MethodDecl void main ()
+   VarDecl (ObjType Test) x (NewObj Test)
+   Assign (Field x foo)  (Call x foo (1 ))
+   Print (Field x foo) 

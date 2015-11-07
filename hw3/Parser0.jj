@@ -1,0 +1,102 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// A starter version of parsar for the miniJava language.
+//
+
+// options { DEBUG_PARSER=true; }  /* Show debugging info */
+
+PARSER_BEGIN(Parser)
+import java.util.*;
+import java.io.*;
+import ast.*;
+
+public class Parser {
+  public static void main(String [] args) {
+    if (args.length < 1) {
+      System.out.println("Need a file name as command-line argument.");
+      return;
+    } 
+    try {
+      FileReader input = new FileReader(args[0]);
+      Ast.Program p = new Parser(input).Program();
+      input.close();
+      System.out.print(p);
+    } catch (TokenMgrError e) {
+      System.err.println(e);
+    } catch (Exception e) {
+      System.err.println(e);
+    }
+  }
+}
+PARSER_END(Parser)
+
+//
+// LEXER SECTION ---------------------------------------------------------------
+//
+// A simplified version. Error detections are not included.
+// 
+SKIP:  /* Whitespace */
+{ 
+  " " | "\t" | "\r" | "\n" 
+}
+
+SKIP:  /* Comments -- single-line form only */
+{
+  <"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")> 
+}
+
+TOKEN:  /* Keywords */
+{
+  "class" | "extends" | "static" | "public" | "main" | "void" | "boolean"
+| "int" | "double" | "String" | "true" | "false" | "new" | "this" | "if"
+| "else" | "while" | "return" | "System" | "out" | "println"
+}
+
+TOKEN:  /* Literals and IDs */
+{
+  <#DIGIT:  ["0"-"9"]>
+| <#LETTER: ["A"-"Z"]|["a"-"z"]>
+| <INTLIT:  "0"|["1"-"9"](<DIGIT>)*> 	// decimal form only
+| <DBLLIT:  (<DIGIT>)+"."(<DIGIT>)*|(<DIGIT>)*"."(<DIGIT>)+> 
+| <STRLIT:  ("\"" (~["\"","\r","\n"])* "\"")>
+| <ID:      <LETTER> (<LETTER>|<DIGIT>)*>
+}
+
+TOKEN:  /* Operators and delimiters */
+{
+  "+" | "-" | "*" | "/" | "&&" | "||" | "!" | "==" | "!=" | "<" | "<=" 
+| ">" | ">=" |  "=" | ";" | "," | "." | "(" | ")" | "[" | "]" | "{" | "}"
+}
+
+//
+// PARSER SECTION ---------------------------------------------------------------
+//
+
+// Program -> {ClassDecl}
+//
+Ast.Program Program():
+{ List<Ast.ClassDecl> cl = new ArrayList<Ast.ClassDecl>();
+  Ast.ClassDecl c; }
+{
+  ( c=ClassDecl() {cl.add(c);} )* <EOF>
+  { return new Ast.Program(cl); }
+}
+
+// ClassDecl -> "class" <ID> ["extends" <ID>] "{" {VarDecl} {MethodDecl} "}"
+//
+Ast.ClassDecl ClassDecl():  
+{ List<Ast.VarDecl> vl = new ArrayList<Ast.VarDecl>();
+  List<Ast.MethodDecl> ml = new ArrayList<Ast.MethodDecl>();
+  Ast.VarDecl v;
+  Ast.MethodDecl m;
+  Ast.Id id, pid = null; }
+{ 
+  "class" id=Id() [ "extends" pid=Id() ] 
+    "{" ( v=VarDecl() {vl.add(v);} )* 
+        ( m=MethodDecl() {ml.add(m);} )* "}"
+  { return new Ast.ClassDecl(id.nm,pid==null?null:pid.nm,vl,ml); }
+}
