@@ -160,8 +160,10 @@ Ast.Stmt Stmt():
 
 // Expr ->
 Ast.Exp Exp():
-{ Token tkn; }
+{ Token tkn;
+  IntLit intlit; DblLit dbllit; BoolLit boollit; StrLit strlit; }
 {
+(
   { return new Ast.Binop(); }
 
   { return new Ast.Unop(); }
@@ -177,18 +179,23 @@ Ast.Exp Exp():
   { return new Ast.Field(); }
 
   { return new Ast.Id(); }
-
+| tkn="this"
   { return new Ast.This(); }
 
 // XXXLit ->
 // IntLit, DblLit, BoolLit, StrLit
-  { return new Ast.IntLit(); }
-
-  { return new Ast.DblLit(); }
-
-  { return new BoolLit(); }
-
-  { return new StrLit(); }
+| tkn=<INTLIT>
+  { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
+    return intlit; }
+| tkn=<DBLLIT>
+  { dbllit = new Ast.DblLit(Double.parseDouble(tkn.image));
+    return dbllit; }
+| tkn=<BOOLLIT>
+  { boollit = new Ast.BoolLit(Boolean.parseBoolean(tkn.image));
+    return boollit; }
+| tkn=<STRLIT>
+  { return new Ast.StrLit(); }
+)
 }
 
 // Id -> <ID>
@@ -197,4 +204,30 @@ Ast.Id Id():
 { Token tkn; }
 {
   tkn=<ID> { return new Ast.Id(tkn.image); }
+}
+
+// binary operators
+Ast.BOP Op():
+{}
+{
+  "||" { return new Ast.BOP.OR(); }
+  "&&" { return new Ast.BOP.AND(); }
+  "==" { return new Ast.BOP.EQ(); }
+  "!=" { return new Ast.BOP.NE(); }
+  "<"  { return new Ast.BOP.LT(); }
+  "<=" { return new Ast.BOP.LE(); }
+  ">"  { return new Ast.BOP.GT(); }
+  ">=" { return new Ast.BOP.GE(); }
+  "+"  { return new Ast.BOP.ADD(); }
+  "-"  { return new Ast.BOP.SUB(); }
+  "*"  { return new Ast.BOP.MUL(); }
+  "/"  { return new Ast.BOP.DIV(); }
+}
+
+// unary operators
+Ast.UOP Op():
+{}
+{
+  "-" { return new Ast.UOP.NEG(); }
+  "!" { return new Ast.UOP.NOT(); }
 }
