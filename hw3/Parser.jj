@@ -102,21 +102,21 @@ Ast.ClassDecl ClassDecl():
   { return new Ast.ClassDecl(id.nm,pid==null?null:pid.nm,vl,ml); }
 }
 
-// MethodDecl ->
+// MethodDecl -> {Type} <ID> "(" {Param} ")"
 Ast.MethodDecl MethodDecl():
 { Token tkn; }
 {
   { return new Ast.MethodDecl(); }
 }
 
-// Param ->
+// Param -> {Type} <ID>
 Ast.Param Param():
 { Token tkn; }
 {
   { return new Ast.Param(); }
 }
 
-// VarDecl ->
+// VarDecl -> {Type} <ID> {Exp}
 Ast.VarDecl VarDecl():
 { Token tkn; }
 {
@@ -128,14 +128,15 @@ Ast.VarDecl VarDecl():
 Ast.Type Type():
 { Token tkn; }
 {
+  tkn="int"
   { return new Ast.IntType(); }
-
+| tkn="double"
   { return new Ast.DblType(); }
-
+| tkn="boolean"
   { return new Ast.BoolType(); }
-
+|
   { return new Ast.ArrayType(); }
-
+|
   { return new Ast.ObjType(); }
 }
 
@@ -144,17 +145,17 @@ Ast.Stmt Stmt():
 { Token tkn; }
 {
   { return new Ast.Block(); }
-
+|
   { return new Ast.Assign(); }
-
+|
   { return new Ast.CallStmt(); }
-
+|
   { return new Ast.If(); }
-
+|
   { return new Ast.While(); }
-
+|
   { return new Ast.Print(); }
-
+|
   { return new Ast.Return(); }
 }
 
@@ -164,20 +165,21 @@ Ast.Exp Exp():
   IntLit intlit; DblLit dbllit; BoolLit boollit; StrLit strlit; }
 {
 (
+// E -> id { ("+"|"-") id } ";"
   { return new Ast.Binop(); }
-
+|
   { return new Ast.Unop(); }
-
+|
   { return new Ast.Call(); }
-
+|
   { return new Ast.NewArray(); }
-
+|
   { return new Ast.ArrayElm(); }
-
+|
   { return new Ast.NewObj(); }
-
+|
   { return new Ast.Field(); }
-
+|
   { return new Ast.Id(); }
 | tkn="this"
   { return new Ast.This(); }
@@ -203,7 +205,8 @@ Ast.Exp Exp():
 Ast.Id Id():
 { Token tkn; }
 {
-  tkn=<ID> { return new Ast.Id(tkn.image); }
+  tkn=<ID>
+  { return new Ast.Id(tkn.image); }
 }
 
 // binary operators
@@ -211,17 +214,17 @@ Ast.BOP Op():
 {}
 {
   "||" { return new Ast.BOP.OR(); }
-  "&&" { return new Ast.BOP.AND(); }
-  "==" { return new Ast.BOP.EQ(); }
-  "!=" { return new Ast.BOP.NE(); }
-  "<"  { return new Ast.BOP.LT(); }
-  "<=" { return new Ast.BOP.LE(); }
-  ">"  { return new Ast.BOP.GT(); }
-  ">=" { return new Ast.BOP.GE(); }
-  "+"  { return new Ast.BOP.ADD(); }
-  "-"  { return new Ast.BOP.SUB(); }
-  "*"  { return new Ast.BOP.MUL(); }
-  "/"  { return new Ast.BOP.DIV(); }
+| "&&" { return new Ast.BOP.AND(); }
+| "==" { return new Ast.BOP.EQ(); }
+| "!=" { return new Ast.BOP.NE(); }
+| "<"  { return new Ast.BOP.LT(); }
+| "<=" { return new Ast.BOP.LE(); }
+| ">"  { return new Ast.BOP.GT(); }
+| ">=" { return new Ast.BOP.GE(); }
+| "+"  { return new Ast.BOP.ADD(); }
+| "-"  { return new Ast.BOP.SUB(); }
+| "*"  { return new Ast.BOP.MUL(); }
+| "/"  { return new Ast.BOP.DIV(); }
 }
 
 // unary operators
@@ -229,5 +232,5 @@ Ast.UOP Op():
 {}
 {
   "-" { return new Ast.UOP.NEG(); }
-  "!" { return new Ast.UOP.NOT(); }
+| "!" { return new Ast.UOP.NOT(); }
 }
