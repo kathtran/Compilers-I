@@ -266,7 +266,7 @@ Ast.Exp Expr6():
   [
     "[" exp=Expr() "]"
     { return new Ast.Exp(); } //TODO
-  | "(" //TODO ")"
+  | "(" ")" //TODO
     { return new Ast.Exp(); } //TODO
   ]
 | exp=Exr7()
