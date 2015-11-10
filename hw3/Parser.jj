@@ -173,7 +173,6 @@ Ast.Stmt Stmt():
 Ast.Exp Exp():
 { Token tkn; }
 {
-(
   { return new Ast.Call(); }
 |
   { return new Ast.NewArray(); }
@@ -187,7 +186,6 @@ Ast.Exp Exp():
   { return new Ast.Id(); }
 | tkn="this"
   { return new Ast.This(); }
-)
 }
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
