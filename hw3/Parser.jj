@@ -165,11 +165,6 @@ Ast.Exp Exp():
   IntLit intlit; DblLit dbllit; BoolLit boollit; StrLit strlit; }
 {
 (
-// E -> id { ("+"|"-") id } ";"
-  { return new Ast.Binop(); }
-|
-  { return new Ast.Unop(); }
-|
   { return new Ast.Call(); }
 |
   { return new Ast.NewArray(); }
@@ -183,10 +178,81 @@ Ast.Exp Exp():
   { return new Ast.Id(); }
 | tkn="this"
   { return new Ast.This(); }
+)
+}
+
+// Expressions
+Ast.Exp Expr():
+{ Exp lhs, rhs; BOP binop; }
+{
+  lhs=Expr1()
+  (
+    binop=OROP() rhs=Expr1()
+    { return new Ast.Binop(binop, lhs, rhs); }
+  )*
+  { return new Ast.Exp(lhs); }
+}
+
+Ast.Exp Expr1():
+ { Exp lhs, rhs; BOP binop; }
+ {
+   lhs=Expr2()
+   (
+     binop=ANDOP() rhs=Expr2()
+     { return new Ast.Binop(binop, lhs, rhs); }
+   )
+   { return new Ast.Exp(lhs); }
+ }
+
+ Ast.Exp Expr2():
+ { Exp lhs, rhs; BOP binop; }
+ {
+   lhs=Expr3()
+   (
+     binop=CMPOP() rhs=Expr3()
+     { return new Ast.Binop(binop, lhs, rhs); }
+   )
+   { return new Ast.Exp(lhs); }
+ }
+
+ Ast.Exp Expr3():
+ { Exp lhs, rhs; BOP binop; }
+ {
+   lhs=Expr4()
+   (
+     binop=ADDSUBOP() rhs=Expr4()
+     { return new Ast.Binop(binop, lhs, rhs); }
+   )
+   { return new Ast.Exp(lhs); }
+ }
+
+ Ast.Exp Expr4():
+ { Exp lhs, rhs; BOP binop; }
+ {
+   lhs=Expr5()
+   (
+     binop=MULDIVOP() rhs=Expr5()
+     { return new Ast.Binop(binop, lhs, rhs); }
+   )
+   { return new Ast.Exp(lhs); }
+ }
+
+ Ast.Exp Expr5():
+ { Exp lhs; UOP unop; }
+ {
+   (
+     unop=UNOP()
+   )*
+   lhs=Expr6()
+   { return new Ast.Unop(unop, lhs); }
+ }
 
 // XXXLit ->
 // IntLit, DblLit, BoolLit, StrLit
-| tkn=<INTLIT>
+Ast.Exp Literal():
+{ Token tkn; }
+{
+  tkn=<INTLIT>
   { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
     return intlit; }
 | tkn=<DBLLIT>
@@ -197,7 +263,6 @@ Ast.Exp Exp():
     return boollit; }
 | tkn=<STRLIT>
   { return new Ast.StrLit(); }
-)
 }
 
 // Id -> <ID>
@@ -210,26 +275,40 @@ Ast.Id Id():
 }
 
 // binary operators
-Ast.BOP Op():
-{}
+Ast.BOP OROP(): {}
 {
   "||" { return new Ast.BOP.OR(); }
-| "&&" { return new Ast.BOP.AND(); }
-| "==" { return new Ast.BOP.EQ(); }
+}
+
+Ast.BOP ANDOP(): {}
+{
+  "&&" { return new Ast.BOP.AND(); }
+}
+
+Ast.BOP CMPOP(): {}
+{
+  "==" { return new Ast.BOP.EQ(); }
 | "!=" { return new Ast.BOP.NE(); }
 | "<"  { return new Ast.BOP.LT(); }
 | "<=" { return new Ast.BOP.LE(); }
 | ">"  { return new Ast.BOP.GT(); }
 | ">=" { return new Ast.BOP.GE(); }
-| "+"  { return new Ast.BOP.ADD(); }
+}
+
+Ast.BOP ADDSUBOP(): {}
+{
+  "+"  { return new Ast.BOP.ADD(); }
 | "-"  { return new Ast.BOP.SUB(); }
-| "*"  { return new Ast.BOP.MUL(); }
+}
+
+Ast.BOP MULDIVOP(): {}
+{
+  "*"  { return new Ast.BOP.MUL(); }
 | "/"  { return new Ast.BOP.DIV(); }
 }
 
 // unary operators
-Ast.UOP Op():
-{}
+Ast.UOP UNOP(): {}
 {
   "-" { return new Ast.UOP.NEG(); }
 | "!" { return new Ast.UOP.NOT(); }
