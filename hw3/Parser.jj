@@ -102,6 +102,7 @@ Ast.ClassDecl ClassDecl():
   { return new Ast.ClassDecl(id.nm,pid==null?null:pid.nm,vl,ml); }
 }
 
+//TODO
 // MethodDecl -> {Type} <ID> "(" {Param} ")"
 Ast.MethodDecl MethodDecl():
 { Token tkn; }
@@ -109,6 +110,7 @@ Ast.MethodDecl MethodDecl():
   { return new Ast.MethodDecl(); }
 }
 
+//TODO
 // Param -> {Type} <ID>
 Ast.Param Param():
 { Token tkn; }
@@ -116,6 +118,7 @@ Ast.Param Param():
   { return new Ast.Param(); }
 }
 
+//TODO
 // VarDecl -> {Type} <ID> {Exp}
 Ast.VarDecl VarDecl():
 { Token tkn; }
@@ -123,6 +126,9 @@ Ast.VarDecl VarDecl():
   { return new Ast.VarDecl(); }
 }
 
+//TODO
+// ------- BEGIN TYPES -------
+//
 // Type ->
 // IntType, DblType, BoolType, ArrayType, ObjType
 Ast.Type Type():
@@ -139,7 +145,10 @@ Ast.Type Type():
 |
   { return new Ast.ObjType(); }
 }
+//
+// ------- END TYPES -------
 
+//TODO
 // Stmt ->
 Ast.Stmt Stmt():
 { Ast.Id id1, id2; Token tkn; }
@@ -159,10 +168,10 @@ Ast.Stmt Stmt():
   { return new Ast.Return(); }
 }
 
+//TODO
 // Expr ->
 Ast.Exp Exp():
-{ Token tkn;
-  IntLit intlit; DblLit dbllit; BoolLit boollit; StrLit strlit; }
+{ Token tkn; }
 {
 (
   { return new Ast.Call(); }
@@ -181,7 +190,8 @@ Ast.Exp Exp():
 )
 }
 
-// Expressions
+// ------- BEGIN EXPRESSIONS CASCADE -------
+//
 Ast.Exp Expr():
 { Exp lhs, rhs; BOP binop; }
 {
@@ -251,13 +261,19 @@ Ast.Exp Expr6():
 { Exp exp; }
 {
   "(" exp=Expr() ")"
-  { return new Ast.Exp(); }
+  { return new Ast.Exp(); } //TODO
+| exp=Literal()
+  { return new Ast.Exp(); } //TODO
 }
+//
+// ------- END EXPRESSIONS CASCADE -------
 
-// XXXLit ->
+// ------- BEGIN LITERALS -------
+//
 // IntLit, DblLit, BoolLit, StrLit
 Ast.Exp Literal():
-{ Token tkn; }
+{ Token tkn;
+  IntLit intlit; DblLit dbllit; BoolLit boollit; StrLit strlit; }
 {
   tkn=<INTLIT>
   { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
@@ -271,6 +287,8 @@ Ast.Exp Literal():
 | tkn=<STRLIT>
   { return new Ast.StrLit(); }
 }
+//
+// ------- END LITERALS -------
 
 // Id -> <ID>
 // Ast.Id object or String
@@ -281,6 +299,8 @@ Ast.Id Id():
   { return new Ast.Id(tkn.image); }
 }
 
+// ------- BEGIN OPERATORS -------
+//
 // binary operators
 Ast.BOP OROP(): {}
 {
@@ -320,3 +340,5 @@ Ast.UOP UNOP(): {}
   "-" { return new Ast.UOP.NEG(); }
 | "!" { return new Ast.UOP.NOT(); }
 }
+//
+// ------- END OPERATORS -------
