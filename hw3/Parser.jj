@@ -200,7 +200,7 @@ Ast.Exp Expr1():
    (
      binop=ANDOP() rhs=Expr2()
      { return new Ast.Binop(binop, lhs, rhs); }
-   )
+   )*
    { return new Ast.Exp(lhs); }
  }
 
@@ -211,7 +211,7 @@ Ast.Exp Expr1():
    (
      binop=CMPOP() rhs=Expr3()
      { return new Ast.Binop(binop, lhs, rhs); }
-   )
+   )*
    { return new Ast.Exp(lhs); }
  }
 
@@ -222,7 +222,7 @@ Ast.Exp Expr1():
    (
      binop=ADDSUBOP() rhs=Expr4()
      { return new Ast.Binop(binop, lhs, rhs); }
-   )
+   )*
    { return new Ast.Exp(lhs); }
  }
 
@@ -233,7 +233,7 @@ Ast.Exp Expr1():
    (
      binop=MULDIVOP() rhs=Expr5()
      { return new Ast.Binop(binop, lhs, rhs); }
-   )
+   )*
    { return new Ast.Exp(lhs); }
  }
 
