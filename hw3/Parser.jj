@@ -194,58 +194,65 @@ Ast.Exp Expr():
 }
 
 Ast.Exp Expr1():
- { Exp lhs, rhs; BOP binop; }
- {
-   lhs=Expr2()
-   (
-     binop=ANDOP() rhs=Expr2()
-     { return new Ast.Binop(binop, lhs, rhs); }
-   )*
-   { return new Ast.Exp(lhs); }
- }
+{ Exp lhs, rhs; BOP binop; }
+{
+  lhs=Expr2()
+  (
+    binop=ANDOP() rhs=Expr2()
+    { return new Ast.Binop(binop, lhs, rhs); }
+  )*
+  { return new Ast.Exp(lhs); }
+}
 
- Ast.Exp Expr2():
- { Exp lhs, rhs; BOP binop; }
- {
-   lhs=Expr3()
-   (
-     binop=CMPOP() rhs=Expr3()
-     { return new Ast.Binop(binop, lhs, rhs); }
-   )*
-   { return new Ast.Exp(lhs); }
- }
+Ast.Exp Expr2():
+{ Exp lhs, rhs; BOP binop; }
+{
+  lhs=Expr3()
+  (
+    binop=CMPOP() rhs=Expr3()
+    { return new Ast.Binop(binop, lhs, rhs); }
+  )*
+  { return new Ast.Exp(lhs); }
+}
 
- Ast.Exp Expr3():
- { Exp lhs, rhs; BOP binop; }
- {
-   lhs=Expr4()
-   (
-     binop=ADDSUBOP() rhs=Expr4()
-     { return new Ast.Binop(binop, lhs, rhs); }
-   )*
-   { return new Ast.Exp(lhs); }
- }
+Ast.Exp Expr3():
+{ Exp lhs, rhs; BOP binop; }
+{
+  lhs=Expr4()
+  (
+    binop=ADDSUBOP() rhs=Expr4()
+    { return new Ast.Binop(binop, lhs, rhs); }
+  )*
+  { return new Ast.Exp(lhs); }
+}
 
- Ast.Exp Expr4():
- { Exp lhs, rhs; BOP binop; }
- {
-   lhs=Expr5()
-   (
-     binop=MULDIVOP() rhs=Expr5()
-     { return new Ast.Binop(binop, lhs, rhs); }
-   )*
-   { return new Ast.Exp(lhs); }
- }
+Ast.Exp Expr4():
+{ Exp lhs, rhs; BOP binop; }
+{
+  lhs=Expr5()
+  (
+    binop=MULDIVOP() rhs=Expr5()
+    { return new Ast.Binop(binop, lhs, rhs); }
+  )*
+  { return new Ast.Exp(lhs); }
+}
 
- Ast.Exp Expr5():
- { Exp lhs; UOP unop; }
- {
-   (
-     unop=UNOP()
-   )*
-   lhs=Expr6()
-   { return new Ast.Unop(unop, lhs); }
- }
+Ast.Exp Expr5():
+{ Exp exp; UOP unop; }
+{
+  (
+    unop=UNOP()
+  )*
+  exp=Expr6()
+  { return new Ast.Unop(unop, exp); }
+}
+
+Ast.Exp Expr6():
+{ Exp exp; }
+{
+  "(" exp=Expr() ")"
+  { return new Ast.Exp(); }
+}
 
 // XXXLit ->
 // IntLit, DblLit, BoolLit, StrLit
