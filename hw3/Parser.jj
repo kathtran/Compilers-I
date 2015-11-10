@@ -200,7 +200,7 @@ Ast.Exp Expr():
     binop=OROP() rhs=Expr1()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
-  { return new Ast.Exp(lhs); }
+  { return lhs; }
 }
 
 Ast.Exp Expr1():
@@ -211,7 +211,7 @@ Ast.Exp Expr1():
     binop=ANDOP() rhs=Expr2()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
-  { return new Ast.Exp(lhs); }
+  { return lhs; }
 }
 
 Ast.Exp Expr2():
@@ -222,7 +222,7 @@ Ast.Exp Expr2():
     binop=CMPOP() rhs=Expr3()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
-  { return new Ast.Exp(lhs); }
+  { return lhs; }
 }
 
 Ast.Exp Expr3():
@@ -233,7 +233,7 @@ Ast.Exp Expr3():
     binop=ADDSUBOP() rhs=Expr4()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
-  { return new Ast.Exp(lhs); }
+  { return lhs; }
 }
 
 Ast.Exp Expr4():
@@ -244,7 +244,7 @@ Ast.Exp Expr4():
     binop=MULDIVOP() rhs=Expr5()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
-  { return new Ast.Exp(lhs); }
+  { return lhs; }
 }
 
 Ast.Exp Expr5():
@@ -252,12 +252,28 @@ Ast.Exp Expr5():
 {
   (
     unop=UNOP()
+    { return new Ast.Unop(unop, exp); }
   )*
   exp=Expr6()
-  { return new Ast.Unop(unop, exp); }
+  { return exp; }
 }
 
 Ast.Exp Expr6():
+{ Exp exp; }
+{
+  //TODO
+  ["this" "."] <ID> ("." <ID>)*
+  [
+    "[" exp=Expr() "]"
+    { return new Ast.Exp(); } //TODO
+  | "(" //TODO ")"
+    { return new Ast.Exp(); } //TODO
+  ]
+| exp=Exr7()
+  { return exp; }
+}
+
+Ast.Exp Expr7():
 { Exp exp; }
 {
   "(" exp=Expr() ")"
