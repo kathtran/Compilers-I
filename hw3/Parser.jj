@@ -159,13 +159,13 @@ Ast.Stmt Block():
 }
 
 Ast.Stmt Assign():
-{ Exp lhs, rhs; }
+{ Ast.Exp lhs, rhs; }
 {
   { return new Ast.Assign(lhs, rhs); }
 }
 
 Ast.Stmt CallStmt():
-{ Exp obj, exp;
+{ Ast.Exp obj, exp;
   Ast.Id id;
   List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
 {
@@ -175,54 +175,86 @@ Ast.Stmt CallStmt():
 }
 
 Ast.Stmt If():
+{ Ast.Exp cond;
+  Ast.Stmt s1, s2; }
 {
-}
-{
-  { return new Ast.If(); }
+  "if (" cond=Exp() ")"
+    ["{"] s1=Stmt() ["}"]
+  ("else"
+    ["{"] s2=Stmt() ["}"]
+  | s2=Stmt()
+  )?
+  { return new Ast.If(cond, s1, s2); }
 }
 
 Ast.Stmt While():
-{}
+{ Ast.Exp cond; Ast.Stmt stmt; }
 {
-  { return new Ast.While(); }
+  "while (" cond=Exp() ")"
+    ["{"] stmt=Stmt() ["}"]
+  { return new Ast.While(cond, stmt); }
 }
 
 Ast.Stmt Print():
-{}
+{ Ast.Exp arg; }
 {
-  { return new Ast.Print(); }
+  "System.out.println(" arg=Exp() ");"
+  { return new Ast.Print(arg); }
 }
 
 Ast.Stmt Return():
-{}
+{ Ast.Exp val; }
 {
-  { return new Ast.Return(); }
+  "return" [val=Exp()] ";"
+  { return new Ast.Return(val); }
 }
+//
+// ------- END STATEMENTS -------
 
-//TODO
-// Expr ->
-Ast.Exp Exp():
-{ Token tkn; }
+// ------- BEGIN EXPRESSIONS -------
+//
+Ast.Exp Call():
+{ Ast.Exp obj;
+  Ast.Id id;
+  }
 {
   { return new Ast.Call(); }
-|
+}
+
+Ast.Exp NewArray():
+{}
+{
   { return new Ast.NewArray(); }
-|
+}
+
+Ast.Exp ArrayElm():
+{}
+{
   { return new Ast.ArrayElm(); }
-|
+}
+
+Ast.Exp NewObj():
+{}
+{
   { return new Ast.NewObj(); }
-|
+}
+
+Ast.Exp Field():
+{}
+{
   { return new Ast.Field(); }
-|
-  { return new Ast.Id(); }
-| tkn="this"
+}
+
+Ast.Exp This():
+{}
+{
   { return new Ast.This(); }
 }
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
 //
 Ast.Exp Expr():
-{ Exp lhs, rhs; BOP binop; }
+{ Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Expr1()
   (
@@ -233,7 +265,7 @@ Ast.Exp Expr():
 }
 
 Ast.Exp Expr1():
-{ Exp lhs, rhs; BOP binop; }
+{ Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Expr2()
   (
@@ -244,7 +276,7 @@ Ast.Exp Expr1():
 }
 
 Ast.Exp Expr2():
-{ Exp lhs, rhs; BOP binop; }
+{ Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Expr3()
   (
@@ -255,7 +287,7 @@ Ast.Exp Expr2():
 }
 
 Ast.Exp Expr3():
-{ Exp lhs, rhs; BOP binop; }
+{ Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Expr4()
   (
@@ -266,7 +298,7 @@ Ast.Exp Expr3():
 }
 
 Ast.Exp Expr4():
-{ Exp lhs, rhs; BOP binop; }
+{ Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Expr5()
   (
@@ -277,7 +309,7 @@ Ast.Exp Expr4():
 }
 
 Ast.Exp Expr5():
-{ Exp exp; UOP unop; }
+{ Ast.Exp exp; Ast.UOP unop; }
 {
   (
     unop=UNOP()
@@ -288,7 +320,7 @@ Ast.Exp Expr5():
 }
 
 Ast.Exp Expr6():
-{ Exp exp; }
+{ Ast.Exp exp; }
 {
   ["this" "."] <ID> ( "." <ID> )*
   [
@@ -302,7 +334,7 @@ Ast.Exp Expr6():
 }
 
 Ast.Exp Expr7():
-{ Exp exp; }
+{ Ast.Exp exp; }
 {
   "(" exp=Expr() ")"
   { return exp; }
@@ -311,13 +343,14 @@ Ast.Exp Expr7():
 }
 //
 // ------- END EXPRESSIONS CASCADE -------
+// ------- END EXPRESSIONS -------
 
 // ------- BEGIN LITERALS -------
 //
 // IntLit, DblLit, BoolLit, StrLit
 Ast.Exp Literal():
 { Token tkn;
-  IntLit intlit; DblLit dbllit; BoolLit boollit; StrLit strlit; }
+  Ast.IntLit intlit; Ast.DblLit dbllit; Ast.BoolLit boollit; Ast.StrLit strlit; }
 {
   tkn=<INTLIT>
   { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
