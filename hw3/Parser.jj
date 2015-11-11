@@ -216,9 +216,11 @@ Ast.Stmt Return():
 Ast.Exp Call():
 { Ast.Exp obj;
   Ast.Id id;
-  }
+  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
 {
-  { return new Ast.Call(); }
+  obj=Exp() "." id=Id()
+    "(" ( exp=Exp() {args.add(exp);} )* ");"
+  { return new Ast.Call(obj, id.nm, args); }
 }
 
 Ast.Exp NewArray():
