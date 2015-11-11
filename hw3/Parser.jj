@@ -259,13 +259,12 @@ Ast.Exp Expr5():
 Ast.Exp Expr6():
 { Exp exp; }
 {
-  //TODO
-  ["this" "."] <ID> ("." <ID>)*
+  ["this" "."] <ID> ( "." <ID> )*
   [
     "[" exp=Expr() "]"
-    { return new Ast.Exp(); } //TODO
-  | "(" ")" //TODO
-    { return new Ast.Exp(); } //TODO
+    { return exp; }
+  | "(" [ exp=Expr() ("," exp=Expr() )* ] ")"
+    { return exp; }
   ]
 | exp=Exr7()
   { return exp; }
@@ -275,9 +274,9 @@ Ast.Exp Expr7():
 { Exp exp; }
 {
   "(" exp=Expr() ")"
-  { return new Ast.Exp(); } //TODO
+  { return exp; }
 | exp=Literal()
-  { return new Ast.Exp(); } //TODO
+  { return exp; }
 }
 //
 // ------- END EXPRESSIONS CASCADE -------
