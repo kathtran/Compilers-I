@@ -148,23 +148,54 @@ Ast.Type Type():
 //
 // ------- END TYPES -------
 
-//TODO
-// Stmt ->
-Ast.Stmt Stmt():
-{ Ast.Id id1, id2; Token tkn; }
+// ------- BEGIN STATEMENTS -------
+//
+Ast.Stmt Block():
+{ List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>();
+  Ast.Stmt stmt; }
 {
-  { return new Ast.Block(); }
-| id1=id()  id2=Id()
-  { return new Ast.Assign(id1, id2); }
-|
-  { return new Ast.CallStmt(); }
-|
+  "{" ( stmt=Stmt() {stmts.add(stmt);} )* "}"
+  { return new Ast.Block(stmts); }
+}
+
+Ast.Stmt Assign():
+{ Exp lhs, rhs; }
+{
+  { return new Ast.Assign(lhs, rhs); }
+}
+
+Ast.Stmt CallStmt():
+{ Exp obj, exp;
+  Ast.Id id;
+  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
+{
+  obj=Id() "." id=Id()
+    "(" ( exp=Exp() {args.add(exp);} )* ");"
+  { return new Ast.CallStmt(obj, id.nm, args); }
+}
+
+Ast.Stmt If():
+{
+}
+{
   { return new Ast.If(); }
-|
+}
+
+Ast.Stmt While():
+{}
+{
   { return new Ast.While(); }
-|
+}
+
+Ast.Stmt Print():
+{}
+{
   { return new Ast.Print(); }
-|
+}
+
+Ast.Stmt Return():
+{}
+{
   { return new Ast.Return(); }
 }
 
