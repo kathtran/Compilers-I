@@ -141,9 +141,9 @@ Ast.Param Param():
 // Type ->
 // IntType, DblType, BoolType, ArrayType, ObjType
 Ast.Type Type():
-{ Token tkn; }
+{ Ast.Type type; }
 {
-  tkn=<ID>
+  type=<ID>
   {
     if (tkn.image == "int")
       return new Ast.IntType();
@@ -281,10 +281,11 @@ Ast.Exp Call():
 }
 
 Ast.Exp NewArray():
-{ Ast.Type type; Ast.Id id; int length; }
+{ Ast.Type type; Ast.Id id; Token tkn; Ast.IntLit intlit; }
 {
-  "new" type=Type() "[" length=<INTLIT> "]"
-  { return new Ast.NewArray(type, length); }
+  "new" type=Type() "[" tkn=<INTLIT> "]"
+  { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
+    return new Ast.NewArray(type, intlit); }
 }
 
 Ast.Exp ArrayElm():
