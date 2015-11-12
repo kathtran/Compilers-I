@@ -102,31 +102,40 @@ Ast.ClassDecl ClassDecl():
   { return new Ast.ClassDecl(id.nm,pid==null?null:pid.nm,vl,ml); }
 }
 
-//TODO
 // MethodDecl -> {Type} <ID> "(" {Param} ")"
 Ast.MethodDecl MethodDecl():
-{ Token tkn; }
+{ Ast.Type t;
+  Ast.Id id;
+  Ast.Param param; Ast.VarDecl var; Ast.Stmt stmt;
+  List<Ast.Param> params = new ArrayList<Ast.Param>();
+  List<Ast.VarDecl> vars = new ArrayList<Ast.VarDecl>();
+  List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>(); }
 {
-  { return new Ast.MethodDecl(); }
+  [ t=<ID> ] id=Id()
+    "(" ( param=Param() {params.add(param);} )* ")"
+    "{" ( var=VarDecl() {vars.add(var);} )*
+        ( stmt=Stmt() {stmts.add(stmt);} )* "}"
+  { return new Ast.MethodDecl(t, id.nm, params, vars, stmts); }
 }
 
-//TODO
-// Param -> {Type} <ID>
-Ast.Param Param():
-{ Token tkn; }
-{
-  { return new Ast.Param(); }
-}
-
-//TODO
 // VarDecl -> {Type} <ID> {Exp}
 Ast.VarDecl VarDecl():
-{ Token tkn; }
+{ Ast.Type t;
+  Ast.Id id;
+  Ast.Exp init; }
 {
-  { return new Ast.VarDecl(); }
+  t=Type() id=Id() init=Exp()
+  { return new Ast.VarDecl(t, id.nm, init); }
 }
 
-//TODO
+// Param -> {Type} <ID>
+Ast.Param Param():
+{ Ast.Type t; Ast.Id id; }
+{
+  t=Type() id=Id()
+  { return new Ast.Param(t, id.nm); }
+}
+
 // ------- BEGIN TYPES -------
 //
 // Type ->
@@ -134,16 +143,17 @@ Ast.VarDecl VarDecl():
 Ast.Type Type():
 { Token tkn; }
 {
-  tkn="int"
-  { return new Ast.IntType(); }
-| tkn="double"
-  { return new Ast.DblType(); }
-| tkn="boolean"
-  { return new Ast.BoolType(); }
-|
-  { return new Ast.ArrayType(); }
-|
-  { return new Ast.ObjType(); }
+  tkn=<ID>
+  {
+    if (tkn.image == "int")
+      return new Ast.IntType();
+    else if (tkn.image == "double")
+      return new Ast.DblType();
+    else if (tkn.image == "boolean")
+      return new Ast.BoolType();
+//      return new Ast.ArrayType(tkn.image);
+//      return new Ast.ObjType();
+  }
 }
 //
 // ------- END TYPES -------
@@ -369,7 +379,7 @@ Ast.Exp Literal():
   { boollit = new Ast.BoolLit(Boolean.parseBoolean(tkn.image));
     return boollit; }
 | tkn=<STRLIT>
-  { return new Ast.StrLit(); }
+  { return new Ast.StrLit(tkn.image); }
 }
 //
 // ------- END LITERALS -------
