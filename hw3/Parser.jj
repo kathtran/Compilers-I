@@ -178,6 +178,7 @@ Ast.Stmt Block():
 Ast.Stmt Assign():
 { Ast.Exp lhs, rhs; }
 {
+  lhs=Exp() "=" rhs=Exp()
   { return new Ast.Assign(lhs, rhs); }
 }
 
