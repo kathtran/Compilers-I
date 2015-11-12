@@ -163,8 +163,20 @@ Ast.Type Type():
 Ast.Stmt Stmt():
 { Ast.Stmt stmt; }
 {
-  (stmt=Block()|stmt=Assign()|stmt=CallStmt()|stmt=If()|stmt=While()|stmt=Print()|stmt=Return())
-  { return stmt; }
+  "{"
+  { return Block(); }
+| Exp()
+  { return Assign(); }
+| Literal()
+  { return CallStmt(); }
+| "if"
+  { return If(); }
+| "while"
+  { return While(); }
+| "System"
+  { return Print(); }
+| "return"
+  { return Return(); }
 }
 
 Ast.Stmt Block():
@@ -196,7 +208,7 @@ Ast.Stmt If():
 { Ast.Exp cond;
   Ast.Stmt s1, s2; }
 {
-  "if (" cond=Exp() ")"
+  "if" "(" cond=Exp() ")"
     ["{"] s1=Stmt() ["}"]
   ("else"
     ["{"] s2=Stmt() ["}"]
@@ -208,7 +220,7 @@ Ast.Stmt If():
 Ast.Stmt While():
 { Ast.Exp cond; Ast.Stmt stmt; }
 {
-  "while (" cond=Exp() ")"
+  "while" "(" cond=Exp() ")"
     ["{"] stmt=Stmt() ["}"]
   { return new Ast.While(cond, stmt); }
 }
@@ -216,7 +228,7 @@ Ast.Stmt While():
 Ast.Stmt Print():
 { Ast.Exp arg; }
 {
-  "System.out.println(" arg=Exp() ");"
+  "System" "." "out" "." "println" "(" arg=Exp() ")" ";"
   { return new Ast.Print(arg); }
 }
 
@@ -231,11 +243,31 @@ Ast.Stmt Return():
 
 // ------- BEGIN EXPRESSIONS -------
 //
-Ast.Exp Exp():
-{ Ast.Exp exp; }
+Ast.Exp Exp(): {}
 {
-  (exp=Call()|exp=NewArray()|exp=ArrayElm()|exp=NewObj()|exp=Field()|exp=This()|exp=Expr())
-  { return exp; }
+  Literal()
+  { return Exp1(); }
+| "new"
+  { return NewArray(); }
+| Id()
+  { return NewObj(); }
+| "this"
+  { return This(); }
+}
+
+Ast.Exp Exp1(): {}
+{
+  "." Id()
+  { return Exp2(); }
+| "["
+  { return ArrayElm(); }
+}
+
+Ast.Exp Exp2(): {}
+{
+  "("
+  { return Call(); }
+| { return Field(); }
 }
 
 Ast.Exp Call():
@@ -423,31 +455,31 @@ Ast.BOP ANDOP(): {}
 
 Ast.BOP CMPOP(): {}
 {
-  "==" { return new Ast.BOP.EQ(); }
-| "!=" { return new Ast.BOP.NE(); }
-| "<"  { return new Ast.BOP.LT(); }
-| "<=" { return new Ast.BOP.LE(); }
-| ">"  { return new Ast.BOP.GT(); }
-| ">=" { return new Ast.BOP.GE(); }
+  "==" { return Ast.BOP.EQ; }
+| "!=" { return Ast.BOP.NE; }
+| "<"  { return Ast.BOP.LT; }
+| "<=" { return Ast.BOP.LE; }
+| ">"  { return Ast.BOP.GT; }
+| ">=" { return Ast.BOP.GE; }
 }
 
 Ast.BOP ADDSUBOP(): {}
 {
-  "+"  { return new Ast.BOP.ADD(); }
-| "-"  { return new Ast.BOP.SUB(); }
+  "+"  { return Ast.BOP.ADD; }
+| "-"  { return Ast.BOP.SUB; }
 }
 
 Ast.BOP MULDIVOP(): {}
 {
-  "*"  { return new Ast.BOP.MUL(); }
-| "/"  { return new Ast.BOP.DIV(); }
+  "*"  { return Ast.BOP.MUL; }
+| "/"  { return Ast.BOP.DIV; }
 }
 
 // unary operators
 Ast.UOP UNOP(): {}
 {
-  "-" { return new Ast.UOP.NEG(); }
-| "!" { return new Ast.UOP.NOT(); }
+  "-" { return Ast.UOP.NEG; }
+| "!" { return Ast.UOP.NOT; }
 }
 //
 // ------- END OPERATORS -------
