@@ -145,16 +145,16 @@ Ast.Type Type():
 {
   tkn=<ID> (LOOKAHEAD(2)"[" "]")?
   {
-		if (tkn.image.contains("["))
-			return new Ast.ArrayType(Type());
+	if (tkn.image.contains("["))
+	  return new Ast.ArrayType(Type());
     else if (tkn.image == "int")
       return new Ast.IntType();
     else if (tkn.image == "double")
       return new Ast.DblType();
     else if (tkn.image == "boolean")
       return new Ast.BoolType();
-		else if (tkn.image == "String")
-			return new Ast.ObjType("String");
+	else if (tkn.image == "String")
+	  return new Ast.ObjType("String");
   }
 }
 //
@@ -439,7 +439,28 @@ Ast.Exp Literal():
 Ast.Id Id():
 { Token tkn; }
 {
-  tkn=<ID>
+( tkn="class"
+| tkn="extends"
+| tkn="static"
+| tkn="public"
+| tkn="main"
+| tkn="void"
+| tkn="boolean"
+| tkn="int"
+| tkn="double"
+| tkn="String"
+| tkn="true"
+| tkn="false"
+| tkn="new"
+| tkn="this"
+| tkn="if"
+| tkn="else"
+| tkn="while"
+| tkn="return"
+| tkn="System"
+| tkn="out"
+| tkn="println"
+| tkn=<ID> )
   { return new Ast.Id(tkn.image); }
 }
 
