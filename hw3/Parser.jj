@@ -160,6 +160,13 @@ Ast.Type Type():
 
 // ------- BEGIN STATEMENTS -------
 //
+Ast.Stmt Stmt():
+{ Ast.Stmt stmt; }
+{
+  (stmt=Block()|stmt=Assign()|stmt=CallStmt()|stmt=If()|stmt=While()|stmt=Print()|stmt=Return())
+  { return stmt; }
+}
+
 Ast.Stmt Block():
 { List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>();
   Ast.Stmt stmt; }
@@ -223,6 +230,13 @@ Ast.Stmt Return():
 
 // ------- BEGIN EXPRESSIONS -------
 //
+Ast.Exp Exp():
+{ Ast.Exp exp; }
+{
+  (exp=Call()|exp=NewArray()|exp=ArrayElm()|exp=NewObj()|exp=Field()|exp=This()|exp=Expr())
+  { return exp; }
+}
+
 Ast.Exp Call():
 { Ast.Exp obj;
   Ast.Id id;
