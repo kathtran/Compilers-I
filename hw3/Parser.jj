@@ -138,35 +138,51 @@ Ast.Param Param():
 
 // ------- BEGIN TYPES -------
 //
-// Type ->
-// IntType, DblType, BoolType, ArrayType, ObjType
-Ast.Type Type():
-{ Token tkn; }
+Ast.Type ExtType():
+{ Ast.Type type; }
 {
-  tkn=<ID> (LOOKAHEAD(2)"[" "]")?
+  type=Type()
+  { return type; }
+| type="void"
+  { return new Ast.ObjType(type); }
+}
+
+Ast.Type Type():
+{ Ast.Type type; }
+{
+  type=BasicType() (LOOKAHEAD(2)"[" "]")?
   {
 	if (tkn.image.contains("[")) {
 	  switch (tkn.image) {
 	    case "int":
-	      return new Ast.ArrayType(Ast.IntType());
+	      return new Ast.ArrayType(new Ast.IntType());
 	    case "double":
-	      return new Ast.ArrayType(Ast.DblType());
+	      return new Ast.ArrayType(new Ast.DblType());
 	    case "boolean":
-          return new Ast.ArrayType(Ast.BoolType());
+          return new Ast.ArrayType(new Ast.BoolType());
         case "String":
-          return new Ast.ArrayType(Ast.ObjType("String"));
+          return new Ast.ArrayType(new Ast.ObjType("String"));
         default:
-          return new Ast.ArrayType(Ast.ObjType(tkn.image));
+          return new Ast.ArrayType(new Ast.ObjType(tkn.image));
 	  }
 	}
-    else if (tkn.image == "int")
-      return new Ast.IntType();
-    else if (tkn.image == "double")
-      return new Ast.DblType();
-    else if (tkn.image == "boolean")
-      return new Ast.BoolType();
-	else if (tkn.image == "String")
-	  return new Ast.ObjType("String");
+  }
+| type=<ID>
+  { return; }
+}
+
+Ast.Type BasicType():
+{ Token tkn; }
+{
+  tkn=<ID>
+  { switch (tkn.image) {
+      case "int":
+        return new Ast.IntType();
+      case "double":
+        return new Ast.DblType();
+      case "boolean":
+        return new Ast.BoolType();
+    }
   }
 }
 //
@@ -193,70 +209,90 @@ Ast.Stmt Stmt():
   { return Return(); }
 }
 
-Ast.Stmt Block():
-{ List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>();
-  Ast.Stmt stmt; }
-{
-  "{" ( stmt=Stmt() {stmts.add(stmt);} )* "}"
-  { return new Ast.Block(stmts); }
-}
-
-Ast.Stmt Assign():
-{ Ast.Exp lhs, rhs; }
-{
-  lhs=Exp() "=" rhs=Exp()
-  { return new Ast.Assign(lhs, rhs); }
-}
-
-Ast.Stmt CallStmt():
-{ Ast.Exp obj, exp;
-  Ast.Id id;
-  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
-{
-  obj=Literal() "." id=Id()
-    "(" ( exp=Exp() {args.add(exp);} )* ");"
-  { return new Ast.CallStmt(obj, id.nm, args); }
-}
-
-Ast.Stmt If():
-{ Ast.Exp cond;
-  Ast.Stmt s1, s2=null; }
-{
-  "if" "(" cond=Exp() ")"
-    s1=Stmt()
-  ("else"
-    s2=Stmt()
-  | s2=Stmt()
-  )?
-  { return new Ast.If(cond, s1, s2); }
-}
-
-Ast.Stmt While():
-{ Ast.Exp cond; Ast.Stmt stmt; }
-{
-  "while" "(" cond=Exp() ")"
-    stmt=Stmt()
-  { return new Ast.While(cond, stmt); }
-}
-
-Ast.Stmt Print():
-{ Ast.Exp arg; }
-{
-  "System" "." "out" "." "println" "(" arg=Exp() ")" ";"
-  { return new Ast.Print(arg); }
-}
-
-Ast.Stmt Return():
-{ Ast.Exp val=null; }
-{
-  "return" [val=Exp()] ";"
-  { return new Ast.Return(val); }
-}
+//Ast.Stmt Block():
+//{ List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>();
+//  Ast.Stmt stmt; }
+//{
+//  "{" ( stmt=Stmt() {stmts.add(stmt);} )* "}"
+//  { return new Ast.Block(stmts); }
+//}
+//
+//Ast.Stmt Assign():
+//{ Ast.Exp lhs, rhs; }
+//{
+//  lhs=Exp() "=" rhs=Exp()
+//  { return new Ast.Assign(lhs, rhs); }
+//}
+//
+//Ast.Stmt CallStmt():
+//{ Ast.Exp obj, exp;
+//  Ast.Id id;
+//  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
+//{
+//  obj=Literal() "." id=Id()
+//    "(" ( exp=Exp() {args.add(exp);} )* ");"
+//  { return new Ast.CallStmt(obj, id.nm, args); }
+//}
+//
+//Ast.Stmt If():
+//{ Ast.Exp cond;
+//  Ast.Stmt s1, s2=null; }
+//{
+//  "if" "(" cond=Exp() ")"
+//    s1=Stmt()
+//  ("else"
+//    s2=Stmt()
+//  | s2=Stmt()
+//  )?
+//  { return new Ast.If(cond, s1, s2); }
+//}
+//
+//Ast.Stmt While():
+//{ Ast.Exp cond; Ast.Stmt stmt; }
+//{
+//  "while" "(" cond=Exp() ")"
+//    stmt=Stmt()
+//  { return new Ast.While(cond, stmt); }
+//}
+//
+//Ast.Stmt Print():
+//{ Ast.Exp arg; }
+//{
+//  "System" "." "out" "." "println" "(" arg=Exp() ")" ";"
+//  { return new Ast.Print(arg); }
+//}
+//
+//Ast.Stmt Return():
+//{ Ast.Exp val=null; }
+//{
+//  "return" [val=Exp()] ";"
+//  { return new Ast.Return(val); }
+//}
 //
 // ------- END STATEMENTS -------
 
 // ------- BEGIN EXPRESSIONS -------
 //
+Ast.Exp Args(): {}
+{
+  { return; }
+}
+
+Ast.Exp PrArgs(): {}
+{
+  { return; }
+}
+
+Ast.Exp InitExpr(): {}
+{
+  { return; }
+}
+
+Ast.Exp ExtId(): {}
+{
+  { return; }
+}
+
 Ast.Exp Exp(): {}
 {
   Literal()
@@ -284,51 +320,51 @@ Ast.Exp Exp2(): {}
 | { return Field(); }
 }
 
-Ast.Exp Call():
-{ Ast.Exp obj, exp;
-  Ast.Id id;
-  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
-{
-  obj=Literal() "." id=Id()
-    "(" ( exp=Exp() {args.add(exp);} )* ");"
-  { return new Ast.Call(obj, id.nm, args); }
-}
-
-Ast.Exp NewArray():
-{ Ast.Type type; Ast.Id id; Token tkn; Ast.IntLit len; }
-{
-  "new" type=Type() "[" tkn=<INTLIT> "]"
-  { len = new Ast.IntLit(Integer.parseInt(tkn.image));
-    return new Ast.NewArray(type, len.i); }
-}
-
-Ast.Exp ArrayElm():
-{ Ast.Exp obj, index; }
-{
-  obj=Literal() "[" index=Exp() "]"
-  { return new Ast.ArrayElm(obj, index); }
-}
-
-Ast.Exp NewObj():
-{ Ast.Id id; }
-{
-  id=Id()
-  { return new Ast.NewObj(id.nm); }
-}
-
-Ast.Exp Field():
-{ Ast.Exp obj; Ast.Id id; }
-{
-  obj=Literal() "." id=Id()
-  { return new Ast.Field(obj, id.nm); }
-}
-
-Ast.Exp This():
-{ Token tkn; }
-{
-  tkn="this"
-  { return new Ast.This(); }
-}
+//Ast.Exp Call():
+//{ Ast.Exp obj, exp;
+//  Ast.Id id;
+//  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
+//{
+//  obj=Literal() "." id=Id()
+//    "(" ( exp=Exp() {args.add(exp);} )* ");"
+//  { return new Ast.Call(obj, id.nm, args); }
+//}
+//
+//Ast.Exp NewArray():
+//{ Ast.Type type; Ast.Id id; Token tkn; Ast.IntLit len; }
+//{
+//  "new" type=Type() "[" tkn=<INTLIT> "]"
+//  { len = new Ast.IntLit(Integer.parseInt(tkn.image));
+//    return new Ast.NewArray(type, len.i); }
+//}
+//
+//Ast.Exp ArrayElm():
+//{ Ast.Exp obj, index; }
+//{
+//  obj=Literal() "[" index=Exp() "]"
+//  { return new Ast.ArrayElm(obj, index); }
+//}
+//
+//Ast.Exp NewObj():
+//{ Ast.Id id; }
+//{
+//  id=Id()
+//  { return new Ast.NewObj(id.nm); }
+//}
+//
+//Ast.Exp Field():
+//{ Ast.Exp obj; Ast.Id id; }
+//{
+//  obj=Literal() "." id=Id()
+//  { return new Ast.Field(obj, id.nm); }
+//}
+//
+//Ast.Exp This():
+//{ Token tkn; }
+//{
+//  tkn="this"
+//  { return new Ast.This(); }
+//}
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
 //
@@ -451,28 +487,6 @@ Ast.Exp Literal():
 Ast.Id Id():
 { Token tkn; }
 {
-//( tkn="class"
-//| tkn="extends"
-//| tkn="static"
-//| tkn="public"
-//| tkn="main"
-//| tkn="void"
-//| tkn="boolean"
-//| tkn="int"
-//| tkn="double"
-//| tkn="String"
-//| tkn="true"
-//| tkn="false"
-//| tkn="new"
-//| tkn="this"
-//| tkn="if"
-//| tkn="else"
-//| tkn="while"
-//| tkn="return"
-//| tkn="System"
-//| tkn="out"
-//| tkn="println"
-//| tkn=<ID> )
   tkn=<ID>
   { return new Ast.Id(tkn.image); }
 }
