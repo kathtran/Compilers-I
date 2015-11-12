@@ -346,7 +346,7 @@ Ast.Exp Expr6():
   | "(" [ exp=Expr() ("," exp=Expr() )* ] ")"
     { return exp; }
   ]
-| exp=Exr7()
+| exp=Expr7()
   { return exp; }
 }
 
@@ -375,7 +375,7 @@ Ast.Exp Literal():
 | tkn=<DBLLIT>
   { dbllit = new Ast.DblLit(Double.parseDouble(tkn.image));
     return dbllit; }
-| tkn=<BOOLLIT>
+| (tkn="true"|tkn="false")
   { boollit = new Ast.BoolLit(Boolean.parseBoolean(tkn.image));
     return boollit; }
 | tkn=<STRLIT>
@@ -436,3 +436,4 @@ Ast.UOP UNOP(): {}
 }
 //
 // ------- END OPERATORS -------
+
