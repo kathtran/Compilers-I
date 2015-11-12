@@ -186,7 +186,7 @@ Ast.Stmt CallStmt():
   Ast.Id id;
   List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
 {
-  obj=Exp() "." id=Id()
+  obj=Literal() "." id=Id()
     "(" ( exp=Exp() {args.add(exp);} )* ");"
   { return new Ast.CallStmt(obj, id.nm, args); }
 }
@@ -242,7 +242,7 @@ Ast.Exp Call():
   Ast.Id id;
   List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
 {
-  obj=Exp() "." id=Id()
+  obj=Literal() "." id=Id()
     "(" ( exp=Exp() {args.add(exp);} )* ");"
   { return new Ast.Call(obj, id.nm, args); }
 }
@@ -257,7 +257,7 @@ Ast.Exp NewArray():
 Ast.Exp ArrayElm():
 { Ast.Exp obj, index; }
 {
-  obj=Exp() "[" index=Exp() "]"
+  obj=Literal() "[" index=Exp() "]"
   { return new Ast.ArrayElm(obj, index); }
 }
 
@@ -271,7 +271,7 @@ Ast.Exp NewObj():
 Ast.Exp Field():
 { Ast.Exp obj; Ast.Id id; }
 {
-  obj=Exp() "." id=Id()
+  obj=Literal() "." id=Id()
   { return new Ast.Field(exp, id.nm); }
 }
 
