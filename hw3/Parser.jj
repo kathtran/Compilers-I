@@ -104,14 +104,14 @@ Ast.ClassDecl ClassDecl():
 
 // MethodDecl -> {Type} <ID> "(" {Param} ")"
 Ast.MethodDecl MethodDecl():
-{ Ast.Type t;
-  Ast.Id id;
+{ Ast.Type t=null;
+  Ast.Id id=null;
   Ast.Param param; Ast.VarDecl var; Ast.Stmt stmt;
   List<Ast.Param> params = new ArrayList<Ast.Param>();
   List<Ast.VarDecl> vars = new ArrayList<Ast.VarDecl>();
   List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>(); }
 {
-  t=<ID> id=Id()
+  ["public"] ["static"] ( "void" | t=Type() ) ( "main" | id=Id() )
     "(" ( param=Param() {params.add(param);} )* ")"
     "{" (LOOKAHEAD(2) var=VarDecl() {vars.add(var);} )*
         ( stmt=Stmt() {stmts.add(stmt);} )* "}"
@@ -141,18 +141,20 @@ Ast.Param Param():
 // Type ->
 // IntType, DblType, BoolType, ArrayType, ObjType
 Ast.Type Type():
-{ Ast.Type type; }
+{ Token tkn; }
 {
-  type=<ID>
+  tkn=<ID> (LOOKAHEAD(2)"[" "]")?
   {
-    if (tkn.image == "int")
+		if (tkn.image.contains("["))
+			return new Ast.ArrayType(Type());
+    else if (tkn.image == "int")
       return new Ast.IntType();
     else if (tkn.image == "double")
       return new Ast.DblType();
     else if (tkn.image == "boolean")
       return new Ast.BoolType();
-//      return new Ast.ArrayType(tkn.image);
-//      return new Ast.ObjType();
+		else if (tkn.image == "String")
+			return new Ast.ObjType("String");
   }
 }
 //
@@ -206,7 +208,7 @@ Ast.Stmt CallStmt():
 
 Ast.Stmt If():
 { Ast.Exp cond;
-  Ast.Stmt s1, s2; }
+  Ast.Stmt s1, s2=null; }
 {
   "if" "(" cond=Exp() ")"
     s1=Stmt()
@@ -233,7 +235,7 @@ Ast.Stmt Print():
 }
 
 Ast.Stmt Return():
-{ Ast.Exp val; }
+{ Ast.Exp val=null; }
 {
   "return" [val=Exp()] ";"
   { return new Ast.Return(val); }
@@ -271,7 +273,7 @@ Ast.Exp Exp2(): {}
 }
 
 Ast.Exp Call():
-{ Ast.Exp obj;
+{ Ast.Exp obj, exp;
   Ast.Id id;
   List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
 {
@@ -281,11 +283,11 @@ Ast.Exp Call():
 }
 
 Ast.Exp NewArray():
-{ Ast.Type type; Ast.Id id; Token tkn; Ast.IntLit intlit; }
+{ Ast.Type type; Ast.Id id; Token tkn; Ast.IntLit len; }
 {
   "new" type=Type() "[" tkn=<INTLIT> "]"
-  { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
-    return new Ast.NewArray(type, intlit); }
+  { len = new Ast.IntLit(Integer.parseInt(tkn.image));
+    return new Ast.NewArray(type, len.i); }
 }
 
 Ast.Exp ArrayElm():
@@ -306,7 +308,7 @@ Ast.Exp Field():
 { Ast.Exp obj; Ast.Id id; }
 {
   obj=Literal() "." id=Id()
-  { return new Ast.Field(exp, id.nm); }
+  { return new Ast.Field(obj, id.nm); }
 }
 
 Ast.Exp This():
@@ -355,7 +357,7 @@ Ast.Exp Expr3():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Expr4()
-  (
+  (LOOKAHEAD(2)
     binop=ADDSUBOP() rhs=Expr4()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
@@ -374,10 +376,10 @@ Ast.Exp Expr4():
 }
 
 Ast.Exp Expr5():
-{ Ast.Exp exp; Ast.UOP unop; }
+{ Ast.Exp exp=null; Ast.UOP unop; }
 {
   (
-    unop=UNOP()
+    unop=UNOP() exp=Expr()
     { return new Ast.Unop(unop, exp); }
   )*
   exp=Expr6()
@@ -385,21 +387,21 @@ Ast.Exp Expr5():
 }
 
 Ast.Exp Expr6():
-{ Ast.Exp exp; }
+{ Ast.Exp exp=null; }
 {
   ["this" "."] <ID> ( "." <ID> )*
-  [
+  (
     "[" exp=Expr() "]"
     { return exp; }
-  | "(" [ exp=Expr() ("," exp=Expr() )* ] ")"
-    { return exp; }
-  ]
+  /*| "(" [ exp=Expr() ("," exp=Expr() )* ] ")"
+    { return exp; }*/
+  )?
 | exp=Expr7()
   { return exp; }
 }
 
 Ast.Exp Expr7():
-{ Ast.Exp exp; }
+{ Ast.Exp exp=null; }
 {
   "(" exp=Expr() ")"
   { return exp; }

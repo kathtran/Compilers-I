@@ -1,0 +1,8 @@
+0a1,7
+> # AST Program
+> ClassDecl Test 
+>   MethodDecl void main ()
+>    VarDecl Double a 3.14
+>    VarDecl Double b 0.123
+>    VarDecl Double c 55.0
+>    Print (Binop + (Binop + a b) c)
