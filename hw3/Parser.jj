@@ -104,14 +104,14 @@ Ast.ClassDecl ClassDecl():
 
 // MethodDecl -> {Type} <ID> "(" {Param} ")"
 Ast.MethodDecl MethodDecl():
-{ Ast.Type t=null;
-  Ast.Id id=null;
+{ Ast.Type t;
+  Ast.Id id;
   Ast.Param param; Ast.VarDecl var; Ast.Stmt stmt;
   List<Ast.Param> params = new ArrayList<Ast.Param>();
   List<Ast.VarDecl> vars = new ArrayList<Ast.VarDecl>();
   List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>(); }
 {
-  ["public"] ["static"] ( "void" | t=Type() ) ( "main" | id=Id() )
+  ["public"] ["static"] t=Type() id=Id()
     "(" ( param=Param() {params.add(param);} )* ")"
     "{" (LOOKAHEAD(2) var=VarDecl() {vars.add(var);} )*
         ( stmt=Stmt() {stmts.add(stmt);} )* "}"
@@ -124,7 +124,7 @@ Ast.VarDecl VarDecl():
   Ast.Id id;
   Ast.Exp init; }
 {
-  t=Type() id=Id() init=Exp()
+  t=Type() id=Id() ["=" init=InitExpr()] ";"
   { return new Ast.VarDecl(t, id.nm, init); }
 }
 
@@ -144,31 +144,28 @@ Ast.Type ExtType():
   type=Type()
   { return type; }
 | type="void"
-  { return new Ast.ObjType(type); }
+  { return new Ast.ObjType(type.nm); }
 }
 
 Ast.Type Type():
 { Ast.Type type; }
 {
-  type=BasicType() (LOOKAHEAD(2)"[" "]")?
-  {
-	if (tkn.image.contains("[")) {
-	  switch (tkn.image) {
-	    case "int":
-	      return new Ast.ArrayType(new Ast.IntType());
-	    case "double":
-	      return new Ast.ArrayType(new Ast.DblType());
-	    case "boolean":
-          return new Ast.ArrayType(new Ast.BoolType());
-        case "String":
-          return new Ast.ArrayType(new Ast.ObjType("String"));
-        default:
-          return new Ast.ArrayType(new Ast.ObjType(tkn.image));
-	  }
-	}
-  }
+  type=BasicType()
+  (
+    "[" "]"
+    { return new Ast.ArrayType(type); }
+  | { switch (type.nm) {
+        case "int":
+         return new Ast.IntType();
+        case "double":
+          return new Ast.DblType();
+        case "boolean":
+          return new Ast.BoolType();
+      }
+    }
+  )
 | type=<ID>
-  { return; }
+  { return new Ast.ObjType(type.nm); }
 }
 
 Ast.Type BasicType():
@@ -190,23 +187,17 @@ Ast.Type BasicType():
 
 // ------- BEGIN STATEMENTS -------
 //
+//TODO
 Ast.Stmt Stmt():
 { Ast.Stmt stmt; }
 { 
-  "{"
-  { return Block(); }
-| LOOKAHEAD(2) Exp()
-  { return Assign(); }
-| Literal()
-  { return CallStmt(); }
-| "if"
-  { return If(); }
-| "while"
-  { return While(); }
-| "System"
-  { return Print(); }
-| "return"
-  { return Return(); }
+  "{" ( stmt=Stmt() )* "}"
+  { return stmt; }
+| ExtId() (("(" [Args()] ")" ";")|("[" Expr() "]")?("=" InitExpr() ";"))
+| "if" "(" Expr() ")" Stmt() [LOOKAHEAD(2)"else" Stmt()]
+| "while" "(" Expr() ")" Stmt()
+| "System" "." "out" "." "println" "(" [ PrArg() ] ")" ";"
+| "return" [Expr()] ";"
 }
 
 //Ast.Stmt Block():
@@ -273,51 +264,47 @@ Ast.Stmt Stmt():
 
 // ------- BEGIN EXPRESSIONS -------
 //
-Ast.Exp Args(): {}
+Ast.Exp Args():
+{ Ast.Exp exp; }
 {
-  { return; }
+  exp=Expr() ( "," exp=Expr() )*
+  { return exp; }
 }
 
-Ast.Exp PrArgs(): {}
+Ast.Exp PrArgs():
+{ Ast.Exp exp; Token tkn; }
 {
-  { return; }
+  exp=Expr()
+  { return exp; }
+| tkn=<STRLIT>
+  { return new Ast.StrLit(tkn.image); }
 }
 
-Ast.Exp InitExpr(): {}
+Ast.Exp InitExpr():
+{ Ast.Exp exp; }
 {
-  { return; }
+  "new" exp=I1()
+  { return exp; }
+| exp=Expr()
+  { return exp; }
 }
 
-Ast.Exp ExtId(): {}
+Ast.Exp I1():
+{ Ast.Type type; Token tkn; Ast.IntLit intlit; }
 {
-  { return; }
+  type=BasicType() "[" tkn=<INTLIT> "]"
+  { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
+    return new Ast.NewArray(type, intlit.i); }
+| tkn=<ID> "(" ")"
+  { return new Ast.NewObj(tkn.image); }
 }
 
-Ast.Exp Exp(): {}
+//TODO
+Ast.Exp ExtId():
+{ Token tkn; }
 {
-  Literal()
-  { return Exp1(); }
-| "new"
-  { return NewArray(); }
-| Id()
-  { return NewObj(); }
-| "this"
-  { return This(); }
-}
-
-Ast.Exp Exp1(): {}
-{
-  "." Id()
-  { return Exp2(); }
-| "["
-  { return ArrayElm(); }
-}
-
-Ast.Exp Exp2(): {}
-{
-  "("
-  { return Call(); }
-| { return Field(); }
+  ["this" "."] tkn=<ID> ( "." tkn=<ID> )*
+  { return new Ast.Field(new Ast.This(), tkn.image); }
 }
 
 //Ast.Exp Call():
@@ -437,12 +424,12 @@ Ast.Exp Expr5():
 Ast.Exp Expr6():
 { Ast.Exp exp=null; }
 {
-  ["this" "."] <ID> ( "." <ID> )*
+  exp=ExtId()
   (
     "[" exp=Expr() "]"
     { return exp; }
-  /*| "(" [ exp=Expr() ("," exp=Expr() )* ] ")"
-    { return exp; }*/
+  | "(" [ exp=Args() ] ")"
+    { return exp; }
   )?
 | exp=Expr7()
   { return exp; }
