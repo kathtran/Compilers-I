@@ -197,10 +197,10 @@ Ast.Stmt Stmt():
 | e1=ExtId()
   (
     ("(" [e2=Args()] ")" ";")
-    { return; }
+    { return new Ast.CallStmt(e1, e1.nm, e2); }
   |
     ("[" e3=Expr() "]")?("=" e4=InitExpr() ";")
-    { return; }
+    { return new Ast.Assign(e1, e4); }
   )
 | "if" "(" e1=Expr() ")" s1=Stmt() [LOOKAHEAD(2)"else" s2=Stmt()]
   { return new Ast.If(e1, s1, s2); }
@@ -217,10 +217,11 @@ Ast.Stmt Stmt():
 // ------- BEGIN EXPRESSIONS -------
 //
 Ast.Exp Args():
-{ Ast.Exp exp; }
+{ Ast.Exp expr;
+  List<Ast.Exp> exprs = new ArrayList<Ast.Exp>(); }
 {
-  exp=Expr() ( "," exp=Expr() )*
-  { return exp; }
+  ( expr=Expr() {exprs.add(expr);} )*
+  { return exprs; }
 }
 
 Ast.Exp PrArg():
@@ -251,12 +252,11 @@ Ast.Exp I1():
   { return new Ast.NewObj(tkn.image); }
 }
 
-//TODO
 Ast.Exp ExtId():
-{ Token tkn; }
+{ Token tkn1, tkn2; }
 {
-  ["this" "."] tkn=<ID> ( "." tkn=<ID> )*
-  { return new Ast.Field(new Ast.This(), tkn.image); }
+  ["this" "."] tkn1=<ID> ( "." tkn2=<ID> )*
+  { return new Ast.Field(tkn1.image, tkn2.image); }
 }
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
