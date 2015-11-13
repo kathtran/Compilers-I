@@ -189,76 +189,28 @@ Ast.Type BasicType():
 //
 //TODO
 Ast.Stmt Stmt():
-{ Ast.Stmt stmt; }
+{ Ast.Stmt s1, s2;
+  Ast.Exp e1, e2, e3, e4; }
 { 
-  "{" ( stmt=Stmt() )* "}"
-  { return stmt; }
-| ExtId() (("(" [Args()] ")" ";")|("[" Expr() "]")?("=" InitExpr() ";"))
-| "if" "(" Expr() ")" Stmt() [LOOKAHEAD(2)"else" Stmt()]
-| "while" "(" Expr() ")" Stmt()
-| "System" "." "out" "." "println" "(" [ PrArg() ] ")" ";"
-| "return" [Expr()] ";"
+  "{" ( s1=Stmt() )* "}"
+  { return new Ast.Block(s1); }
+| e1=ExtId()
+  (
+    ("(" [e2=Args()] ")" ";")
+    { return; }
+  |
+    ("[" e3=Expr() "]")?("=" e4=InitExpr() ";")
+    { return; }
+  )
+| "if" "(" e1=Expr() ")" s1=Stmt() [LOOKAHEAD(2)"else" s2=Stmt()]
+  { return new Ast.If(e1, s1, s2); }
+| "while" "(" e1=Expr() ")" s1=Stmt()
+  { return new Ast.While(e1, s1); }
+| "System" "." "out" "." "println" "(" [ e1=PrArg() ] ")" ";"
+  { return new Ast.Print(e1); }
+| "return" [e1=Expr()] ";"
+  { return new Ast.Return(e1); }
 }
-
-//Ast.Stmt Block():
-//{ List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>();
-//  Ast.Stmt stmt; }
-//{
-//  "{" ( stmt=Stmt() {stmts.add(stmt);} )* "}"
-//  { return new Ast.Block(stmts); }
-//}
-//
-//Ast.Stmt Assign():
-//{ Ast.Exp lhs, rhs; }
-//{
-//  lhs=Exp() "=" rhs=Exp()
-//  { return new Ast.Assign(lhs, rhs); }
-//}
-//
-//Ast.Stmt CallStmt():
-//{ Ast.Exp obj, exp;
-//  Ast.Id id;
-//  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
-//{
-//  obj=Literal() "." id=Id()
-//    "(" ( exp=Exp() {args.add(exp);} )* ");"
-//  { return new Ast.CallStmt(obj, id.nm, args); }
-//}
-//
-//Ast.Stmt If():
-//{ Ast.Exp cond;
-//  Ast.Stmt s1, s2=null; }
-//{
-//  "if" "(" cond=Exp() ")"
-//    s1=Stmt()
-//  ("else"
-//    s2=Stmt()
-//  | s2=Stmt()
-//  )?
-//  { return new Ast.If(cond, s1, s2); }
-//}
-//
-//Ast.Stmt While():
-//{ Ast.Exp cond; Ast.Stmt stmt; }
-//{
-//  "while" "(" cond=Exp() ")"
-//    stmt=Stmt()
-//  { return new Ast.While(cond, stmt); }
-//}
-//
-//Ast.Stmt Print():
-//{ Ast.Exp arg; }
-//{
-//  "System" "." "out" "." "println" "(" arg=Exp() ")" ";"
-//  { return new Ast.Print(arg); }
-//}
-//
-//Ast.Stmt Return():
-//{ Ast.Exp val=null; }
-//{
-//  "return" [val=Exp()] ";"
-//  { return new Ast.Return(val); }
-//}
 //
 // ------- END STATEMENTS -------
 
@@ -271,7 +223,7 @@ Ast.Exp Args():
   { return exp; }
 }
 
-Ast.Exp PrArgs():
+Ast.Exp PrArg():
 { Ast.Exp exp; Token tkn; }
 {
   exp=Expr()
@@ -306,52 +258,6 @@ Ast.Exp ExtId():
   ["this" "."] tkn=<ID> ( "." tkn=<ID> )*
   { return new Ast.Field(new Ast.This(), tkn.image); }
 }
-
-//Ast.Exp Call():
-//{ Ast.Exp obj, exp;
-//  Ast.Id id;
-//  List<Ast.Exp> args = new ArrayList<Ast.Exp>(); }
-//{
-//  obj=Literal() "." id=Id()
-//    "(" ( exp=Exp() {args.add(exp);} )* ");"
-//  { return new Ast.Call(obj, id.nm, args); }
-//}
-//
-//Ast.Exp NewArray():
-//{ Ast.Type type; Ast.Id id; Token tkn; Ast.IntLit len; }
-//{
-//  "new" type=Type() "[" tkn=<INTLIT> "]"
-//  { len = new Ast.IntLit(Integer.parseInt(tkn.image));
-//    return new Ast.NewArray(type, len.i); }
-//}
-//
-//Ast.Exp ArrayElm():
-//{ Ast.Exp obj, index; }
-//{
-//  obj=Literal() "[" index=Exp() "]"
-//  { return new Ast.ArrayElm(obj, index); }
-//}
-//
-//Ast.Exp NewObj():
-//{ Ast.Id id; }
-//{
-//  id=Id()
-//  { return new Ast.NewObj(id.nm); }
-//}
-//
-//Ast.Exp Field():
-//{ Ast.Exp obj; Ast.Id id; }
-//{
-//  obj=Literal() "." id=Id()
-//  { return new Ast.Field(obj, id.nm); }
-//}
-//
-//Ast.Exp This():
-//{ Token tkn; }
-//{
-//  tkn="this"
-//  { return new Ast.This(); }
-//}
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
 //
