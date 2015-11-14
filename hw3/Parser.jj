@@ -190,17 +190,18 @@ Ast.Type BasicType():
 //TODO
 Ast.Stmt Stmt():
 { Ast.Stmt s1, s2;
-  Ast.Exp e1, e2, e3, e4; }
+  Ast.Exp e1, e2, e3;
+  List<Ast.Exp> el;}
 { 
   "{" ( s1=Stmt() )* "}"
   { return new Ast.Block(s1); }
 | e1=ExtId()
   (
-    ("(" [e2=Args()] ")" ";")
-    { return new Ast.CallStmt(e1, e1.nm, e2); }
+    ("(" [el=Args()] ")" ";")
+    { return new Ast.CallStmt(e1, e1.nm, el); }
   |
-    ("[" e3=Expr() "]")?("=" e4=InitExpr() ";")
-    { return new Ast.Assign(e1, e4); }
+    ("[" e2=Expr() "]")?("=" e3=InitExpr() ";")
+    { return new Ast.Assign(e1, e3); }
   )
 | "if" "(" e1=Expr() ")" s1=Stmt() [LOOKAHEAD(2)"else" s2=Stmt()]
   { return new Ast.If(e1, s1, s2); }
@@ -216,7 +217,7 @@ Ast.Stmt Stmt():
 
 // ------- BEGIN EXPRESSIONS -------
 //
-Ast.Exp Args():
+List<Ast.Exp> Args():
 { Ast.Exp expr;
   List<Ast.Exp> exprs = new ArrayList<Ast.Exp>(); }
 {
