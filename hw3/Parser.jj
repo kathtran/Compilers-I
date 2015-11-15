@@ -249,15 +249,23 @@ Ast.Exp I1():
   type=BasicType() "[" tkn=<INTLIT> "]"
   { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
     return new Ast.NewArray(type, intlit.i); }
-| tkn=<ID> "(" ")"
+| tkn=Id() "(" ")"
   { return new Ast.NewObj(tkn.image); }
 }
 
 Ast.Exp ExtId():
-{ Token tkn1, tkn2; }
+{ Exp e;
+  Ast.This t = null;
+  Ast.Id id; }
 {
-  ["this" "."] tkn1=<ID> ( "." tkn2=<ID> )*
-  { return new Ast.Field(tkn1.image, tkn2.image); }
+  [ "this" "." { t=Ast.This(); } ]
+  id=Id() {
+    if (t != null)
+      e = new Ast.Field(t, id.nm);
+    else
+      e = id; }
+  ( "." id=Id() { e = new Ast.Field(e, id.nm); } )*
+  { return e; }
 }
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
