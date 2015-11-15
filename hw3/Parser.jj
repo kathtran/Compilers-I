@@ -181,9 +181,9 @@ Ast.Type BasicType():
 //
 Ast.Stmt Stmt():
 { Ast.Stmt s1, s2;
-	List<Ast.Stmt> sl;
-	Ast.Field f;
-  Ast.Exp e1, e2, e3;
+  List<Ast.Stmt> sl;
+  Ast.Field f;
+  Ast.Exp e, e1, e2;
   List<Ast.Exp> el;}
 { 
   "{" ( s1=Stmt() { sl.add(s1); } )* "}"
@@ -194,12 +194,12 @@ Ast.Stmt Stmt():
     { return new Ast.CallStmt(f.obj, f.nm, el); }
   |
     (
-			"[" e1=Expr() "]" { e2 = new Ast.ArrayElm(f, e1); }
-		)?
-		("=" e3=InitExpr() ";")
-    { return new Ast.Assign(f, e3); }
+	  "[" e1=Expr() "]" { e = new Ast.ArrayElm(f, e1); }
+	)?
+	("=" e2=InitExpr() ";")
+    { return new Ast.Assign(e, e2); }
   )
-| "if" "(" e1=Expr() ")" s1=Stmt() [LOOKAHEAD(2)"else" s2=Stmt()]
+| "if" "(" e1=Expr() ")" s1=Stmt() [ LOOKAHEAD(2) "else" s2=Stmt() ]
   { return new Ast.If(e1, s1, s2); }
 | "while" "(" e1=Expr() ")" s1=Stmt()
   { return new Ast.While(e1, s1); }
