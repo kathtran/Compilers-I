@@ -337,14 +337,15 @@ Ast.Exp Expr5():
 }
 
 Ast.Exp Expr6():
-{ Ast.Exp exp=null; }
+{ Ast.Exp exp;
+  List<Ast.Exp> el = new ArrayList<Ast.Exp>(); }
 {
   exp=ExtId()
   (
     "[" exp=Expr() "]"
     { return exp; }
-  | "(" [ exp=Args() ] ")"
-    { return exp; }
+  | "(" [ el=Args() ] ")"
+    { return el; }
   )?
 | exp=Expr7()
   { return exp; }
