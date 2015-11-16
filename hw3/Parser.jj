@@ -184,7 +184,7 @@ Ast.Stmt Stmt():
   List<Ast.Stmt> sl = new ArrayList<Ast.Stmt>();
   Ast.Exp e, e1 = null, e2;
   List<Ast.Exp> el =  new ArrayList<Ast.Exp>();
-  Ast.Field f;
+  Ast.Field field;
   Ast.Id id; }
 { 
   "{" ( s1=Stmt() { sl.add(s1); } )* "}"
@@ -193,10 +193,9 @@ Ast.Stmt Stmt():
   (
     "(" [el=Args()] ")" ";"
   	{ if (e instanceof Ast.Field) {
-  	    f = (Ast.Field) e;
-  	    return new Ast.CallStmt(f.obj, f.nm, el);
-  	  }
-  	  else if (e instanceof Ast.Id) {
+  	    field = (Ast.Field) e;
+  	    return new Ast.CallStmt(field.obj, field.nm, el);
+  	  } else if (e instanceof Ast.Id) {
   	    id = (Ast.Id) e;
   	    return new Ast.CallStmt(id, id.nm, el);
   	  }
@@ -331,23 +330,42 @@ Ast.Exp Term():
 }
 
 Ast.Exp Factor():
-{ Ast.Exp exp; Ast.UOP unop; }
+{ Ast.UOP unop;
+  Ast.Exp e, ec, e1;
+  Ast.Field field; Ast.Id id;
+  List<Ast.Exp> el = new ArrayList<Ast.Exp>(); }
 {
+  unop=UNOP() e=Factor()
+  { return new Ast.Unop(unop, e); }
+| "(" e=Expr() ")"
+  { return e; }
+| e=ExtId()
   (
-    unop=UNOP() exp=Expr()
-    { return new Ast.Unop(unop, exp); }
-  )*
-| "(" exp=Expr() ")"
-  { return exp; }
-| exp=ExtId()
-  (
-    "[" exp=Expr() "]"
-    { return exp; }
+    (
+      "[" e1=Expr() "]"
+      { if (e instanceof Ast.Field)
+          ec = (Ast.Field) e;
+        else if (e instanceof Ast.Id)
+          ec = (Ast.Id) e;
+        return new Ast.ArrayElm(ec, e1); }
+    )?
+    { if (e instanceof Ast.Field)
+        ec = (Ast.Field) e;
+      else if (e instanceof Ast.Id)
+        ec = (Ast.Id) e;
+      return ec; }
   | "(" ( el=Args() )? ")"
-    { return exp; }
-  )?
-| exp=Literal()
-  { return exp; }
+    { if (e instanceof Ast.Field) {
+        field = (Ast.Field) e;
+        return new Ast.Call(field.obj, field.nm, el);
+      } else if (e instanceof Ast.Id) {
+        id = (Ast.Id) e;
+        return new Ast.Call(id, id.nm, el);
+      }
+    }
+  )
+| e=Literal()
+  { return e; }
 }
 //
 // ------- END EXPRESSIONS CASCADE -------
