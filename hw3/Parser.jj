@@ -116,6 +116,7 @@ Ast.MethodDecl MethodDecl():
     type=ExtType() id=Id()
     "(" ( param=Param() {params.add(param);} )* ")"
   | "static" "void" "main" "(" "String" "[" "]" id=Id() ")"
+    { id = new Ast.Id("main"); }
   )
   "{" (LOOKAHEAD(2) var=VarDecl() {vars.add(var);} )*
       ( stmt=Stmt() {stmts.add(stmt);} )* "}"
@@ -167,7 +168,7 @@ Ast.Type Type():
 Ast.Type BasicType():
 { Token tkn; }
 {
-	( tkn="int" | tkn="double" | tkn="boolean" )
+  ( tkn="int" | tkn="double" | tkn="boolean" )
   { switch (tkn.image) {
       case "int":
         return new Ast.IntType();
