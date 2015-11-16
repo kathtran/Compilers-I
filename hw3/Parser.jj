@@ -284,7 +284,7 @@ Ast.Exp Expr():
   lhs=AndExpr()
   (
     binop=OROP() rhs=AndExpr()
-    { return new Ast.Binop(binop, lhs, rhs); }
+    { lhs = new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
@@ -295,7 +295,7 @@ Ast.Exp AndExpr():
   lhs=RelExpr()
   (
     binop=ANDOP() rhs=RelExpr()
-    { return new Ast.Binop(binop, lhs, rhs); }
+    { lhs = new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
@@ -306,7 +306,7 @@ Ast.Exp RelExpr():
   lhs=ArithExpr()
   (
     binop=RELOP() rhs=ArithExpr()
-    { return new Ast.Binop(binop, lhs, rhs); }
+    { lhs = new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
@@ -317,7 +317,7 @@ Ast.Exp ArithExpr():
   lhs=Term()
   ( LOOKAHEAD(2)
     binop=ARITHOP() rhs=Term()
-    { return new Ast.Binop(binop, lhs, rhs); }
+    { lhs = new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
@@ -328,7 +328,7 @@ Ast.Exp Term():
   lhs=Factor()
   (
     binop=TERMOP() rhs=Factor()
-    { return new Ast.Binop(binop, lhs, rhs); }
+    { lhs = new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
