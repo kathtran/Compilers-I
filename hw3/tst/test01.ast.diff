@@ -1,8 +1,8 @@
-0a1,7
-> # AST Program
-> ClassDecl Test 
+3c3
+<   MethodDecl void ignore ()
+---
 >   MethodDecl void main ()
->    Print 123
+5c5
+<    Print ""abc""
+---
 >    Print "abc"
->    Print ()
->    Print true

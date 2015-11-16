@@ -104,7 +104,7 @@ Ast.ClassDecl ClassDecl():
 
 // MethodDecl
 Ast.MethodDecl MethodDecl():
-{ Ast.Type type;
+{ Ast.Type type = null;
   Ast.Id id;
   Ast.Param param; Ast.VarDecl var; Ast.Stmt stmt;
   List<Ast.Param> params = new ArrayList<Ast.Param>();
@@ -167,7 +167,7 @@ Ast.Type Type():
 Ast.Type BasicType():
 { Token tkn; }
 {
-	tkn="int" | tkn="double" | tkn="boolean"
+	( tkn="int" | tkn="double" | tkn="boolean" )
   { switch (tkn.image) {
       case "int":
         return new Ast.IntType();
@@ -217,8 +217,8 @@ Ast.Stmt Stmt():
   { return new Ast.While(e1, s1); }
 | "System" "." "out" "." "println" "(" [ e1=PrArg() ] ")" ";"
   { return new Ast.Print(e1); }
-| "return" [e1=Expr()] ";"
-  { return new Ast.Return(e1); }
+| "return" [ e1=Expr() { return new Ast.Return(e1); } ] ";"
+  { return new Ast.Return(null); }
 }
 //
 // ------- END STATEMENTS -------
@@ -315,7 +315,7 @@ Ast.Exp ArithExpr():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
   lhs=Term()
-  (LOOKAHEAD(2)
+  ( LOOKAHEAD(2)
     binop=ARITHOP() rhs=Term()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
@@ -354,7 +354,7 @@ Ast.Exp Factor():
         return new Ast.Call(id, id.nm, el);
       }
     }
-|    (
+  | (
       "[" e1=Expr() "]"
       { if (e instanceof Ast.Field)
           ec = (Ast.Field) e;

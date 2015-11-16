@@ -1,0 +1,13 @@
+# AST Program
+ClassDecl Test 
+  MethodDecl void ignore ()
+   If (Binop < 1 2)
+    Print 1
+   Else
+    {
+     If (Binop == (Binop * 3 4) 10)
+      Print 4
+     Else
+      Print 5
+    }
+   Print 6
