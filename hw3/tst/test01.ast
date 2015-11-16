@@ -1,7 +1,7 @@
 # AST Program
 ClassDecl Test 
-  MethodDecl void ignore ()
+  MethodDecl void main ()
    Print 123
-   Print ""abc""
+   Print "abc"
    Print ()
    Print true

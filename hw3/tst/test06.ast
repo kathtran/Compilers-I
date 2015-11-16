@@ -1,6 +1,6 @@
 # AST Program
 ClassDecl Test 
-  MethodDecl void ignore ()
+  MethodDecl void main ()
    If (Binop < 1 2)
     Print 1
    Else

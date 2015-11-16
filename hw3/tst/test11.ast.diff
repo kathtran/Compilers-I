@@ -1,8 +1,0 @@
-3,5c3,5
-<   MethodDecl (ObjType void) go ()
-<    Print ""Go!""
-<   MethodDecl void ignore ()
----
->   MethodDecl void go ()
->    Print "Go!"
->   MethodDecl void main ()

@@ -1,8 +1,0 @@
-3c3
-<   MethodDecl void ignore ()
----
->   MethodDecl void main ()
-5c5
-<    Print ""abc""
----
->    Print "abc"

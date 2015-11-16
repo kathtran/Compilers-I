@@ -149,7 +149,7 @@ Ast.Type ExtType():
   type=Type()
   { return type; }
 | tkn="void"
-  { return new Ast.ObjType(tkn.image); }
+  { return null; }
 }
 
 Ast.Type Type():
@@ -393,7 +393,7 @@ Ast.Exp Literal():
   { boollit = new Ast.BoolLit(Boolean.parseBoolean(tkn.image));
     return boollit; }
 | tkn=<STRLIT>
-  { return new Ast.StrLit(tkn.image); }
+  { return new Ast.StrLit(tkn.image.replace("\"","")); }
 }
 //
 // ------- END LITERALS -------

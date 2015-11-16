@@ -1,4 +1,0 @@
-3c3
-<   MethodDecl void ignore ()
----
->   MethodDecl void main ()
