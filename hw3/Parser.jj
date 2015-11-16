@@ -122,7 +122,7 @@ Ast.MethodDecl MethodDecl():
 Ast.VarDecl VarDecl():
 { Ast.Type t;
   Ast.Id id;
-  Ast.Exp init; }
+  Ast.Exp init = null; }
 {
   t=Type() id=Id() ["=" init=InitExpr()] ";"
   { return new Ast.VarDecl(t, id.nm, init); }
@@ -180,10 +180,10 @@ Ast.Type BasicType():
 // ------- BEGIN STATEMENTS -------
 //
 Ast.Stmt Stmt():
-{ Ast.Stmt s1, s2;
-  List<Ast.Stmt> sl;
-  Ast.Exp e, e1, e2;
-  List<Ast.Exp> el;
+{ Ast.Stmt s1, s2 = null;
+  List<Ast.Stmt> sl = new ArrayList<Ast.Stmt>();
+  Ast.Exp e, e1 = null, e2;
+  List<Ast.Exp> el =  new ArrayList<Ast.Exp>();
   Ast.Field f;
   Ast.Id id; }
 { 
