@@ -183,17 +183,24 @@ Ast.Stmt Stmt():
 { Ast.Stmt s1, s2;
   List<Ast.Stmt> sl;
   Ast.Exp e, e1, e2;
-  List<Ast.Exp> el; }
+  List<Ast.Exp> el;
+  Ast.Field f;
+  Ast.Id id; }
 { 
   "{" ( s1=Stmt() { sl.add(s1); } )* "}"
   { return new Ast.Block(sl); }
 | e=ExtId()
   (
     "(" [el=Args()] ")" ";"
-  	{ if (e instanceof Ast.Field)
-  	    return new Ast.CallStmt((Ast.Field)e.obj, (Ast.Field)e.nm, el);
-  	  else if (e instanceof Ast.Id)
-  	    return new Ast.CallStmt((Ast.Field)e, (Ast.Field)e.nm, el); }
+  	{ if (e instanceof Ast.Field) {
+  	    f = (Ast.Field) e;
+  	    return new Ast.CallStmt(f.obj, f.nm, el);
+  	  }
+  	  else if (e instanceof Ast.Id) {
+  	    id = (Ast.Id) e;
+  	    return new Ast.CallStmt(id, id.nm, el);
+  	  }
+  	}
   |
     (
 	  "[" e1=Expr() "]" { e = new Ast.ArrayElm(e, e1); }
