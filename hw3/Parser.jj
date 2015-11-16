@@ -5,7 +5,7 @@
 //
 // Kathleen Tran
 //
-// This parser is based on my own grammar.
+// This parser is based on the provided reference grammar.
 //
 
 // options { DEBUG_PARSER=true; }  /* Show debugging info */
@@ -120,20 +120,20 @@ Ast.MethodDecl MethodDecl():
 
 // VarDecl -> {Type} <ID> {Exp}
 Ast.VarDecl VarDecl():
-{ Ast.Type t;
+{ Ast.Type type;
   Ast.Id id;
   Ast.Exp init = null; }
 {
-  t=Type() id=Id() ["=" init=InitExpr()] ";"
-  { return new Ast.VarDecl(t, id.nm, init); }
+  type=Type() id=Id() ["=" init=InitExpr()] ";"
+  { return new Ast.VarDecl(type, id.nm, init); }
 }
 
 // Param -> {Type} <ID>
 Ast.Param Param():
-{ Ast.Type t; Ast.Id id; }
+{ Ast.Type type; Ast.Id id; }
 {
-  t=Type() id=Id()
-  { return new Ast.Param(t, id.nm); }
+  type=Type() id=Id()
+  { return new Ast.Param(type, id.nm); }
 }
 
 // ------- BEGIN TYPES -------
@@ -240,29 +240,28 @@ Ast.Exp PrArg():
 }
 
 Ast.Exp InitExpr():
-{ Ast.Exp exp; }
+{ Ast.Type type; Token tkn;
+  Ast.Id id; Ast.IntLit intlit;
+  Ast.Exp exp; }
 {
-  "new" exp=I1()
+  "new"
+  (
+    type=BasicType() "[" tkn=<INTLIT> "]"
+    { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
+      return new Ast.NewArray(type, intlit.i); }
+  | id=Id() "(" ")"
+    { return new Ast.NewObj(id.nm); }
+
+  )
   { return exp; }
 | exp=Expr()
   { return exp; }
 }
 
-Ast.Exp I1():
-{ Ast.Type type; Token tkn;
-	Ast.Id id; Ast.IntLit intlit; }
-{
-  type=BasicType() "[" tkn=<INTLIT> "]"
-  { intlit = new Ast.IntLit(Integer.parseInt(tkn.image));
-    return new Ast.NewArray(type, intlit.i); }
-| id=Id() "(" ")"
-  { return new Ast.NewObj(id.nm); }
-}
-
 Ast.Exp ExtId():
-{ Ast.Exp e;
-  Ast.This t = null;
-  Ast.Id id; }
+{ Ast.This t = null;
+  Ast.Id id;
+  Ast.Exp e; }
 {
   [ "this" "." { t = new Ast.This(); } ]
   id=Id() {
@@ -279,89 +278,74 @@ Ast.Exp ExtId():
 Ast.Exp Expr():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
-  lhs=Expr1()
+  lhs=AndExpr()
   (
-    binop=OROP() rhs=Expr1()
+    binop=OROP() rhs=AndExpr()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
 
-Ast.Exp Expr1():
+Ast.Exp AndExpr():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
-  lhs=Expr2()
+  lhs=RelExpr()
   (
-    binop=ANDOP() rhs=Expr2()
+    binop=ANDOP() rhs=RelExpr()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
 
-Ast.Exp Expr2():
+Ast.Exp RelExpr():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
-  lhs=Expr3()
+  lhs=ArithExpr()
   (
-    binop=CMPOP() rhs=Expr3()
+    binop=RELOP() rhs=ArithExpr()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
 
-Ast.Exp Expr3():
+Ast.Exp ArithExpr():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
-  lhs=Expr4()
+  lhs=Term()
   (LOOKAHEAD(2)
-    binop=ADDSUBOP() rhs=Expr4()
+    binop=ARITHOP() rhs=Term()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
 
-Ast.Exp Expr4():
+Ast.Exp Term():
 { Ast.Exp lhs, rhs; Ast.BOP binop; }
 {
-  lhs=Expr5()
+  lhs=Factor()
   (
-    binop=MULDIVOP() rhs=Expr5()
+    binop=TERMOP() rhs=Factor()
     { return new Ast.Binop(binop, lhs, rhs); }
   )*
   { return lhs; }
 }
 
-Ast.Exp Expr5():
+Ast.Exp Factor():
 { Ast.Exp exp; Ast.UOP unop; }
 {
   (
     unop=UNOP() exp=Expr()
     { return new Ast.Unop(unop, exp); }
   )*
-  exp=Expr6()
+| "(" exp=Expr() ")"
   { return exp; }
-}
-
-Ast.Exp Expr6():
-{ Ast.Exp exp;
-  List<Ast.Exp> el; }
-{
-  exp=ExtId()
+| exp=ExtId()
   (
     "[" exp=Expr() "]"
     { return exp; }
   | "(" ( el=Args() )? ")"
     { return exp; }
   )?
-| exp=Expr7()
-  { return exp; }
-}
-
-Ast.Exp Expr7():
-{ Ast.Exp exp; }
-{
-  "(" exp=Expr() ")"
-  { return exp; }
 | exp=Literal()
   { return exp; }
 }
@@ -413,7 +397,7 @@ Ast.BOP ANDOP(): {}
   "&&" { return Ast.BOP.AND; }
 }
 
-Ast.BOP CMPOP(): {}
+Ast.BOP RELOP(): {}
 {
   "==" { return Ast.BOP.EQ; }
 | "!=" { return Ast.BOP.NE; }
@@ -423,13 +407,13 @@ Ast.BOP CMPOP(): {}
 | ">=" { return Ast.BOP.GE; }
 }
 
-Ast.BOP ADDSUBOP(): {}
+Ast.BOP ARITHOP(): {}
 {
   "+"  { return Ast.BOP.ADD; }
 | "-"  { return Ast.BOP.SUB; }
 }
 
-Ast.BOP MULDIVOP(): {}
+Ast.BOP TERMOP(): {}
 {
   "*"  { return Ast.BOP.MUL; }
 | "/"  { return Ast.BOP.DIV; }
