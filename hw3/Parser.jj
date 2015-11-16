@@ -331,7 +331,7 @@ Ast.Exp Term():
 
 Ast.Exp Factor():
 { Ast.UOP unop;
-  Ast.Exp e, ec, e1;
+  Ast.Exp e, ec = null, e1;
   Ast.Field field; Ast.Id id;
   List<Ast.Exp> el = new ArrayList<Ast.Exp>(); }
 {
@@ -341,7 +341,16 @@ Ast.Exp Factor():
   { return e; }
 | e=ExtId()
   (
-    (
+    "(" ( el=Args() )? ")"
+    { if (e instanceof Ast.Field) {
+        field = (Ast.Field) e;
+        return new Ast.Call(field.obj, field.nm, el);
+      } else if (e instanceof Ast.Id) {
+        id = (Ast.Id) e;
+        return new Ast.Call(id, id.nm, el);
+      }
+    }
+|    (
       "[" e1=Expr() "]"
       { if (e instanceof Ast.Field)
           ec = (Ast.Field) e;
@@ -354,15 +363,6 @@ Ast.Exp Factor():
       else if (e instanceof Ast.Id)
         ec = (Ast.Id) e;
       return ec; }
-  | "(" ( el=Args() )? ")"
-    { if (e instanceof Ast.Field) {
-        field = (Ast.Field) e;
-        return new Ast.Call(field.obj, field.nm, el);
-      } else if (e instanceof Ast.Id) {
-        id = (Ast.Id) e;
-        return new Ast.Call(id, id.nm, el);
-      }
-    }
   )
 | e=Literal()
   { return e; }
