@@ -114,7 +114,7 @@ Ast.MethodDecl MethodDecl():
   "public"
   (
     type=ExtType() id=Id()
-    "(" ( param=Param() {params.add(param);} )* ")"
+    "(" ( param=Param() [","] { params.add(param);} )* ")"
   | "static" "void" "main" "(" "String" "[" "]" id=Id() ")"
     { id = new Ast.Id("main"); }
   )
@@ -185,14 +185,14 @@ Ast.Type BasicType():
 // ------- BEGIN STATEMENTS -------
 //
 Ast.Stmt Stmt():
-{ Ast.Stmt s1, s2 = null;
+{ Ast.Stmt s, s1, s2 = null;
   List<Ast.Stmt> sl = new ArrayList<Ast.Stmt>();
   Ast.Exp e, e1 = null, e2;
   List<Ast.Exp> el =  new ArrayList<Ast.Exp>();
   Ast.Field field;
   Ast.Id id; }
 { 
-  "{" ( s1=Stmt() { sl.add(s1); } )* "}"
+  "{" ( s=Stmt() { sl.add(s); } )* "}"
   { return new Ast.Block(sl); }
 | e=ExtId()
   (
@@ -214,12 +214,12 @@ Ast.Stmt Stmt():
   )
 | "if" "(" e1=Expr() ")" s1=Stmt() [ LOOKAHEAD(2) "else" s2=Stmt() ]
   { return new Ast.If(e1, s1, s2); }
-| "while" "(" e1=Expr() ")" s1=Stmt()
-  { return new Ast.While(e1, s1); }
-| "System" "." "out" "." "println" "(" [ e1=PrArg() ] ")" ";"
-  { return new Ast.Print(e1); }
-| "return" [ e1=Expr() { return new Ast.Return(e1); } ] ";"
-  { return new Ast.Return(null); }
+| "while" "(" e=Expr() ")" s=Stmt()
+  { return new Ast.While(e, s); }
+| "System" "." "out" "." "println" "(" [ e=PrArg() ] ")" ";"
+  { return new Ast.Print(e); }
+| "return" ( [ e=Expr() { e = new Ast.Return(e); } ] | { e = new Ast.Return(null); } ) ";"
+  { return e; }
 }
 //
 // ------- END STATEMENTS -------
@@ -230,7 +230,7 @@ List<Ast.Exp> Args():
 { Ast.Exp expr;
   List<Ast.Exp> exprs = new ArrayList<Ast.Exp>(); }
 {
-  ( expr=Expr() {exprs.add(expr);} )+
+  ( expr=Expr() [","] {exprs.add(expr);} )+
   { return exprs; }
 }
 
