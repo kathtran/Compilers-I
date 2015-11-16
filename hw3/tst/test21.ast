@@ -11,5 +11,5 @@ ClassDecl A
   VarDecl IntType j i
   VarDecl IntType k 3
   VarDecl IntType l (Field This k) 
-  MethodDecl (ObjType void) setk ((Param IntType i) )
+  MethodDecl void setk ((Param IntType i) )
    Assign (Field This k)  i

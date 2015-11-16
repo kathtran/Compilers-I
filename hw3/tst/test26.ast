@@ -10,9 +10,9 @@ ClassDecl Test
 ClassDecl A 
   VarDecl IntType i 1
   VarDecl IntType j (Binop + i 1)
-  MethodDecl (ObjType void) foo ()
-   CallStmt bar bar ()
-  MethodDecl (ObjType void) bar ()
+  MethodDecl void foo ()
+   CallStmt This bar ()
+  MethodDecl void bar ()
    Print i
 ClassDecl B A
   VarDecl IntType k 10

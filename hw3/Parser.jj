@@ -202,24 +202,27 @@ Ast.Stmt Stmt():
   	    return new Ast.CallStmt(field.obj, field.nm, el);
   	  } else if (e instanceof Ast.Id) {
   	    id = (Ast.Id) e;
-  	    return new Ast.CallStmt(id, id.nm, el);
+  	    return new Ast.CallStmt(new Ast.This(), id.nm, el);
   	  }
   	}
   |
     (
 	  "[" e1=Expr() "]" { e = new Ast.ArrayElm(e, e1); }
-	)?
-	"=" e2=InitExpr() ";"
+  	)?
+	  "=" e2=InitExpr() ";"
     { return new Ast.Assign(e, e2); }
   )
 | "if" "(" e1=Expr() ")" s1=Stmt() [ LOOKAHEAD(2) "else" s2=Stmt() ]
   { return new Ast.If(e1, s1, s2); }
 | "while" "(" e=Expr() ")" s=Stmt()
   { return new Ast.While(e, s); }
-| "System" "." "out" "." "println" "(" [ e=PrArg() ] ")" ";"
-  { return new Ast.Print(e); }
-| "return" ( [ e=Expr() { e = new Ast.Return(e); } ] | { e = new Ast.Return(null); } ) ";"
-  { return e; }
+| "System" "." "out" "." "println" "(" [ e1=PrArg() ] ")" ";"
+  { return new Ast.Print(e1); }
+| "return" [ e1=Expr()
+		{ if (e1 != null) s2 = new Ast.Return(e1);
+		else s2 = new Ast.Return(null); }
+	] ";"
+  { return s2; }
 }
 //
 // ------- END STATEMENTS -------
@@ -263,18 +266,18 @@ Ast.Exp InitExpr():
 }
 
 Ast.Exp ExtId():
-{ Ast.This t = null;
+{ Ast.This type = null;
   Ast.Id id;
-  Ast.Exp e; }
+  Ast.Exp exp; }
 {
-  [ "this" "." { t = new Ast.This(); } ]
+  [ "this" "." { type = new Ast.This(); } ]
   id=Id() {
-    if (t != null)
-      e = new Ast.Field(t, id.nm);
+    if (type != null)
+      exp = new Ast.Field(type, id.nm);
     else
-      e = id; }
-  ( "." id=Id() { e = new Ast.Field(e, id.nm); } )*
-  { return e; }
+      exp = id; }
+  ( "." id=Id() { exp = new Ast.Field(exp, id.nm); } )*
+  { return exp; }
 }
 
 // ------- BEGIN EXPRESSIONS CASCADE -------
@@ -352,7 +355,7 @@ Ast.Exp Factor():
         return new Ast.Call(field.obj, field.nm, el);
       } else if (e instanceof Ast.Id) {
         id = (Ast.Id) e;
-        return new Ast.Call(id, id.nm, el);
+        return new Ast.Call(new Ast.This(), id.nm, el);
       }
     }
   | (

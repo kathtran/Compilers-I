@@ -1,4 +1,0 @@
-14c14
-<   MethodDecl (ObjType void) setk ((Param IntType i) )
----
->   MethodDecl void setk ((Param IntType i) )

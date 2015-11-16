@@ -1,8 +1,0 @@
-13,15c13,15
-<   MethodDecl (ObjType void) foo ()
-<    CallStmt bar bar ()
-<   MethodDecl (ObjType void) bar ()
----
->   MethodDecl void foo ()
->    CallStmt This bar ()
->   MethodDecl void bar ()
