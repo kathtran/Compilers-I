@@ -102,23 +102,27 @@ Ast.ClassDecl ClassDecl():
   { return new Ast.ClassDecl(id.nm,pid==null?null:pid.nm,vl,ml); }
 }
 
-// MethodDecl -> {Type} <ID> "(" {Param} ")"
+// MethodDecl
 Ast.MethodDecl MethodDecl():
-{ Ast.Type t;
+{ Ast.Type type;
   Ast.Id id;
   Ast.Param param; Ast.VarDecl var; Ast.Stmt stmt;
   List<Ast.Param> params = new ArrayList<Ast.Param>();
   List<Ast.VarDecl> vars = new ArrayList<Ast.VarDecl>();
   List<Ast.Stmt> stmts = new ArrayList<Ast.Stmt>(); }
 {
-  ["public"] ["static"] t=Type() id=Id()
+  "public"
+  (
+    type=ExtType() id=Id()
     "(" ( param=Param() {params.add(param);} )* ")"
-    "{" (LOOKAHEAD(2) var=VarDecl() {vars.add(var);} )*
-        ( stmt=Stmt() {stmts.add(stmt);} )* "}"
-  { return new Ast.MethodDecl(t, id.nm, params, vars, stmts); }
+  | "static" "void" "main" "(" "String" "[" "]" id=Id() ")"
+  )
+  "{" (LOOKAHEAD(2) var=VarDecl() {vars.add(var);} )*
+      ( stmt=Stmt() {stmts.add(stmt);} )* "}"
+  { return new Ast.MethodDecl(type, id.nm, params, vars, stmts); }
 }
 
-// VarDecl -> {Type} <ID> {Exp}
+// VarDecl
 Ast.VarDecl VarDecl():
 { Ast.Type type;
   Ast.Id id;
