@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Script for running reachability detection tests. 
+#
+# Usage:
+#   run tst/static01.ast      -- test a single program 
+#   run tst/static*.ast       -- test all programs
+#
+# The script will show diffs between the compiler's output and the
+# reference version. If it runs in silence, it means a perfect match.
+#
+for i
+do
+	d=`dirname $i`
+	f=`basename $i .ast`
+	echo $d/$f:
+	java StaticCheck $d/$f.ast 2>&1 | tee $d/$f.err
+        if [ -s $d/$f.err.ref ]; then 
+          diff -w $d/$f.err $d/$f.err.ref > $d/$f.err.diff; 
+          if [ -s $d/$f.err.diff ]; then 
+            echo "differs from ref (see $f.err.diff)"; 
+          else
+            echo "matches ref"; 
+            rm $d/$f.err.diff; 
+          fi
+	else
+	  echo "no ref file to compare"
+        fi
+done
+exit 0
+

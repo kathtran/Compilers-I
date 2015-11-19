@@ -1,0 +1,10 @@
+# AST Program
+ClassDecl test 
+  MethodDecl void main ()
+   VarDecl IntType i ()
+   While true
+    {
+     Return ()
+     Assign i 5
+    }
+   Assign i 3

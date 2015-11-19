@@ -1,0 +1,255 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// AstParser.jj - Reconstruct AST from dump format (.ast file).
+//
+
+PARSER_BEGIN(AstParser)
+import java.util.*;
+import java.io.*;
+
+public class AstParser {
+  public static void main(String [] args) throws Exception {
+    if (args.length == 1) {
+      FileInputStream stream = new FileInputStream(args[0]);
+      Ast.Program p = new AstParser(stream).Program();
+      stream.close();
+      System.out.print(p);
+    } else {
+      System.out.println("Need one file name as command-line argument.");
+    }
+  }
+}
+PARSER_END(AstParser)
+
+SKIP : 
+{
+  " " | "\t" | "\n" | "\r" | "\f"
+| <COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+}
+
+TOKEN : 
+{
+  "ArrayElm" | "ArrayType" | "Assign" | "Binop" | "BoolType" | "Call" 
+| "CallStmt" | "ClassDecl" | "Else" | "Field" | "Param" | "If" | "IntType" 
+| "MethodDecl" | "NewArray" | "NewObj" | "ObjType" | "Print" | "Program" 
+| "Return" | "This" | "Unop" | "VarDecl" | "void" | "While" }
+
+TOKEN :
+{         
+  <IntLit:       (<Digit>)+> 
+| <DblLit:       (<Digit>)+"."(<Digit>)*|(<Digit>)*"."(<Digit>)+> 
+| <BoolLit:      "true"|"false">
+| <StrLit:       "\""(~["\"","\n"])*"\"">
+| <#Digit:       ["0"-"9"]>
+| <#Letter:      ["A"-"Z"]|["a"-"z"]>
+| <Id:           <Letter> (<Letter>|<Digit>|"_")*>
+}
+
+// Program -> {ClassDecl}
+//
+Ast.Program Program() :
+{ List<Ast.ClassDecl> cl = new ArrayList<Ast.ClassDecl>();
+  Ast.ClassDecl c; }
+{
+  ( c=ClassDecl() { cl.add(c); } )* <EOF>
+  { return new Ast.Program(cl); }
+}
+
+// ClassDecl -> "ClassDecl" <Id> [<Id>] {VarDecl} {MethodDecl}
+//
+Ast.ClassDecl ClassDecl() :
+{ List<Ast.VarDecl> vl = new ArrayList<Ast.VarDecl>(); 
+  List<Ast.MethodDecl> ml = new ArrayList<Ast.MethodDecl>();
+  String nm, pnm=null; 
+  Ast.VarDecl v; 
+  Ast.MethodDecl m; }
+{
+  "ClassDecl" nm=IdName() [ pnm=IdName() ]
+  ( v=VarDecl() { vl.add(v); } )*
+  ( m=MethodDecl() { ml.add(m); } )*
+  { return new Ast.ClassDecl(nm, pnm, vl, ml); }
+}
+
+// VarDecl -> "VarDecl" Type <Id> Exp
+//
+Ast.VarDecl VarDecl() :
+{ String nm; 
+  Ast.Type t; 
+  Ast.Exp init; }
+{
+  "VarDecl" t=Type() nm=IdName() init=Exp()
+  { return new Ast.VarDecl(t, nm, init); }
+}
+
+// MethodDecl -> "MethodDecl" Type <Id> "(" {Param} ")" {VarDecl} {Stmt}
+//
+Ast.MethodDecl MethodDecl() :
+{ List<Ast.Param> pl = new ArrayList<Ast.Param>();
+  List<Ast.VarDecl> vl = new ArrayList<Ast.VarDecl>(); 
+  List<Ast.Stmt> sl = new ArrayList<Ast.Stmt>(); 
+  String nm; 
+  Ast.Type t; 
+  Ast.Param p; 
+  Ast.VarDecl v; 
+  Ast.Stmt s; }
+{
+  "MethodDecl" t=Type() nm=IdName() "(" ( p=Param() { pl.add(p); } )* ")"
+  ( v=VarDecl() { vl.add(v); } )* ( s=Stmt() { sl.add(s); } )*
+  { return new Ast.MethodDecl(t, nm, pl, vl, sl); }
+}
+
+// Param -> "(" Type <Id> ")"
+//
+Ast.Param Param() :
+{ String nm; Ast.Type t; }
+{
+  "(" "Param" t=Type() nm=IdName() ")"
+  { return new Ast.Param(t, nm); }
+}
+
+// Type -> "void"
+//      |  "IntType" 
+//      |  "BoolType" 
+//      |  "(" "ObjType" <Id> ")"
+//      |  "(" "ArrayType" Type ")"
+//      
+//
+Ast.Type Type() :
+{ String nm; Ast.Type t; }
+{
+  ( "void"                        { t = null; }
+  | "IntType"                     { t = Ast.IntType; }
+  | "BoolType"                    { t = Ast.BoolType; } 
+  | "(" ( "ObjType" nm=IdName()   { t = new Ast.ObjType(nm); }
+        | "ArrayType" t=Type()    { t = new Ast.ArrayType(t); } )
+    ")" )
+  { return t; }
+}
+
+// Stmt -> "{" {Stmt} "}"
+//      |  "Assign" Exp Exp
+//      |  "CallStmt" Exp <Id> "(" {Exp} ")"
+//      |  "If" Exp Stmt [ "Else" Stmt ]  
+//      |  "While" Exp Stmt
+//      |  "Print" Exp
+//      |  "Return" Exp
+//
+Ast.Stmt Stmt() :
+{ List<Ast.Exp> args = new ArrayList<Ast.Exp>();
+  List<Ast.Stmt> sl = new ArrayList<Ast.Stmt>();
+  String nm; 
+  Ast.Exp arg, lhs, rhs, obj, cond, val; 
+  Ast.Stmt s, s1, s2=null; }
+{
+  ( "{" ( s=Stmt() { sl.add(s); } )* "}" { s = new Ast.Block(sl); }
+  | "Assign" lhs=Exp() rhs=Exp()  { s = new Ast.Assign(lhs, rhs); }
+  | "CallStmt" obj=Exp() nm=IdName() "(" ( arg=Exp() { args.add(arg); } )* ")"
+                                  { s = new Ast.CallStmt(obj, nm, args); }
+  | "If" cond=Exp() s1=Stmt() [ LOOKAHEAD(1) "Else" s2=Stmt() ]  
+                                  { s = new Ast.If(cond, s1, s2); }
+  | "While" cond=Exp() s=Stmt()   { s = new Ast.While(cond, s); }
+  | "Print" arg=Exp()             { s = new Ast.Print(arg); }
+  | "Return" val=Exp()            { s = new Ast.Return(val); } )
+  { return s; }
+}
+
+Ast.BOP binOp() :
+{}
+{ 
+  ( "+"    { return Ast.BOP.ADD; }
+  | "-"    { return Ast.BOP.SUB; }
+  | "*"    { return Ast.BOP.MUL; }
+  | "/"    { return Ast.BOP.DIV; }
+  | "&&"   { return Ast.BOP.AND; }
+  | "||"   { return Ast.BOP.OR;  } 
+  | "=="   { return Ast.BOP.EQ; }
+  | "!="   { return Ast.BOP.NE; }
+  | "<"    { return Ast.BOP.LT; }
+  | "<="   { return Ast.BOP.LE; }
+  | ">"    { return Ast.BOP.GT; }
+  | ">="   { return Ast.BOP.GE; } 
+  )
+}
+
+Ast.UOP unOp() :
+{}
+{ 
+  ( "-"    { return Ast.UOP.NEG; }
+  | "!"    { return Ast.UOP.NOT; }
+  )
+}
+
+//  Exp -> "(" ")"
+//      |  "(" "Binop" BOP Exp Exp ")"
+//      |  "(" "Unop" UOP Exp ")"
+//      |  "(" "Call" Exp <Id> "(" {Exp} ")" ")"
+//      |  "(" "NewObj" <Id> ")"
+//      |  "(" "Field" Exp <Id> ")"
+//      |  "(" "NewArray" Type <IntLit> ")"
+//      |  "(" "ArrayElm" Exp Exp ")"
+//      | "This"
+//      | <Id>
+//      | <IntLit> | <DblLit> | <BoolLit> | <StrLit>
+//
+Ast.Exp Exp() :
+{ List<Ast.Exp> args = new ArrayList<Ast.Exp>();
+  String nm, s; 
+  Ast.IntLit ilit; 
+  Ast.BOP bop; 
+  Ast.UOP uop; 
+  Ast.Type et; 
+  Ast.Exp e=null, e1, e2, arg, obj, ar, idx; }
+{
+  ( "("	
+    [ "Binop" bop=binOp() e1=Exp() e2=Exp() { e = new Ast.Binop(bop, e1, e2); }
+    | "Unop" uop=unOp() e=Exp()             { e = new Ast.Unop(uop, e); } 
+    | "Call" obj=Exp() nm=IdName() "(" ( arg=Exp() { args.add(arg); } )* ")"
+    				            { e = new Ast.Call(obj, nm, args); }
+    | "NewObj" nm=IdName()                  { e = new Ast.NewObj(nm); }
+    | "Field" obj=Exp() nm=IdName()         { e = new Ast.Field(obj, nm); }
+    | "NewArray" et=Type() ilit=IntLit()    { e = new Ast.NewArray(et, ilit.i); }
+    | "ArrayElm" ar=Exp() idx=Exp()         { e = new Ast.ArrayElm(ar, idx); } ]
+    ")"
+  | "This" 		{ e = Ast.This; }
+  | nm=IdName() 	{ e = new Ast.Id(nm); } 
+  | e=IntLit()
+  | e=DblLit()
+  | e=BoolLit()
+  | e=StrLit()
+  )
+  { return e; }
+}
+
+String IdName() :
+{ Token n; }
+{
+  n=<Id> { return n.image; }
+}
+
+Ast.IntLit IntLit() :
+{ Token n; }
+{
+  n=<IntLit> { return new Ast.IntLit(Integer.parseInt(n.image)); }
+}
+
+Ast.DblLit DblLit() :
+{ Token n; }
+{
+  n=<DblLit> { return new Ast.DblLit(Double.parseDouble(n.image)); }
+}
+
+Ast.BoolLit BoolLit() :
+{ Token n; }
+{
+  n=<BoolLit> { return new Ast.BoolLit(Boolean.parseBoolean(n.image)); }
+}
+
+Ast.StrLit StrLit() :
+{ Token n; }
+{
+  n=<StrLit> { return new Ast.StrLit(n.image.substring(1,n.image.length()-1)); }
+}

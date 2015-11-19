@@ -1,0 +1,11 @@
+# AST Program
+ClassDecl test 
+  MethodDecl IntType go ()
+   Return 1
+   Return 2
+  MethodDecl void main ()
+   VarDecl IntType i ()
+   If true
+    Return ()
+   If false
+    Assign i (Call This go ())
