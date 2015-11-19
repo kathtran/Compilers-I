@@ -1,0 +1,9 @@
+# AST Program
+ClassDecl test 
+  MethodDecl void main ()
+   VarDecl IntType i ()
+   {
+    Assign i 2
+    Return ()
+   }
+   Print "hello"

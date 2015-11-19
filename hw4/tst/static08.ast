@@ -1,0 +1,9 @@
+# AST Program
+ClassDecl test 
+  MethodDecl void go ((Param IntType i) )
+   Print i
+  MethodDecl void main ()
+   VarDecl IntType j ()
+   If true
+    Assign j 1
+   CallStmt This go (j )
