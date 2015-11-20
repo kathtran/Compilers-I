@@ -47,7 +47,7 @@ class StaticError extends Exception {
 //---------------------------------------------------------------------------
 //
 
-class Ast {
+class Ast0 {
   static int tab=0;	// indentation for printing AST.
 
   public abstract static class Node {
