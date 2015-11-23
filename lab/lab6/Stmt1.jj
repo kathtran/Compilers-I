@@ -1,0 +1,58 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// Stmt1.jj - AST generation for the statement grammar:
+//
+//   S -> id = intlit ;
+//
+// This grammar is for a simplified assignment statement.
+//
+//
+PARSER_BEGIN(Stmt1)
+import java.util.*;
+import ast.*;
+
+public class Stmt1 {
+  public static void main(String [] args) throws Exception {
+    Ast.Stmt s = new Stmt1(System.in).S0();
+    System.out.print(s);
+  } 
+}
+PARSER_END(Stmt1)
+
+SKIP : { " " | "\t" | "\r" | "\n" }
+
+TOKEN : 
+{
+  <#DIGIT:  ["0"-"9"]>
+| <#LETTER: ["A"-"Z"]|["a"-"z"]>
+| <PRINT:		"print">
+| <ID:      <LETTER>(<LETTER>|<DIGIT>)*> 
+| <IntLit:  (<DIGIT>)+> 
+}
+
+// S0 -> S <EOF>
+//
+Ast.Stmt S0():
+{ Ast.Stmt s; }
+{
+  s=S() <EOF> { return s; }
+}
+
+// S -> <ID> "=" <IntLit> ";"
+// S -> "print" <IntLit> ";"
+//
+Ast.Stmt S():
+{ Token tkn1, tkn2; Ast.Id id; Ast.IntLit intlit; }
+{
+  tkn1=<ID> "=" tkn2=<IntLit> ";"
+  { id = new Ast.Id(tkn1.image);
+    intlit = new Ast.IntLit(Integer.parseInt(tkn2.image));
+    return new Ast.Assign(id, intlit); }
+|	tkn1=<PRINT> tkn2=<IntLit> ";"
+	{	intlit = new Ast.IntLit(Integer.parseInt(tkn2.image));
+		return new Ast.Print(intlit); }
+}

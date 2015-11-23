@@ -1,0 +1,9 @@
+# AST Program
+ClassDecl Sum 
+  MethodDecl void main ()
+   VarDecl IntType x 1
+   VarDecl IntType y 2
+   VarDecl IntType z 3
+   VarDecl IntType sum ()
+   Assign sum (Binop + (Binop + x y) z)
+   Print sum

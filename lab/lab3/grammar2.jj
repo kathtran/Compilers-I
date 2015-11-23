@@ -1,0 +1,40 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// Grammar 1:
+//   A -> - A 
+//   A -> A - id
+//   A -> id
+//
+PARSER_BEGIN(grammar1)
+public class grammar1 {
+  public static void main(String [] args) {
+    new grammar1(System.in).A();
+    System.out.println("Syntax validated.");
+  }
+}
+PARSER_END(grammar1)
+
+// Token Definitions
+//
+SKIP:  { " " | "\t" | "\r" | "\n" }
+TOKEN: { <ID: (["a"-"z"])+> }
+
+// Grammar Rules
+//
+void A(): {}
+{ 
+  "-" B()
+| B()
+}
+
+void B(): {}
+{
+  B() "-" <ID>
+| <ID>
+}
+
+

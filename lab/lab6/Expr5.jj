@@ -1,0 +1,64 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// Expr2.jj - AST generation for the following expression grammar:
+//
+//   E -> id [op E]
+//
+//
+// This grammar is the same as in Expr2.jj. However, this program generats
+// an AST that implies left-associativity for the two operators.
+//
+//
+PARSER_BEGIN(Expr2)
+import ast.*;
+
+public class Expr2 {
+  public static void main(String [] args) throws Exception {
+    Ast.Exp e = new Expr2(System.in).E0();
+    System.out.println(e);
+  } 
+}
+PARSER_END(Expr2)
+
+SKIP : { " " | "\t" | "\r" | "\n" }
+
+TOKEN : 
+{
+  <#DIGIT:  ["0"-"9"]>
+| <#LETTER: ["A"-"Z"]|["a"-"z"]>
+| <ID: <LETTER> (<LETTER>|<DIGIT>)*> 
+}
+
+// E0 -> E $
+//
+Ast.Exp E0(): 
+{ Ast.Exp e; } 
+{ 
+  e=E(null,null) <EOF> { return e; }
+}
+
+// E -> id [(+|-) E]
+//
+Ast.Exp E(Ast.Exp e0, Ast.BOP op0):
+{ Ast.Id id; Ast.BOP op; Ast.Exp e,e2; }
+{
+  id=Id() { e = (e0==null)? id : new Ast.Binop(op0, e0, id); }
+  [ op=Op() e=E(e,op) ]         
+  { return e; }
+}
+
+Ast.Id Id():
+{ Token tkn; }
+{
+  tkn=<ID> { return new Ast.Id(tkn.image); }
+}
+
+Ast.BOP Op(): {}
+{
+  "+" { return Ast.BOP.ADD; } 
+| "-" { return Ast.BOP.SUB; }
+}

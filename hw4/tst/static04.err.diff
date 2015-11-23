@@ -1,0 +1,4 @@
+1c1
+< Error: Could not find or load main class StaticCheck
+---
+> StaticError: Unreachable statement: Assign i 5

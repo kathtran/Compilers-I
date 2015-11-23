@@ -1,0 +1,31 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// A lexer for IDs and keywords. (JavaCC version)
+//
+// Tokens:
+//   <ID:   ['a'-'z']+>
+//   <IF:   "if">     
+//   <ELSE: "else">     
+//   <END:  '\n'>
+//
+PARSER_BEGIN(Lexer2)
+public class Lexer2 {}
+PARSER_END(Lexer2)
+
+// Token Definitions
+//
+SKIP:   { " " | "\t" | "\r" }        	// whitespace chars
+
+TOKEN:  
+{ <IF:   "if">   
+| <ELSE: "else"> 
+| <ID:   (["a"-"z"])+>
+| <END:  "\n">
+}
+
+
+
