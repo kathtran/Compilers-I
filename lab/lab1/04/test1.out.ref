@@ -1,0 +1,3 @@
+(((ab)|(c*|(b(ac*))))((da)*x))
+Semantic check successful (one or more vowels are found)
+Total letters in RE: 9

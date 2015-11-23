@@ -1,0 +1,4 @@
+# AST Program
+ClassDecl Hello 
+  MethodDecl void main ()
+   Print "Hello World!"

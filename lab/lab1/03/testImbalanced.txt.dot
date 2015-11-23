@@ -1,0 +1,26 @@
+digraph Ast {
+node [shape=box,style=filled,height=.2,fontname=Courier];
+edge [arrowhead=none];
+0 [color=white,label="(a*(b*(a|(a|b))))"];
+366712642 [fillcolor=beige,label="&"];
+366712642 -> 1829164700;
+366712642 -> 2018699554;
+1829164700 [label="*"];
+1829164700 -> 1311053135;
+1311053135 [shape=ellipse,style=solid,label="a"];
+2018699554 [fillcolor=beige,label="&"];
+2018699554 -> 118352462;
+2018699554 -> 1550089733;
+118352462 [label="*"];
+118352462 -> 865113938;
+865113938 [shape=ellipse,style=solid,label="b"];
+1550089733 [fillcolor=lightcyan,label="|"];
+1550089733 -> 1442407170;
+1550089733 -> 1028566121;
+1442407170 [shape=ellipse,style=solid,label="a"];
+1028566121 [fillcolor=lightcyan,label="|"];
+1028566121 -> 1118140819;
+1028566121 -> 1975012498;
+1118140819 [shape=ellipse,style=solid,label="a"];
+1975012498 [shape=ellipse,style=solid,label="b"];
+}

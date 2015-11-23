@@ -1,0 +1,35 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// A lexer for integer literals -- using buffer. (JavaCC version)
+// (Assume integer literals' values must be in [0, 2147483647].)
+//
+// Tokens:
+//   <INTLIT: ['0'-'9']+>
+//   <END:    '\n'>
+//
+PARSER_BEGIN(Lexer2)
+public class Lexer2 {}
+PARSER_END(Lexer2)
+
+// Token Definitions
+//
+SKIP:   { " " | "\t" | "\r" }        	// whitespace chars
+
+TOKEN:  
+{ <INTLIT: (["0"-"9"])+> { try { Integer.parseInt(matchedToken.image); }
+                           catch (Exception e) { 
+			     throw new TokenMgrError("Lexical Error at column " +
+						     matchedToken.beginColumn +
+						     ": Invalid integer literal " + 
+						     matchedToken.image, 0);
+			   } 
+                         }
+| <END:   "\n">	
+}
+
+
+

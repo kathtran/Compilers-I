@@ -4,50 +4,13 @@
 // For CS321 F'15 (J. Li).
 //
 
+// AST Definition.
+//
+//
+package ast;
 import java.util.*;
 
-// A class for representing set of variables.
-//---------------------------------------------------------------------------
-// This class defines immutable sets of Strings by extending Java's (mutable) 
-// HashSet class. For every operation of union, intersect, and add, a new set 
-// is created to hold the result.
-//
-class VarSet extends HashSet<String> {
-  static VarSet union(VarSet s1, VarSet s2) {
-    VarSet s = new VarSet();
-    s.addAll(s1);
-    s.addAll(s2);
-    return s;
-  }
-
-  static VarSet intersect(VarSet s1, VarSet s2) {
-    VarSet s = new VarSet();
-    for (String x : s1)
-      if (s2.contains(x))
-	s.add(x);
-    return s;
-  }
-
-  static VarSet add(VarSet s0, String x) { 
-    VarSet s = new VarSet();
-    s.addAll(s0);
-    s.add(x);
-    return s;
-  }
-}
-
-// A class for reporting static errors.
-//---------------------------------------------------------------------------
-//
-class StaticError extends Exception {
-  StaticError(String message) { super(message); }
-}
-
-// AST Definition.
-//---------------------------------------------------------------------------
-//
-
-class Ast0 {
+public class Ast {
   static int tab=0;	// indentation for printing AST.
 
   public abstract static class Node {
@@ -76,26 +39,11 @@ class Ast0 {
     public Program(List<ClassDecl> cl) { 
       this(cl.toArray(new ClassDecl[0]));
     }
-
     public String toString() { 
       String str = "# AST Program\n";
       for (ClassDecl c: classes) 
 	str += c;
       return str;
-    }
-
-    // Static analysis for detecting unreachable statements
-    //
-    public void checkReach() throws Exception {
-      for (ClassDecl c: classes) 
-	c.checkReach();
-    }
-
-    // Static analysis for detecting uninitialized variables
-    //
-    public void checkVarInit() throws Exception {
-      for (ClassDecl c: classes) 
-	c.checkVarInit(new VarSet());
     }
   }   
 
@@ -121,17 +69,6 @@ class Ast0 {
       for (MethodDecl m: mthds) 
 	str += m;
       return str;
-    }
-
-    void checkReach() throws Exception {
-      for (MethodDecl m: mthds) 
-	m.checkReach(true);
-    }
-
-    void checkVarInit(VarSet initSet) throws Exception {
-
-      // ... need code ...
-
     }
   }
 
@@ -160,18 +97,6 @@ class Ast0 {
       for (Stmt s: stmts) 
 	str += s;
       return str;
-    }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      for (Stmt s: stmts) 
-	s.checkReach(reachable);
-      return true;
-    }
-
-    void checkVarInit(VarSet initSet) throws Exception {
-
-      // ... need code ...
-
     }
   }
 
@@ -237,10 +162,7 @@ class Ast0 {
 
   // Statements ---------------------------------------------------------
 
-  public static abstract class Stmt extends Node {
-    abstract boolean checkReach(boolean reachable) throws Exception;
-    abstract VarSet checkVarInit(VarSet initSet) throws Exception;
-  }
+  public static abstract class Stmt extends Node {}
 
   public static class Block extends Stmt {
     public final Stmt[] stmts;
@@ -261,15 +183,6 @@ class Ast0 {
       }
       return s;
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      for (Stmt s: stmts)
-	s.checkReach(reachable);
-      return true;
-    }
-
   }
 
   public static class Assign extends Stmt {
@@ -281,13 +194,6 @@ class Ast0 {
     public String toString() { 
       return tab() + "Assign " + lhs + " " + rhs + "\n"; 
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      return true;
-    }
-
   }
 
   public static class CallStmt extends Stmt {
@@ -308,13 +214,6 @@ class Ast0 {
       s += ")\n"; 
       return s;
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      return true;
-    }
-
   }
 
   public static class If extends Stmt {
@@ -337,16 +236,6 @@ class Ast0 {
       }
       return str;
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      s1.checkReach(reachable);
-      if (s2 != null) 
-	s2.checkReach(reachable);
-      return true;
-    }
-
   }
 
   public static class While extends Stmt {
@@ -362,14 +251,6 @@ class Ast0 {
       Ast.tab--;
       return str;
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      s.checkReach(reachable);
-      return true;
-    }
-
   }   
 
   public static class Print extends Stmt {
@@ -380,13 +261,6 @@ class Ast0 {
     public String toString() { 
       return tab() + "Print " + (arg==null ? "()" : arg) + "\n"; 
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      return true;
-    }
-
   }
 
   public static class Return extends Stmt {
@@ -397,21 +271,11 @@ class Ast0 {
     public String toString() { 
       return tab() + "Return " + (val==null ? "()" : val) + "\n"; 
     }
-
-    boolean checkReach(boolean reachable) throws Exception {
-      if (!reachable) 
-	throw new StaticError("Unreachable statement: " + this);
-      return true;
-    }
-
   }
 
   // Expressions --------------------------------------------------------
 
-  public static abstract class Exp extends Node {
-    // default routine for Exp nodes
-    void checkVarInit(VarSet initSet) throws Exception {}
-  }
+  public static abstract class Exp extends Node {}
 
   public static class Binop extends Exp {
     public final BOP op;
@@ -423,7 +287,6 @@ class Ast0 {
     public String toString() { 
       return "(Binop " + op + " " + e1 + " " + e2 + ")";
     }
-
   }
 
   public static class Unop extends Exp {
@@ -435,7 +298,6 @@ class Ast0 {
     public String toString() { 
       return "(Unop " + op + " " + e + ")";
     }
-
   }
 
   public static class Call extends Exp {
@@ -456,7 +318,6 @@ class Ast0 {
       str += "))"; 
       return str; 
     }
-
   }
 
   public static class NewArray extends Exp {
@@ -479,7 +340,6 @@ class Ast0 {
     public String toString() { 
       return "(ArrayElm " + ar + " " + idx +")";
     }
-
   }
 
   public static class NewObj extends Exp {
@@ -500,7 +360,6 @@ class Ast0 {
     public String toString() { 
       return "(Field " + obj + " " +  nm + ") ";
     }
-
   }
 
   public static class Id extends Exp {
@@ -508,7 +367,6 @@ class Ast0 {
 
     public Id(String s) { nm=s; }
     public String toString() { return nm; }
-
   }
 
   public static class This extends Exp {

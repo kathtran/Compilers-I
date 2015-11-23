@@ -1,0 +1,4 @@
+abc // a single-line comment
+def // a second comment ending with <EOF>
+/* test * test // test */
+#

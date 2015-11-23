@@ -1,0 +1,69 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// Expr1.jj - AST generation for the expression grammar:
+//
+//   E  -> id {op id}
+//   op -> + | -
+//
+// This grammar is the result of applying left-recursion elimination on:
+//
+//   E -> E + id | E - id | id
+// 
+//
+PARSER_BEGIN(Expr1)
+import ast.*;
+
+public class Expr1 {
+  public static void main(String [] args) throws Exception {
+    Ast.Exp e = new Expr1(System.in).E0();
+    System.out.println(e);
+  }
+}
+PARSER_END(Expr1)
+
+SKIP : { " " | "\t" | "\r" | "\n" }
+
+TOKEN : 
+{
+  <#DIGIT:  ["0"-"9"]>
+| <#LETTER: ["A"-"Z"]|["a"-"z"]>
+| <ID:      <LETTER> (<LETTER>|<DIGIT>)*> 
+}
+
+// E0 -> E <EOF>
+//
+Ast.Exp E0(): 
+{ Ast.Exp e; } 
+{ 
+  e=E() <EOF> { return e; }
+}
+
+// E -> Id {Op Id}
+//
+Ast.Exp E():
+{ Ast.Id id; Ast.BOP op; Ast.Exp e; }
+{
+  id=Id() { e = id; }
+  ( op=Op() id=Id() { e = new Ast.Binop(op,e,id); } )*         
+  { return e; }
+}
+
+// Id -> <ID>
+//
+Ast.Id Id():
+{ Token tkn; }
+{
+  tkn=<ID> { return new Ast.Id(tkn.image); }
+}
+
+// Op -> "+"|"-"
+//
+Ast.BOP Op(): {}
+{
+  "+" { return Ast.BOP.ADD; } 
+| "-" { return Ast.BOP.SUB; }
+}

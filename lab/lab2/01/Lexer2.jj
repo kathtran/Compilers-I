@@ -1,0 +1,36 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// A lexer for the regular expression language, RE. (JavaCC version)
+//
+// RE Tokens:
+//   <LETTER: ['a'-'z']>     
+//   <ALTER:  '|'>
+//   <REPEAT: '*'>
+//   <LPAREN: '('>
+//   <RPAREN: ')'>
+//   <END:    '\n'>
+//   <DIGIT:  ['0'-'9']>
+//   <ONEMORE: '+'>
+//   <ZEROONE: '?'>
+//
+PARSER_BEGIN(Lexer2)
+public class Lexer2 {}
+PARSER_END(Lexer2)
+
+// Token Definitions
+//
+SKIP:   { " " | "\t" | "\r" }        	// whitespace chars
+
+TOKEN:  { <LETTER: ["a"-"z"]> }   
+TOKEN:  { <ALTER:  "|"> }
+TOKEN:  { <REPEAT: "*"> }
+TOKEN:  { <LPAREN: "("> }
+TOKEN:  { <RPAREN: ")"> }
+TOKEN:  { <END:    "\n"> }
+TOKEN:  { <DIGIT:   ["0"-"9"]> }
+TOKEN:  { <ONEMORE: "+"> }
+TOKEN:  { <ZEROONE: "?"> }

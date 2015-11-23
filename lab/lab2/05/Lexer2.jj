@@ -1,0 +1,31 @@
+// This is supporting software for CS321/CS322 Compilers and Language Design.
+// Copyright (c) Portland State University.
+//---------------------------------------------------------------------------
+// For CS321 F'15 (J. Li).
+//
+
+// A lexer for recognizing comments. (JavaCC version)
+//
+// Tokens:
+//   <ID:    ['a'-'z']+>
+//   <SLCMT:  "//" (~['\n',<EOF>])*>
+//   <BLKCMT: "/*" (~("*/"|<EOF>))* "*/">   --- not a totally valid RE
+//
+PARSER_BEGIN(Lexer2)
+public class Lexer2 {}
+PARSER_END(Lexer2)
+
+// Token Definitions
+//
+SKIP:   { " " | "\t" | "\r" | "\n" }        	// whitespace chars
+
+// DEFAULT state
+TOKEN: { <ID:    (["a"-"z"])+> }
+TOKEN: { <SLCMT: "//" (~["\n"])*> }             // single-line comments
+MORE:  { "/*": COMMENT }
+
+// COMMENT state
+<COMMENT> TOKEN: { <BLKCMT: "*/">: DEFAULT }    
+<COMMENT> MORE:  { <~[]> }			// any char
+
+
