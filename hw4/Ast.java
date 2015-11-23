@@ -272,6 +272,10 @@ class Ast {
             return true;
         }
 
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
+        }
+
     }
 
     public static class Assign extends Stmt {
@@ -288,6 +292,10 @@ class Ast {
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
             return true;
+        }
+
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
         }
 
     }
@@ -315,6 +323,10 @@ class Ast {
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
             return true;
+        }
+
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
         }
 
     }
@@ -349,6 +361,10 @@ class Ast {
             return true;
         }
 
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
+        }
+
     }
 
     public static class While extends Stmt {
@@ -372,6 +388,10 @@ class Ast {
             return true;
         }
 
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
+        }
+
     }
 
     public static class Print extends Stmt {
@@ -389,6 +409,10 @@ class Ast {
             return true;
         }
 
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
+        }
+
     }
 
     public static class Return extends Stmt {
@@ -404,6 +428,10 @@ class Ast {
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
             return true;
+        }
+
+        VarSet checkVarInit(VarSet initSet) throws Exception {
+
         }
 
     }
