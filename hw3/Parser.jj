@@ -396,7 +396,7 @@ Ast.Exp Literal():
   { boollit = new Ast.BoolLit(Boolean.parseBoolean(tkn.image));
     return boollit; }
 | tkn=<STRLIT>
-  { return new Ast.StrLit(tkn.image.replace("\"","")); }
+  { return new Ast.StrLit(tkn.image.substring(1, tkn.image.length-1)); }
 }
 //
 // ------- END LITERALS -------
