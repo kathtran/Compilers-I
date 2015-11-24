@@ -427,7 +427,7 @@ class Ast {
         boolean checkReach(boolean reachable) throws Exception {
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            return true;
+            return false;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
