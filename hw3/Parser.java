@@ -872,7 +872,7 @@ public class Parser implements ParserConstants {
       break;
     case STRLIT:
       tkn = jj_consume_token(STRLIT);
-    {if (true) return new Ast.StrLit(tkn.image.replace("\u005c"",""));}
+    {if (true) return new Ast.StrLit(tkn.image.substring(1, tkn.image.length()-1));}
       break;
     default:
       jj_la1[35] = jj_gen;
