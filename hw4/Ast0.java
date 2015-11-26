@@ -270,6 +270,11 @@ class Ast0 {
       return true;
     }
 
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
+
   }
 
   public static class Assign extends Stmt {
@@ -287,6 +292,11 @@ class Ast0 {
 	throw new StaticError("Unreachable statement: " + this);
       return true;
     }
+
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
 
   }
 
@@ -314,6 +324,11 @@ class Ast0 {
 	throw new StaticError("Unreachable statement: " + this);
       return true;
     }
+
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
 
   }
 
@@ -347,6 +362,11 @@ class Ast0 {
       return true;
     }
 
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
+
   }
 
   public static class While extends Stmt {
@@ -370,6 +390,11 @@ class Ast0 {
       return true;
     }
 
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
+
   }   
 
   public static class Print extends Stmt {
@@ -387,6 +412,11 @@ class Ast0 {
       return true;
     }
 
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
+
   }
 
   public static class Return extends Stmt {
@@ -403,6 +433,11 @@ class Ast0 {
 	throw new StaticError("Unreachable statement: " + this);
       return true;
     }
+
+      @Override
+      VarSet checkVarInit(VarSet initSet) throws Exception {
+          return null;
+      }
 
   }
 

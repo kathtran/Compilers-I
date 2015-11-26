@@ -273,6 +273,7 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
+            return null;
 
         }
 
@@ -295,6 +296,7 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
+            return null;
 
         }
 
@@ -326,6 +328,7 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
+            return null;
 
         }
 
