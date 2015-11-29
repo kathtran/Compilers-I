@@ -1,4 +1,2 @@
-1c1
-< Error: Could not find or load main class StaticCheck
----
+0a1
 > StaticError: Unreachable statement: Return 2
