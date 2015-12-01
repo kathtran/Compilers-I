@@ -186,8 +186,7 @@ class Ast {
                 status = stmts[i].checkReach(reachable);
                 if (status == false) {
                     if (stmts[i + 1] != null) {
-                        i++;
-                        stmts[i].checkReach(status);
+                        stmts[i+1].checkReach(status);
                     } else
                         break;
                 }
@@ -318,8 +317,7 @@ class Ast {
                 status = stmts[i].checkReach(reachable);
                 if (status == false) {
                     if (stmts[i + 1] != null) {
-                        i++;
-                        stmts[i].checkReach(status);
+                        stmts[i+1].checkReach(status);
                     } else
                         break;
                 }
