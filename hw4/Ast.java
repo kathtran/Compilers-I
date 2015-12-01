@@ -181,7 +181,7 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
-            boolean status;
+            boolean status = true;
             for (Stmt s : stmts) {
                 status = s.checkReach(reachable);
                 if (status == false)
