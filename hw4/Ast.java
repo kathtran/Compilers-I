@@ -321,7 +321,7 @@ class Ast {
                     if (stmts[i + 1] == null) {
                         stmts[i].checkReach(status);
                     } else if (stmts[i + 1] != null) {
-                        stmts[i].checkReach(status);
+                        stmts[i+1].checkReach(status);
                     }
                 }
             }
