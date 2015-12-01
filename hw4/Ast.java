@@ -541,6 +541,9 @@ class Ast {
             return "(Binop " + op + " " + e1 + " " + e2 + ")";
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
+        }
     }
 
     public static class Unop extends Exp {
@@ -556,6 +559,9 @@ class Ast {
             return "(Unop " + op + " " + e + ")";
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
+        }
     }
 
     public static class Call extends Exp {
@@ -581,6 +587,9 @@ class Ast {
             return str;
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
+        }
     }
 
     public static class NewArray extends Exp {
@@ -594,6 +603,10 @@ class Ast {
 
         public String toString() {
             return "(NewArray " + et + " " + len + ")";
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
         }
     }
 
@@ -610,6 +623,9 @@ class Ast {
             return "(ArrayElm " + ar + " " + idx + ")";
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
+        }
     }
 
     public static class NewObj extends Exp {
@@ -621,6 +637,10 @@ class Ast {
 
         public String toString() {
             return "(NewObj " + nm + ")";
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
         }
     }
 
@@ -637,6 +657,9 @@ class Ast {
             return "(Field " + obj + " " + nm + ") ";
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
+        }
     }
 
     public static class Id extends Exp {
@@ -650,11 +673,18 @@ class Ast {
             return nm;
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
+        }
     }
 
     public static class This extends Exp {
         public String toString() {
             return "This";
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+            return;
         }
     }
 
