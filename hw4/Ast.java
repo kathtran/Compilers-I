@@ -185,11 +185,11 @@ class Ast {
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
                 if (status == false) {
-                    if (i == stmts.length) {
+                    if (stmts[i + 1] != null) {
                         i++;
                         stmts[i].checkReach(status);
                     } else
-                        continue;
+                        break;
                 }
             }
             return status;
@@ -317,11 +317,11 @@ class Ast {
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
                 if (status == false) {
-                    if (i == stmts.length) {
+                    if (stmts[i + 1] != null) {
                         i++;
                         stmts[i].checkReach(status);
                     } else
-                        continue;
+                        break;
                 }
             }
             return status;
