@@ -185,10 +185,14 @@ class Ast {
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
                 if (status == false) {
-                    if (stmts[i + 1] != null) {
-                        stmts[i+1].checkReach(status);
-                    } else
+                    try {
+                        if (stmts[i + 1] != null) {
+                            stmts[i + 1].checkReach(status);
+                        } else
+                            break;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
                         break;
+                    }
                 }
             }
             return status;
@@ -316,10 +320,14 @@ class Ast {
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
                 if (status == false) {
-                    if (stmts[i + 1] != null) {
-                        stmts[i+1].checkReach(status);
-                    } else
+                    try {
+                        if (stmts[i + 1] != null) {
+                            stmts[i + 1].checkReach(status);
+                        } else
+                            break;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
                         break;
+                    }
                 }
             }
             return status;
