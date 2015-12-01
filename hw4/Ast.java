@@ -184,10 +184,12 @@ class Ast {
             boolean status = true;
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
-                if (stmts[i+1] != null && status == false)
-                    break;
-                else
-                    status = true;
+                if (stmts[i+1] == null && status == false) {
+                    stmts[i].checkReach(status);
+                } else if (stmts[i+1] != null && status == false) {
+                    i++;
+                    stmts[i].checkReach(status);
+                }
             }
             return status;
         }
@@ -310,20 +312,17 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
+            boolean status = true;
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            boolean status = true;
-//            for (Stmt s : stmts) {
-//                status = s.checkReach(reachable);
-//                if (status == false)
-//                    break;
-//            }
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
-                if (stmts[i+1] != null && status == false)
-                    break;
-                else
-                    status = true;
+                if (stmts[i+1] == null && status == false) {
+                    stmts[i].checkReach(status);
+                } else if (stmts[i+1] != null && status == false) {
+                    i++;
+                    stmts[i].checkReach(status);
+                }
             }
             return status;
         }
