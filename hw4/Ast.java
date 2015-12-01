@@ -340,7 +340,9 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            for (Stmt s : stmts)
+                s.checkVarInit(initSet);
+            return initSet;
         }
 
     }
@@ -365,9 +367,11 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            if (!initSet.contains(this))
+                throw new StaticError("Unitialized variable " + this;
+            System.out.println(this);
+            return initSet;
         }
-
     }
 
     public static class CallStmt extends Stmt {
