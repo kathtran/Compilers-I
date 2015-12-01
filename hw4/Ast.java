@@ -182,10 +182,12 @@ class Ast {
 
         boolean checkReach(boolean reachable) throws Exception {
             boolean status = true;
-            for (Stmt s : stmts) {
-                status = s.checkReach(reachable);
-                if (status == false)
+            for (int i = 0; i < stmts.length; i++) {
+                status = stmts[i].checkReach(reachable);
+                if (stmts[i+1] != null && status == false)
                     break;
+                else
+                    status = true;
             }
             return status;
         }
@@ -310,9 +312,20 @@ class Ast {
         boolean checkReach(boolean reachable) throws Exception {
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            for (Stmt s : stmts)
-                s.checkReach(reachable);
-            return true;
+            boolean status = true;
+//            for (Stmt s : stmts) {
+//                status = s.checkReach(reachable);
+//                if (status == false)
+//                    break;
+//            }
+            for (int i = 0; i < stmts.length; i++) {
+                status = stmts[i].checkReach(reachable);
+                if (stmts[i+1] != null && status == false)
+                    break;
+                else
+                    status = true;
+            }
+            return status;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
@@ -407,12 +420,14 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
+            boolean thenStatus = true;
+            boolean elseStatus = true;
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            s1.checkReach(reachable);
+            thenStatus = s1.checkReach(reachable);
             if (s2 != null)
-                s2.checkReach(reachable);
-            return true;
+                elseStatus = s2.checkReach(reachable);
+            return thenStatus && elseStatus;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
@@ -439,10 +454,11 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
+            boolean status = true;
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            s.checkReach(reachable);
-            return true;
+            status = s.checkReach(reachable);
+            return status;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
