@@ -142,7 +142,7 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             for (VarDecl v : flds)
-                initSet.add(v);
+                initSet.add(v.toString());
             for (MethodDecl m : mthds)
                 m.checkVarInit(initSet);
         }
