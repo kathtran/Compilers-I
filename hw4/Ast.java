@@ -141,9 +141,10 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-
-            // ... need code ...
-
+            for (VarDecl v : flds)
+                initSet.add(v);
+            for (MethodDecl m : mthds)
+                m.checkVarInit(initSet);
         }
     }
 
