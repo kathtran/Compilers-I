@@ -482,8 +482,7 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
-            reachable = false;
-            return reachable;
+            return false;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
