@@ -200,9 +200,13 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-
-            // ... need code ...
-
+            for (Param p : params; VarDecl v : vars) {
+                initSet.add(p.nm);
+                if (v.init != null)
+                    initSet.add(v.toString());
+            }
+            for (Stmt s : stmts)
+                s.checkVarInit(initSet);
         }
     }
 
