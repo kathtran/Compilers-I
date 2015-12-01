@@ -313,8 +313,6 @@ class Ast {
 
         boolean checkReach(boolean reachable) throws Exception {
             boolean status = true;
-            if (!reachable)
-                throw new StaticError("Unreachable statement: " + this);
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
                 if (stmts[i+1] == null && status == false) {
