@@ -184,9 +184,9 @@ class Ast {
             boolean status = true;
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
-                if (stmts[i+1] == null && status == false) {
+                if ((i) == stmts.length && status == false) {
                     stmts[i].checkReach(status);
-                } else if (stmts[i+1] != null && status == false) {
+                } else if ((i+1) <= stmts.length && status == false) {
                     i++;
                     stmts[i].checkReach(status);
                 }
@@ -315,9 +315,9 @@ class Ast {
             boolean status = true;
             for (int i = 0; i < stmts.length; i++) {
                 status = stmts[i].checkReach(reachable);
-                if (stmts[i+1] == null && status == false) {
+                if ((i) == stmts.length && status == false) {
                     stmts[i].checkReach(status);
-                } else if (stmts[i+1] != null && status == false) {
+                } else if ((i+1) <= stmts.length && status == false) {
                     i++;
                     stmts[i].checkReach(status);
                 }
