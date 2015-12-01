@@ -367,9 +367,8 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(this))
-                throw new StaticError("Unitialized variable " + this;
-            System.out.println(this);
+            if (!initSet.contains(lhs))
+                throw new StaticError("Unitialized variable " + lhs);
             return initSet;
         }
     }
@@ -404,7 +403,11 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            for (Exp e : args) {
+                if (!initSet.contains(e))
+                    throw new StaticError("Unitialized variable " + e);
+            }
+            return initSet;
         }
 
     }
@@ -446,9 +449,13 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            if (!initSet.contains(cond))
+                throw new StaticError("Unitialized variable " + cond);
+            initSet.add(s1.checkVarInit(initSet));
+            if (s2 != null)
+                initSet.add(s2.checkVarInit(initSet));
+            return initSet;
         }
-
     }
 
     public static class While extends Stmt {
@@ -477,9 +484,11 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            if (!initSet.contains(cond))
+                throw new StaticError("Unitialized variable " + cond);
+            initSet.add(s.checkVarInit(initSet));
+            return initSet;
         }
-
     }
 
     public static class Print extends Stmt {
@@ -500,7 +509,9 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            if (!initSet.contains(arg))
+                throw new StaticError("Unitialized variable " + arg);
+            return initSet;
         }
 
     }
@@ -523,7 +534,9 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            return null;
+            if (!initSet.contains(val))
+                throw new StaticError("Unitialized variable " + val);
+            return initSet;
         }
 
     }
@@ -550,10 +563,6 @@ class Ast {
         public String toString() {
             return "(Binop " + op + " " + e1 + " " + e2 + ")";
         }
-
-        void checkVarInit(VarSet initSet) throws Exception {
-            return;
-        }
     }
 
     public static class Unop extends Exp {
@@ -567,10 +576,6 @@ class Ast {
 
         public String toString() {
             return "(Unop " + op + " " + e + ")";
-        }
-
-        void checkVarInit(VarSet initSet) throws Exception {
-            return;
         }
     }
 
