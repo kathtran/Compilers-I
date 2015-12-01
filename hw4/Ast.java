@@ -181,9 +181,13 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
-            for (Stmt s : stmts)
-                s.checkReach(reachable);
-            return true;
+            boolean status;
+            for (Stmt s : stmts) {
+                status = s.checkReach(reachable);
+                if (status == false)
+                    break;
+            }
+            return status;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
