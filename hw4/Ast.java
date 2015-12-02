@@ -141,10 +141,8 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            for (VarDecl v : flds) {
+            for (VarDecl v : flds)
                 initSet.add(v.toString());
-                System.out.print(v.toString());
-            }
             for (MethodDecl m : mthds) {
                 VarSet newSet = new VarSet();
                 m.checkVarInit(newSet.union(newSet, initSet));
