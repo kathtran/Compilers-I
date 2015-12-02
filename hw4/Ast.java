@@ -451,11 +451,11 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(cond))
                 throw new StaticError("Unitialized variable " + cond);
-initSet.union(initSet, s1.checkVarInit(initSet));
+            initSet.union(initSet, s1.checkVarInit(initSet));
             if (s2 != null) {
-initSet.union(initSet, s2.checkVarInit(initSet));
+                initSet.union(initSet, s2.checkVarInit(initSet));
             }
-return initSet;
+            return initSet;
         }
     }
 
@@ -564,6 +564,16 @@ return initSet;
         public String toString() {
             return "(Binop " + op + " " + e1 + " " + e2 + ")";
         }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+//            if (!initSet.contains(e1))
+//                throw new StaticError("Unitialized variable " + e1);
+//            else if (!initSet.contains(e2))
+//                throw new StaticError("Unitialized variable " + e2);
+            e1.checkVarInit(initSet);
+            e2.checkVarInit(initSet);
+            return;
+        }
     }
 
     public static class Unop extends Exp {
@@ -577,6 +587,13 @@ return initSet;
 
         public String toString() {
             return "(Unop " + op + " " + e + ")";
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+//            if (!initSet.contains(e))
+//                throw new StaticError("Unitialized variable " + e);
+            e.checkVarInit(initSet);
+            return;
         }
     }
 
@@ -604,6 +621,11 @@ return initSet;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
+            obj.checkVarInit(initSet);
+            for (Exp e : args)
+                e.checkVarInit(initSet);
+            if (!initSet.contains(nm))
+                throw new StaticError("Unitialized variable " + nm);
             return;
         }
     }
@@ -619,10 +641,6 @@ return initSet;
 
         public String toString() {
             return "(NewArray " + et + " " + len + ")";
-        }
-
-        void checkVarInit(VarSet initSet) throws Exception {
-            return;
         }
     }
 
@@ -640,6 +658,8 @@ return initSet;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
+            ar.checkVarInit(initSet);
+            idx.checkVarInit(initSet);
             return;
         }
     }
@@ -656,6 +676,8 @@ return initSet;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
+            if (!initSet.contains(nm))
+                throw new StaticError("Unitialized variable " + nm);
             return;
         }
     }
@@ -674,6 +696,9 @@ return initSet;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
+            if (!initSet.contains(nm))
+                throw new StaticError("Unitialized variable " + nm);
+            obj.checkVarInit(initSet);
             return;
         }
     }
@@ -690,6 +715,8 @@ return initSet;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
+            if (!initSet.contains(nm))
+                throw new StaticError("Unitialized variable " + nm);
             return;
         }
     }
@@ -697,10 +724,6 @@ return initSet;
     public static class This extends Exp {
         public String toString() {
             return "This";
-        }
-
-        void checkVarInit(VarSet initSet) throws Exception {
-            return;
         }
     }
 
