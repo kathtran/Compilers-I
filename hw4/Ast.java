@@ -449,12 +449,14 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
+            VarSet thenSet = new VarSet();
+            VarSet elseSet = new VarSet();
             if (!initSet.contains(cond))
                 throw new StaticError("Unitialized variable " + cond);
-            initSet.add(s1.checkVarInit(initSet));
+            thenSet.add(s1.checkVarInit(initSet));
             if (s2 != null)
-                initSet.add(s2.checkVarInit(initSet));
-            return initSet;
+                elseSet.add(s2.checkVarInit(initSet));
+            return initSet.add(thenSet, elseSet);
         }
     }
 
