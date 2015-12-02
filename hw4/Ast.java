@@ -616,8 +616,6 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(nm))
-                throw new StaticError("Uninitialized variable " + nm + "\n");
             obj.checkVarInit(initSet);
             for (Exp e : args)
                 e.checkVarInit(initSet);
@@ -692,8 +690,6 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(nm))
-                throw new StaticError("Uninitialized variable " + nm + "\n");
             obj.checkVarInit(initSet);
             return;
         }
