@@ -147,6 +147,7 @@ class Ast {
                 VarSet newSet = new VarSet();
                 newSet = newSet.union(newSet, initSet);
                 m.checkVarInit(newSet);
+								//m.checkVarInit(initSet);
             }
         }
     }
@@ -203,14 +204,14 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            for (Param p : params) 
+            for (Param p : params)
                 initSet = initSet.add(initSet, p.nm);
             for (VarDecl v : vars) {
                 if (v.init != null)
                     initSet = initSet.add(initSet, v.toString());
             }
-            for (Stmt s : stmts)
-                s.checkVarInit(initSet);
+            for (Stmt s : stmts) 
+                initSet = initSet.union(initSet, s.checkVarInit(initSet));
         }
     }
 
@@ -375,7 +376,7 @@ class Ast {
                 Ast.Id id = (Ast.Id) lhs;
                 initSet = initSet.add(initSet, id.nm);
             } else
-                initSet = initSet.add(initSet, lhs.toString());
+                lhs.checkVarInit(initSet);
             return initSet;
         }
     }
@@ -411,7 +412,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             obj.checkVarInit(initSet);
-            for (Exp e : args)
+            for (Exp e : args) 
                 e.checkVarInit(initSet);
             return initSet;
         }
@@ -455,10 +456,14 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
+						VarSet newSet = new VarSet();
             cond.checkVarInit(initSet);
             s1.checkVarInit(initSet);
-            if (s2 != null)
+            if (s2 != null) {
                 s2.checkVarInit(initSet);
+								newSet = newSet.intersect(s1.checkVarInit(initSet), s2.checkVarInit(initSet));
+								initSet = initSet.union(initSet, newSet);
+						}
             return initSet;
         }
     }
@@ -702,8 +707,10 @@ class Ast {
         void checkVarInit(VarSet initSet) throws Exception {
             boolean found = false;
             for (String s : initSet) {
-                if (s.contains(nm))
+                if (s.contains(nm)) {
                     found = true;
+										return;
+								}
                 else
                     found = false;
             }

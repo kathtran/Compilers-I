@@ -1,4 +1,0 @@
-1c1
-< StaticError: Uninitialized variable i
----
-> StaticError: Uninitialized variable j
