@@ -450,13 +450,10 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            VarSet newSet = new VarSet();
             cond.checkVarInit(initSet);
-            newSet.intersect(newSet, s1.checkVarInit(initSet));
-            if (s2 != null) {
-                newSet.intersect(newSet, s2.checkVarInit(initSet));
-            }
-            initSet.union(initSet, newSet);
+            s1.checkVarInit(initSet);
+            if (s2 != null)
+                s2.checkVarInit(initSet);
             return initSet;
         }
     }
@@ -488,7 +485,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             cond.checkVarInit(initSet);
-            initSet.union(initSet, s.checkVarInit(initSet));
+            s.checkVarInit(initSet);
             return initSet;
         }
     }
