@@ -341,7 +341,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             for (Stmt s : stmts)
-                s.checkVarInit(initSet);
+                initSet.union(initSet,s.checkVarInit(initSet));
             return initSet;
         }
 
@@ -367,9 +367,8 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            VarSet newSet = new VarSet();
-            newSet.intersect(lhs.checkVarInit(initSet), rhs.checkVarInit(initSet));
-            initSet.union(initSet, newSet);
+            lhs.checkVarInit(initSet);
+            rhs.checkVarInit(initSet);
             return initSet;
         }
     }
@@ -404,13 +403,11 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            VarSet newSet = new VarSet();
             if (!initSet.contains(nm))
                 throw new StaticError("Uninitialized variable " + nm + "\n");
-            newSet.union(newSet, obj.checkVarInit(initSet));
+            obj.checkVarInit(initSet);
             for (Exp e : args)
-                newSet.intersect(newSet, e.checkVarInit(initSet));
-            initSet.union(initSet, newSet);
+                e.checkVarInit(initSet);
             return initSet;
         }
 
@@ -454,8 +451,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             VarSet newSet = new VarSet();
-            if (!initSet.contains(cond))
-                throw new StaticError("Uninitialized variable " + cond + "\n");
+            cond.checkVarInit(initSet);
             newSet.union(newSet, s1.checkVarInit(initSet));
             if (s2 != null) {
                 newSet.intersect(newSet, s2.checkVarInit(initSet));
@@ -491,8 +487,7 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(cond))
-                throw new StaticError("Uninitialized variable " + cond + "\n");
+            cond.checkVarInit(initSet);
             initSet.union(initSet, s.checkVarInit(initSet));
             return initSet;
         }
@@ -518,7 +513,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(arg))
                 throw new StaticError("Uninitialized variable " + arg + "\n");
-            initSet.union(initSet, arg.checkVarInit(initSet));
+            arg.checkVarInit(initSet);
             return initSet;
         }
 
@@ -542,9 +537,7 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(val))
-                throw new StaticError("Uninitialized variable " + val + "\n");
-            initSet.union(initSet, val.checkVarInit(initSet));
+            val.checkVarInit(initSet);
             return initSet;
         }
 
