@@ -368,7 +368,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(lhs))
-                throw new StaticError("Unitialized variable " + lhs);
+                throw new StaticError("Unitialized variable " + lhs + "\n");
             return initSet;
         }
     }
@@ -405,7 +405,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             for (Exp e : args) {
                 if (!initSet.contains(e))
-                    throw new StaticError("Unitialized variable " + e);
+                    throw new StaticError("Unitialized variable " + e + "\n");
             }
             return initSet;
         }
@@ -450,7 +450,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(cond))
-                throw new StaticError("Unitialized variable " + cond);
+                throw new StaticError("Unitialized variable " + cond + "\n");
             initSet.union(initSet, s1.checkVarInit(initSet));
             if (s2 != null) {
                 initSet.union(initSet, s2.checkVarInit(initSet));
@@ -486,7 +486,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(cond))
-                throw new StaticError("Unitialized variable " + cond);
+                throw new StaticError("Unitialized variable " + cond + "\n");
             initSet.union(initSet, s.checkVarInit(initSet));
             return initSet;
         }
@@ -511,7 +511,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(arg))
-                throw new StaticError("Unitialized variable " + arg);
+                throw new StaticError("Unitialized variable " + arg + "\n");
             return initSet;
         }
 
@@ -536,7 +536,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(val))
-                throw new StaticError("Unitialized variable " + val);
+                throw new StaticError("Unitialized variable " + val + "\n");
             return initSet;
         }
 
@@ -625,7 +625,7 @@ class Ast {
             for (Exp e : args)
                 e.checkVarInit(initSet);
             if (!initSet.contains(nm))
-                throw new StaticError("Unitialized variable " + nm);
+                throw new StaticError("Unitialized variable " + nm + "\n");
             return;
         }
     }
@@ -677,7 +677,7 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(nm))
-                throw new StaticError("Unitialized variable " + nm);
+                throw new StaticError("Unitialized variable " + nm + "\n");
             return;
         }
     }
@@ -697,7 +697,7 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(nm))
-                throw new StaticError("Unitialized variable " + nm);
+                throw new StaticError("Unitialized variable " + nm + "\n");
             obj.checkVarInit(initSet);
             return;
         }
@@ -716,7 +716,7 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(nm))
-                throw new StaticError("Unitialized variable " + nm);
+                throw new StaticError("Unitialized variable " + nm + "\n");
             return;
         }
     }
