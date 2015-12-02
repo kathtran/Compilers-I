@@ -343,7 +343,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             for (Stmt s : stmts)
-                initSet.union(initSet,s.checkVarInit(initSet));
+                s.checkVarInit(initSet);
             return initSet;
         }
 
