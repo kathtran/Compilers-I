@@ -369,7 +369,6 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            lhs.checkVarInit(initSet);
             rhs.checkVarInit(initSet);
             return initSet;
         }
@@ -695,8 +694,17 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(nm))
-                throw new StaticError("Uninitialized variable " + nm + "\n");
+						boolean found = false;
+						for (String s : initSet) {
+								if (s.contains(nm))
+									found = true;
+								else
+									found = false;
+						}
+						if (!found) {
+            	if (!initSet.contains(nm))
+              	  throw new StaticError("Uninitialized variable " + nm + "\n");
+						}
             return;
         }
     }
