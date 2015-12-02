@@ -142,7 +142,7 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             for (VarDecl v : flds)
-                initSet = initSet.add(initSet, v.toString());
+                initSet = initSet.add(initSet, v.nm);
             for (MethodDecl m : mthds) {
                 VarSet newSet = new VarSet();
                 newSet = newSet.union(newSet, initSet);
@@ -208,7 +208,7 @@ class Ast {
                 initSet = initSet.add(initSet, p.nm);
             for (VarDecl v : vars) {
                 if (v.init != null)
-                    initSet = initSet.add(initSet, v.toString());
+                    initSet = initSet.add(initSet, v.nm);
             }
             for (Stmt s : stmts)
                 initSet = initSet.union(initSet, s.checkVarInit(initSet));
@@ -705,7 +705,7 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            boolean found = false;
+            /*boolean found = false;
             for (String s : initSet) {
                 if (s.contains(nm)) {
                     found = true;
@@ -713,10 +713,10 @@ class Ast {
                 } else
                     found = false;
             }
-            if (!found) {
+            if (!found) {*/
                 if (!initSet.contains(nm))
                     throw new StaticError("Uninitialized variable " + nm + "\n");
-            }
+            //}
             return;
         }
     }
