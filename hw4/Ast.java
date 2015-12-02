@@ -143,8 +143,10 @@ class Ast {
         void checkVarInit(VarSet initSet) throws Exception {
             for (VarDecl v : flds)
                 initSet.add(v.toString());
-            for (MethodDecl m : mthds)
-                m.checkVarInit(initSet);
+            for (MethodDecl m : mthds) {
+                VarSet newSet = new VarSet();
+                m.checkVarInit(newSet.union(newSet, initSet));
+            }
         }
     }
 
@@ -368,8 +370,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             lhs.checkVarInit(initSet);
-            if (!initSet.contains(lhs.nm))
-                initSet.add(lhs.nm);
+            rhs.checkVarInit(initSet);
             return initSet;
         }
     }
