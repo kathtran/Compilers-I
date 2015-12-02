@@ -449,17 +449,13 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            VarSet thenSet = new VarSet();
-            VarSet elseSet = new VarSet();
             if (!initSet.contains(cond))
                 throw new StaticError("Unitialized variable " + cond);
-            for (Stmt stmt1 : s1)
-                thenSet.add(stmt1);
+initSet.union(initSet, s1.checkVarInit(initSet));
             if (s2 != null) {
-                for (Stmt stmt2 : s2)
-                    elseSet.add(stmt2);
+initSet.union(initSet, s2.checkVarInit(initSet));
             }
-            return initSet.union(thenSet, elseSet);
+return initSet;
         }
     }
 
@@ -491,7 +487,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(cond))
                 throw new StaticError("Unitialized variable " + cond);
-            initSet.add(s.checkVarInit(initSet));
+            initSet.union(initSet, s.checkVarInit(initSet));
             return initSet;
         }
     }
