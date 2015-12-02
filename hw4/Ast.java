@@ -142,7 +142,7 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             for (VarDecl v : flds)
-                initSet.add(v.toString());
+                initSet = initSet.add(initSet, v.toString());
             for (MethodDecl m : mthds) {
                 VarSet newSet = new VarSet();
                 m.checkVarInit(newSet.union(newSet, initSet));
@@ -203,10 +203,10 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             for (Param p : params)
-                initSet.add(p.nm);
+                initSet = initSet.add(initSet, p.nm);
             for (VarDecl v : vars) {
-                if (v.init != null) 
-                    initSet = initSet.add(v.toString());
+                if (v.init != null)
+                    initSet = initSet.add(initSet, v.toString());
             }
             for (Stmt s : stmts)
                 s.checkVarInit(initSet);
@@ -369,12 +369,11 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-						if (lhs instanceof Ast.Id) {
-							Ast.Id id = (Ast.Id) lhs;
-							initSet.add(id.nm);
-						}
-						else
-							initSet.add(lhs.toString());
+            if (lhs instanceof Ast.Id) {
+                Ast.Id id = (Ast.Id) lhs;
+                initSet = initSet.add(initSet, id.nm);
+            } else
+                initSet = initSet.add(initSet, lhs.toString());
             rhs.checkVarInit(initSet);
             return initSet;
         }
@@ -700,17 +699,17 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-						boolean found = false;
-						for (String s : initSet) {
-								if (s.contains(nm))
-									found = true;
-								else
-									found = false;
-						}
-						if (!found) {
-            	if (!initSet.contains(nm))
-              	  throw new StaticError("Uninitialized variable " + nm + "\n");
-						}
+            boolean found = false;
+            for (String s : initSet) {
+                if (s.contains(nm))
+                    found = true;
+                else
+                    found = false;
+            }
+            if (!found) {
+                if (!initSet.contains(nm))
+                    throw new StaticError("Uninitialized variable " + nm + "\n");
+            }
             return;
         }
     }
