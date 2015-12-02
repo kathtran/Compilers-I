@@ -205,8 +205,8 @@ class Ast {
             for (Param p : params)
                 initSet.add(p.nm);
             for (VarDecl v : vars) {
-                if (v.init != null)
-                    initSet.add(v.toString());
+                if (v.init != null) 
+                    initSet = initSet.add(v.toString());
             }
             for (Stmt s : stmts)
                 s.checkVarInit(initSet);
@@ -369,6 +369,12 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
+						if (lhs instanceof Ast.Id) {
+							Ast.Id id = (Ast.Id) lhs;
+							initSet.add(id.nm);
+						}
+						else
+							initSet.add(lhs.toString());
             rhs.checkVarInit(initSet);
             return initSet;
         }
