@@ -368,7 +368,8 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             lhs.checkVarInit(initSet);
-            rhs.checkVarInit(initSet);
+            if (!initSet.contains(lhs.nm))
+                initSet.add(lhs.nm);
             return initSet;
         }
     }
@@ -452,7 +453,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             VarSet newSet = new VarSet();
             cond.checkVarInit(initSet);
-            newSet.union(newSet, s1.checkVarInit(initSet));
+            newSet.intersect(newSet, s1.checkVarInit(initSet));
             if (s2 != null) {
                 newSet.intersect(newSet, s2.checkVarInit(initSet));
             }
