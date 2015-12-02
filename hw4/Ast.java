@@ -513,8 +513,6 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(arg))
-                throw new StaticError("Uninitialized variable " + arg + "\n");
             arg.checkVarInit(initSet);
             return initSet;
         }
