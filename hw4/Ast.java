@@ -147,7 +147,7 @@ class Ast {
                 VarSet newSet = new VarSet();
                 newSet = newSet.union(newSet, initSet);
                 m.checkVarInit(newSet);
-								//m.checkVarInit(initSet);
+                //m.checkVarInit(initSet);
             }
         }
     }
@@ -210,7 +210,7 @@ class Ast {
                 if (v.init != null)
                     initSet = initSet.add(initSet, v.toString());
             }
-            for (Stmt s : stmts) 
+            for (Stmt s : stmts)
                 initSet = initSet.union(initSet, s.checkVarInit(initSet));
         }
     }
@@ -412,7 +412,7 @@ class Ast {
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
             obj.checkVarInit(initSet);
-            for (Exp e : args) 
+            for (Exp e : args)
                 e.checkVarInit(initSet);
             return initSet;
         }
@@ -456,14 +456,14 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-						VarSet newSet = new VarSet();
+            VarSet newSet = new VarSet();
             cond.checkVarInit(initSet);
             s1.checkVarInit(initSet);
             if (s2 != null) {
                 s2.checkVarInit(initSet);
-								newSet = newSet.intersect(s1.checkVarInit(initSet), s2.checkVarInit(initSet));
-								initSet = initSet.union(initSet, newSet);
-						}
+                newSet = newSet.intersect(s1.checkVarInit(initSet), s2.checkVarInit(initSet));
+                initSet = initSet.union(initSet, newSet);
+            }
             return initSet;
         }
     }
@@ -709,9 +709,8 @@ class Ast {
             for (String s : initSet) {
                 if (s.contains(nm)) {
                     found = true;
-										return;
-								}
-                else
+                    return;
+                } else
                     found = false;
             }
             if (!found) {
