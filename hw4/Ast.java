@@ -369,6 +369,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             lhs.checkVarInit(initSet);
             rhs.checkVarInit(initSet);
+            initSet.add(this.toString());
             return initSet;
         }
     }
@@ -567,10 +568,6 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-//            if (!initSet.contains(e1))
-//                throw new StaticError("Uninitialized variable " + e1);
-//            else if (!initSet.contains(e2))
-//                throw new StaticError("Uninitialized variable " + e2);
             e1.checkVarInit(initSet);
             e2.checkVarInit(initSet);
             return;
@@ -591,8 +588,6 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-//            if (!initSet.contains(e))
-//                throw new StaticError("Uninitialized variable " + e);
             e.checkVarInit(initSet);
             return;
         }
@@ -718,7 +713,6 @@ class Ast {
         void checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(nm))
                 throw new StaticError("Uninitialized variable " + nm + "\n");
-            initSet.add(nm);
             return;
         }
     }
