@@ -453,10 +453,13 @@ class Ast {
             VarSet elseSet = new VarSet();
             if (!initSet.contains(cond))
                 throw new StaticError("Unitialized variable " + cond);
-            thenSet.add(s1.checkVarInit(initSet));
-            if (s2 != null)
-                elseSet.add(s2.checkVarInit(initSet));
-            return initSet.add(thenSet, elseSet);
+            for (Stmt stmt1 : s1)
+                thenSet.add(stmt1);
+            if (s2 != null) {
+                for (Stmt stmt2 : s2)
+                    elseSet.add(stmt2);
+            }
+            return initSet.union(thenSet, elseSet);
         }
     }
 
