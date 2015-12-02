@@ -700,12 +700,8 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(nm)) {
-                for (String s : initSet)
-                    if (s.contains(nm))
-                        break;
+            if (!initSet.contains(nm))
                 throw new StaticError("Uninitialized variable " + nm + "\n");
-            }
             return;
         }
     }
