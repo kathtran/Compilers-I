@@ -1,5 +1,4 @@
 1c1
-< StaticError: Unitialized variable i
-\ No newline at end of file
+< StaticError: Uninitialized variable i
 ---
 > StaticError: Uninitialized variable j

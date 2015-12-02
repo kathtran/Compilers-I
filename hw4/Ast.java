@@ -456,7 +456,7 @@ class Ast {
             if (s2 != null) {
                 newSet.intersect(newSet, s2.checkVarInit(initSet));
             }
-            initSet.union(newSet);
+            initSet.union(initSet, newSet);
             return initSet;
         }
     }
