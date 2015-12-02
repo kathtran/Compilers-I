@@ -145,7 +145,8 @@ class Ast {
                 initSet = initSet.add(initSet, v.toString());
             for (MethodDecl m : mthds) {
                 VarSet newSet = new VarSet();
-                m.checkVarInit(newSet.union(newSet, initSet));
+                newSet = newSet.union(newSet, initSet);
+                m.checkVarInit(newSet);
             }
         }
     }
