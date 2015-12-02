@@ -408,7 +408,6 @@ class Ast {
             obj.checkVarInit(initSet);
             for (Exp e : args)
                 e.checkVarInit(initSet);
-            initSet.add(nm);
             return initSet;
         }
 
@@ -615,7 +614,6 @@ class Ast {
             obj.checkVarInit(initSet);
             for (Exp e : args)
                 e.checkVarInit(initSet);
-            initSet.add(nm);
             return;
         }
     }
@@ -686,7 +684,6 @@ class Ast {
 
         void checkVarInit(VarSet initSet) throws Exception {
             obj.checkVarInit(initSet);
-            initSet.add(nm);
             return;
         }
     }
@@ -703,9 +700,12 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(nm))
+            if (!initSet.contains(nm)) {
+                for (String s : initSet)
+                    if (s.contains(nm))
+                        break;
                 throw new StaticError("Uninitialized variable " + nm + "\n");
-            initSet.add(nm);
+            }
             return;
         }
     }
