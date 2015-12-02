@@ -662,11 +662,6 @@ class Ast {
         public String toString() {
             return "(NewObj " + nm + ")";
         }
-
-        void checkVarInit(VarSet initSet) throws Exception {
-            initSet.add(nm);
-            return;
-        }
     }
 
     public static class Field extends Exp {
