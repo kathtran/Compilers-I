@@ -369,7 +369,6 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             lhs.checkVarInit(initSet);
             rhs.checkVarInit(initSet);
-            initSet.add(this.toString());
             return initSet;
         }
     }
