@@ -367,8 +367,8 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            if (!initSet.contains(lhs))
-                throw new StaticError("Uninitialized variable " + lhs + "\n");
+            lhs.checkVarInit(initSet);
+            rhs.checkVarInit(initSet);
             return initSet;
         }
     }
@@ -403,10 +403,11 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-            for (Exp e : args) {
-                if (!initSet.contains(e))
-                    throw new StaticError("Uninitialized variable " + e + "\n");
-            }
+            if (!initSet.contains(nm))
+                throw new StaticError("Uninitialized variable " + nm + "\n");
+            obj.checkVarInit(initSet);
+            for (Exp e : args)
+                e.checkVarInit(initSet);
             return initSet;
         }
 
@@ -512,6 +513,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(arg))
                 throw new StaticError("Uninitialized variable " + arg + "\n");
+            arg.checkVarInit(initSet);
             return initSet;
         }
 
@@ -537,6 +539,7 @@ class Ast {
         VarSet checkVarInit(VarSet initSet) throws Exception {
             if (!initSet.contains(val))
                 throw new StaticError("Uninitialized variable " + val + "\n");
+            val.checkVarInit(initSet);
             return initSet;
         }
 
