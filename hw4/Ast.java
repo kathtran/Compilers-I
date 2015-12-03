@@ -147,7 +147,6 @@ class Ast {
                 VarSet newSet = new VarSet();
                 newSet = newSet.union(newSet, initSet);
                 m.checkVarInit(newSet);
-                //m.checkVarInit(initSet);
             }
         }
     }
@@ -705,18 +704,8 @@ class Ast {
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-            /*boolean found = false;
-            for (String s : initSet) {
-                if (s.contains(nm)) {
-                    found = true;
-                    return;
-                } else
-                    found = false;
-            }
-            if (!found) {*/
-                if (!initSet.contains(nm))
-                    throw new StaticError("Uninitialized variable " + nm + "\n");
-            //}
+            if (!initSet.contains(nm))
+                throw new StaticError("Uninitialized variable " + nm + "\n");
             return;
         }
     }
