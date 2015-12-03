@@ -42,7 +42,9 @@ class VarSet extends HashSet<String> {
 //---------------------------------------------------------------------------
 //
 class StaticError extends Exception {
-    StaticError(String message) { super(message); }
+    StaticError(String message) {
+        super(message);
+    }
 }
 
 // AST Definition.
@@ -50,7 +52,7 @@ class StaticError extends Exception {
 //
 
 class Ast {
-    static int tab=0;	// indentation for printing AST.
+    static int tab = 0;    // indentation for printing AST.
 
     public abstract static class Node {
         String tab() {
@@ -74,14 +76,17 @@ class Ast {
     public static class Program extends Node {
         public final ClassDecl[] classes;
 
-        public Program(ClassDecl[] ca) { classes=ca; }
+        public Program(ClassDecl[] ca) {
+            classes = ca;
+        }
+
         public Program(List<ClassDecl> cl) {
             this(cl.toArray(new ClassDecl[0]));
         }
 
         public String toString() {
             String str = "# AST Program\n";
-            for (ClassDecl c: classes)
+            for (ClassDecl c : classes)
                 str += c;
             return str;
         }
@@ -89,14 +94,14 @@ class Ast {
         // Static analysis for detecting unreachable statements
         //
         public void checkReach() throws Exception {
-            for (ClassDecl c: classes)
+            for (ClassDecl c : classes)
                 c.checkReach();
         }
 
         // Static analysis for detecting uninitialized variables
         //
         public void checkVarInit() throws Exception {
-            for (ClassDecl c: classes)
+            for (ClassDecl c : classes)
                 c.checkVarInit(new VarSet());
         }
     }
@@ -104,76 +109,108 @@ class Ast {
     // Declarations -------------------------------------------------------
 
     public static class ClassDecl extends Node {
-        public final String nm;	       // class name
-        public final String pnm;	       // parent class name (could be null)
-        public final VarDecl[] flds;       // fiels
+        public final String nm;           // class name
+        public final String pnm;           // parent class name (could be null)
+        public final VarDecl[] flds;       // fields
         public final MethodDecl[] mthds;   // methods
 
         public ClassDecl(String c, String p, VarDecl[] va, MethodDecl[] ma) {
-            nm=c; pnm=p; flds=va; mthds=ma;
+            nm = c;
+            pnm = p;
+            flds = va;
+            mthds = ma;
         }
+
         public ClassDecl(String c, String p, List<VarDecl> vl, List<MethodDecl> ml) {
             this(c, p, vl.toArray(new VarDecl[0]), ml.toArray(new MethodDecl[0]));
         }
+
         public String toString() {
-            String str = "ClassDecl " + nm + " " + (pnm==null ? "" : pnm) + "\n";
+            String str = "ClassDecl " + nm + " " + (pnm == null ? "" : pnm) + "\n";
             Ast.tab = 2;
-            for (VarDecl v: flds)
+            for (VarDecl v : flds)
                 str += v;
-            for (MethodDecl m: mthds)
+            for (MethodDecl m : mthds)
                 str += m;
             return str;
         }
 
         void checkReach() throws Exception {
-            for (MethodDecl m: mthds)
+            for (MethodDecl m : mthds)
                 m.checkReach(true);
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-
-            // ... need code ...
-
+            for (VarDecl v : flds)
+                initSet = initSet.add(initSet, v.nm);
+            for (MethodDecl m : mthds) {
+                VarSet newSet = new VarSet();
+                newSet = newSet.union(newSet, initSet);
+                m.checkVarInit(newSet);
+            }
         }
     }
 
     public static class MethodDecl extends Node {
-        public final Type t;	    // return type (could be null)
-        public final String nm;	    // method name
+        public final Type t;        // return type (could be null)
+        public final String nm;        // method name
         public final Param[] params;    // param parameters
         public final VarDecl[] vars;    // local variables
-        public final Stmt[] stmts;	    // method body
+        public final Stmt[] stmts;        // method body
 
         public MethodDecl(Type rt, String m, Param[] fa, VarDecl[] va, Stmt[] sa) {
-            t=rt; nm=m; params=fa; vars=va; stmts=sa;
+            t = rt;
+            nm = m;
+            params = fa;
+            vars = va;
+            stmts = sa;
         }
+
         public MethodDecl(Type rt, String m, List<Param> fl, List<VarDecl> vl, List<Stmt> sl) {
             this(rt, m, fl.toArray(new Param[0]),
                     vl.toArray(new VarDecl[0]), sl.toArray(new Stmt[0]));
         }
+
         public String toString() {
-            String str = "  MethodDecl " + (t==null ? "void" : t) + " " + nm + " (";
-            for (Param f: params)
+            String str = "  MethodDecl " + (t == null ? "void" : t) + " " + nm + " (";
+            for (Param f : params)
                 str += f + " ";
             str += ")\n";
             Ast.tab = 3;
-            for (VarDecl v: vars)
+            for (VarDecl v : vars)
                 str += v;
-            for (Stmt s: stmts)
+            for (Stmt s : stmts)
                 str += s;
             return str;
         }
 
         boolean checkReach(boolean reachable) throws Exception {
-            for (Stmt s: stmts)
-                s.checkReach(reachable);
-            return true;
+            boolean status = true;
+            for (int i = 0; i < stmts.length; i++) {
+                status = stmts[i].checkReach(reachable);
+                if (status == false) {
+                    try {
+                        if (stmts[i + 1] != null) {
+                            stmts[i + 1].checkReach(status);
+                        } else
+                            break;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        break;
+                    }
+                }
+            }
+            return status;
         }
 
         void checkVarInit(VarSet initSet) throws Exception {
-
-            // ... need code ...
-
+            for (Param p : params)
+                initSet = initSet.add(initSet, p.nm);
+            for (VarDecl v : vars) {
+                if (v.init != null)
+                    initSet = initSet.add(initSet, v.nm);
+            }
+            for (Stmt s : stmts)
+                initSet = initSet.union(initSet, s.checkVarInit(initSet));
         }
     }
 
@@ -182,11 +219,15 @@ class Ast {
         public final String nm;  // variable name
         public final Exp init;   // init expr (could be null)
 
-        public VarDecl(Type at, String v, Exp e) { t=at; nm=v; init=e; }
+        public VarDecl(Type at, String v, Exp e) {
+            t = at;
+            nm = v;
+            init = e;
+        }
 
         public String toString() {
             return tab() + "VarDecl " + t + " " + nm + " " +
-                    (init==null ? "()" : init) + "\n";
+                    (init == null ? "()" : init) + "\n";
         }
     }
 
@@ -194,7 +235,10 @@ class Ast {
         public final Type t;     // parameter type
         public final String nm;  // parameter name
 
-        public Param(Type at, String v) { t=at; nm=v; }
+        public Param(Type at, String v) {
+            t = at;
+            nm = v;
+        }
 
         public String toString() {
             return "(Param " + t + " " + nm + ")";
@@ -203,24 +247,33 @@ class Ast {
 
     // Types --------------------------------------------------------------
 
-    public static abstract class Type extends Node {}
+    public static abstract class Type extends Node {
+    }
 
     public static class IntType extends Type {
-        public String toString() { return "IntType"; }
+        public String toString() {
+            return "IntType";
+        }
     }
 
     public static class DblType extends Type {
-        public String toString() { return "Double"; }
+        public String toString() {
+            return "Double";
+        }
     }
 
     public static class BoolType extends Type {
-        public String toString() { return "BoolType"; }
+        public String toString() {
+            return "BoolType";
+        }
     }
 
     public static class ArrayType extends Type {
         public final Type et;  // array element type
 
-        public ArrayType(Type t) { et=t; }
+        public ArrayType(Type t) {
+            et = t;
+        }
 
         public String toString() {
             return "(ArrayType " + et + ")";
@@ -230,7 +283,9 @@ class Ast {
     public static class ObjType extends Type {
         public final String nm;  // object's class name
 
-        public ObjType(String i) { nm=i; }
+        public ObjType(String i) {
+            nm = i;
+        }
 
         public String toString() {
             return "(ObjType " + nm + ")";
@@ -241,22 +296,27 @@ class Ast {
 
     public static abstract class Stmt extends Node {
         abstract boolean checkReach(boolean reachable) throws Exception;
+
         abstract VarSet checkVarInit(VarSet initSet) throws Exception;
     }
 
     public static class Block extends Stmt {
         public final Stmt[] stmts;
 
-        public Block(Stmt[] sa) { stmts=sa; }
+        public Block(Stmt[] sa) {
+            stmts = sa;
+        }
+
         public Block(List<Stmt> sl) {
             this(sl.toArray(new Stmt[0]));
         }
+
         public String toString() {
             String s = "";
-            if (stmts!=null) {
+            if (stmts != null) {
                 s = tab() + "{\n";
                 Ast.tab++;
-                for (Stmt st: stmts)
+                for (Stmt st : stmts)
                     s += st;
                 Ast.tab--;
                 s += tab() + "}\n";
@@ -265,15 +325,27 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
-            if (!reachable)
-                throw new StaticError("Unreachable statement: " + this);
-            for (Stmt s: stmts)
-                s.checkReach(reachable);
-            return true;
+            boolean status = true;
+            for (int i = 0; i < stmts.length; i++) {
+                status = stmts[i].checkReach(reachable);
+                if (status == false) {
+                    try {
+                        if (stmts[i + 1] != null) {
+                            stmts[i + 1].checkReach(status);
+                        } else
+                            break;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        break;
+                    }
+                }
+            }
+            return status;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            for (Stmt s : stmts)
+                s.checkVarInit(initSet);
+            return initSet;
         }
 
     }
@@ -282,7 +354,10 @@ class Ast {
         public final Exp lhs;
         public final Exp rhs;
 
-        public Assign(Exp e1, Exp e2) { lhs=e1; rhs=e2; }
+        public Assign(Exp e1, Exp e2) {
+            lhs = e1;
+            rhs = e2;
+        }
 
         public String toString() {
             return tab() + "Assign " + lhs + " " + rhs + "\n";
@@ -295,9 +370,14 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            rhs.checkVarInit(initSet);
+            if (lhs instanceof Ast.Id) {
+                Ast.Id id = (Ast.Id) lhs;
+                initSet = initSet.add(initSet, id.nm);
+            } else
+                lhs.checkVarInit(initSet);
+            return initSet;
         }
-
     }
 
     public static class CallStmt extends Stmt {
@@ -306,14 +386,18 @@ class Ast {
         public final Exp[] args;  // arguments
 
         public CallStmt(Exp e, String s, Exp[] ea) {
-            obj=e; nm=s; args=ea;
+            obj = e;
+            nm = s;
+            args = ea;
         }
+
         public CallStmt(Exp e, String s, List<Exp> el) {
             this(e, s, el.toArray(new Exp[0]));
         }
+
         public String toString() {
             String s = tab() + "CallStmt " + obj + " " + nm + " (";
-            for (Exp e: args)
+            for (Exp e : args)
                 s += e + " ";
             s += ")\n";
             return s;
@@ -326,7 +410,10 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            obj.checkVarInit(initSet);
+            for (Exp e : args)
+                e.checkVarInit(initSet);
+            return initSet;
         }
 
     }
@@ -336,7 +423,11 @@ class Ast {
         public final Stmt s1;   // then clause
         public final Stmt s2;   // else clause (could be null)
 
-        public If(Exp e, Stmt as1, Stmt as2) { cond=e; s1=as1; s2=as2; }
+        public If(Exp e, Stmt as1, Stmt as2) {
+            cond = e;
+            s1 = as1;
+            s2 = as2;
+        }
 
         public String toString() {
             String str = tab() + "If " + cond + "\n";
@@ -353,25 +444,37 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
+            boolean thenStatus = true;
+            boolean elseStatus = true;
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            s1.checkReach(reachable);
+            thenStatus = s1.checkReach(reachable);
             if (s2 != null)
-                s2.checkReach(reachable);
-            return true;
+                elseStatus = s2.checkReach(reachable);
+            return thenStatus && elseStatus;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            VarSet newSet = new VarSet();
+            cond.checkVarInit(initSet);
+            s1.checkVarInit(initSet);
+            if (s2 != null) {
+                s2.checkVarInit(initSet);
+                newSet = newSet.intersect(s1.checkVarInit(initSet), s2.checkVarInit(initSet));
+                initSet = initSet.union(initSet, newSet);
+            }
+            return initSet;
         }
-
     }
 
     public static class While extends Stmt {
         public final Exp cond;
         public final Stmt s;
 
-        public While(Exp e, Stmt as) { cond=e; s=as; }
+        public While(Exp e, Stmt as) {
+            cond = e;
+            s = as;
+        }
 
         public String toString() {
             String str = tab() + "While " + cond + "\n";
@@ -382,25 +485,29 @@ class Ast {
         }
 
         boolean checkReach(boolean reachable) throws Exception {
+            boolean status = true;
             if (!reachable)
                 throw new StaticError("Unreachable statement: " + this);
-            s.checkReach(reachable);
-            return true;
+            status = s.checkReach(reachable);
+            return status;
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            cond.checkVarInit(initSet);
+            s.checkVarInit(initSet);
+            return initSet;
         }
-
     }
 
     public static class Print extends Stmt {
         public final Exp arg;  // (could be null)
 
-        public Print(Exp e) { arg=e; }
+        public Print(Exp e) {
+            arg = e;
+        }
 
         public String toString() {
-            return tab() + "Print " + (arg==null ? "()" : arg) + "\n";
+            return tab() + "Print " + (arg == null ? "()" : arg) + "\n";
         }
 
         boolean checkReach(boolean reachable) throws Exception {
@@ -410,7 +517,8 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            arg.checkVarInit(initSet);
+            return initSet;
         }
 
     }
@@ -418,10 +526,12 @@ class Ast {
     public static class Return extends Stmt {
         public final Exp val;  // (could be null)
 
-        public Return(Exp e) { val=e; }
+        public Return(Exp e) {
+            val = e;
+        }
 
         public String toString() {
-            return tab() + "Return " + (val==null ? "()" : val) + "\n";
+            return tab() + "Return " + (val == null ? "()" : val) + "\n";
         }
 
         boolean checkReach(boolean reachable) throws Exception {
@@ -431,7 +541,8 @@ class Ast {
         }
 
         VarSet checkVarInit(VarSet initSet) throws Exception {
-
+            val.checkVarInit(initSet);
+            return initSet;
         }
 
     }
@@ -440,7 +551,8 @@ class Ast {
 
     public static abstract class Exp extends Node {
         // default routine for Exp nodes
-        void checkVarInit(VarSet initSet) throws Exception {}
+        void checkVarInit(VarSet initSet) throws Exception {
+        }
     }
 
     public static class Binop extends Exp {
@@ -448,24 +560,40 @@ class Ast {
         public final Exp e1;
         public final Exp e2;
 
-        public Binop(BOP o, Exp ae1, Exp ae2) { op=o; e1=ae1; e2=ae2; }
+        public Binop(BOP o, Exp ae1, Exp ae2) {
+            op = o;
+            e1 = ae1;
+            e2 = ae2;
+        }
 
         public String toString() {
             return "(Binop " + op + " " + e1 + " " + e2 + ")";
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            e1.checkVarInit(initSet);
+            e2.checkVarInit(initSet);
+            return;
+        }
     }
 
     public static class Unop extends Exp {
         public final UOP op;
         public final Exp e;
 
-        public Unop(UOP o, Exp ae) { op=o; e=ae; }
+        public Unop(UOP o, Exp ae) {
+            op = o;
+            e = ae;
+        }
 
         public String toString() {
             return "(Unop " + op + " " + e + ")";
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            e.checkVarInit(initSet);
+            return;
+        }
     }
 
     public static class Call extends Exp {
@@ -474,26 +602,39 @@ class Ast {
         public final Exp[] args;  // arguments
 
         public Call(Exp e, String s, Exp[] ea) {
-            obj=e; nm=s; args=ea;
+            obj = e;
+            nm = s;
+            args = ea;
         }
+
         public Call(Exp e, String s, List<Exp> el) {
             this(e, s, el.toArray(new Exp[0]));
         }
+
         public String toString() {
-            String str ="(Call " + obj + " " + nm + " (";
-            for (Exp e: args)
+            String str = "(Call " + obj + " " + nm + " (";
+            for (Exp e : args)
                 str += e + " ";
             str += "))";
             return str;
         }
 
+        void checkVarInit(VarSet initSet) throws Exception {
+            obj.checkVarInit(initSet);
+            for (Exp e : args)
+                e.checkVarInit(initSet);
+            return;
+        }
     }
 
     public static class NewArray extends Exp {
         public final Type et;  // element type
         public final int len;  // array length
 
-        public NewArray(Type t, int i) { et=t; len=i; }
+        public NewArray(Type t, int i) {
+            et = t;
+            len = i;
+        }
 
         public String toString() {
             return "(NewArray " + et + " " + len + ")";
@@ -504,18 +645,29 @@ class Ast {
         public final Exp ar;   // array object
         public final Exp idx;  // element's index
 
-        public ArrayElm(Exp e1, Exp e2) { ar=e1; idx=e2; }
-
-        public String toString() {
-            return "(ArrayElm " + ar + " " + idx +")";
+        public ArrayElm(Exp e1, Exp e2) {
+            ar = e1;
+            idx = e2;
         }
 
+        public String toString() {
+            return "(ArrayElm " + ar + " " + idx + ")";
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+            ar.checkVarInit(initSet);
+            idx.checkVarInit(initSet);
+            return;
+        }
     }
 
     public static class NewObj extends Exp {
         public final String nm;   // class name
 
-        public NewObj(String s) { nm=s; }
+        public NewObj(String s) {
+            nm = s;
+        }
+
         public String toString() {
             return "(NewObj " + nm + ")";
         }
@@ -525,53 +677,92 @@ class Ast {
         public final Exp obj;    // class object
         public final String nm;  // field name
 
-        public Field(Exp e, String s) { obj=e; nm=s; }
-
-        public String toString() {
-            return "(Field " + obj + " " +  nm + ") ";
+        public Field(Exp e, String s) {
+            obj = e;
+            nm = s;
         }
 
+        public String toString() {
+            return "(Field " + obj + " " + nm + ") ";
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+            obj.checkVarInit(initSet);
+            return;
+        }
     }
 
     public static class Id extends Exp {
         public final String nm;  // id name
 
-        public Id(String s) { nm=s; }
-        public String toString() { return nm; }
+        public Id(String s) {
+            nm = s;
+        }
 
+        public String toString() {
+            return nm;
+        }
+
+        void checkVarInit(VarSet initSet) throws Exception {
+            if (!initSet.contains(nm))
+                throw new StaticError("Uninitialized variable " + nm + "\n");
+            return;
+        }
     }
 
     public static class This extends Exp {
-        public String toString() { return "This"; }
+        public String toString() {
+            return "This";
+        }
     }
 
     public static class IntLit extends Exp {
         public final int i;
 
-        public IntLit(int ai) { i=ai; }
-        public String toString() { return i + ""; }
+        public IntLit(int ai) {
+            i = ai;
+        }
+
+        public String toString() {
+            return i + "";
+        }
     }
 
     public static class DblLit extends Exp {
         public final double d;
 
-        public DblLit(double ad) { d=ad; }
-        public String toString() { return d + ""; }
+        public DblLit(double ad) {
+            d = ad;
+        }
+
+        public String toString() {
+            return d + "";
+        }
     }
 
     public static class BoolLit extends Exp {
         public final boolean b;
 
-        public BoolLit(boolean ab) { b=ab; }
-        public String toString() { return b + ""; }
+        public BoolLit(boolean ab) {
+            b = ab;
+        }
+
+        public String toString() {
+            return b + "";
+        }
     }
 
     // String literal is not an expression
     public static class StrLit extends Exp {
         public final String s;
 
-        public StrLit(String as) { s=as; }
-        public String toString() { return "\"" + s + "\""; }
+        public StrLit(String as) {
+            s = as;
+        }
+
+        public String toString() {
+            return "\"" + s + "\"";
+        }
     }
 
     // Operators ----------------------------------------------------------
@@ -581,16 +772,26 @@ class Ast {
         EQ("=="), NE("!="), LT("<"), LE("<="), GT(">"), GE(">=");
         private String name;
 
-        BOP(String n) { name = n; }
-        public String toString() { return name; }
+        BOP(String n) {
+            name = n;
+        }
+
+        public String toString() {
+            return name;
+        }
     }
 
     public static enum UOP {
         NEG("-"), NOT("!");
         private String name;
 
-        UOP(String n) { name = n; }
-        public String toString() { return name; }
+        UOP(String n) {
+            name = n;
+        }
+
+        public String toString() {
+            return name;
+        }
     }
 
 }
